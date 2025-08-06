@@ -1,4 +1,4 @@
-package com.hexaware.AssetManagement;
+package com.hexaware.assetManagement;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

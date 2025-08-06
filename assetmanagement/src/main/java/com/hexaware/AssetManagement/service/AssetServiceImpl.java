@@ -1,12 +1,12 @@
-package com.hexaware.AssetManagement.service;
+package com.hexaware.assetManagement.service;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.hexaware.AssetManagement.entities.Asset;
-import com.hexaware.AssetManagement.repository.AssetRepository;
+import com.hexaware.assetManagement.entities.Asset;
+import com.hexaware.assetManagement.repository.AssetRepository;
 
 
 @Service

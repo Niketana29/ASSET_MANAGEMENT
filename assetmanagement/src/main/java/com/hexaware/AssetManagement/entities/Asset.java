@@ -1,9 +1,12 @@
-package com.hexaware.AssetManagement.entities;
+package com.hexaware.assetManagement.entities;
 
 import java.util.Date;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 
@@ -22,6 +25,15 @@ public class Asset {
     private Date expiryDate;
     private double assetValue;
     private String status; // AVAILABLE, ASSIGNED, UNDER_SERVICE
+    
+    @OneToMany(mappedBy = "asset", cascade = CascadeType.ALL)
+    private List<AssetAllocation> allocations;
+
+    @OneToMany(mappedBy = "asset", cascade = CascadeType.ALL)
+    private List<ServiceRequest> serviceRequests;
+
+    @OneToMany(mappedBy = "asset", cascade = CascadeType.ALL)
+    private List<AuditRequest> auditRequests;
     
 	public Asset() {
 		super();

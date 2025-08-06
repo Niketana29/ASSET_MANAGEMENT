@@ -1,8 +1,8 @@
-package com.hexaware.AssetManagement.service;
+package com.hexaware.assetManagement.service;
 
 import java.util.List;
 
-import com.hexaware.AssetManagement.entities.ServiceRequest;
+import com.hexaware.assetManagement.entities.ServiceRequest;
 
 public interface IServiceRequestService {
 	

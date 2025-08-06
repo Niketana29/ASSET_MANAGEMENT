@@ -1,4 +1,4 @@
-package com.hexaware.AssetManagement.entities;
+package com.hexaware.assetManagement.entities;
 
 import java.util.Date;
 

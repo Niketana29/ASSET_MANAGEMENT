@@ -1,4 +1,4 @@
-package com.hexaware.AssetManagement.entities;
+package com.hexaware.assetManagement.entities;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

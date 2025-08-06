@@ -1,4 +1,4 @@
-package com.hexaware.AssetManagement.controller;
+package com.hexaware.assetManagement.controller;
 
 import java.util.List;
 
@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hexaware.AssetManagement.entities.Asset;
-import com.hexaware.AssetManagement.service.IAssetService;
+import com.hexaware.assetManagement.entities.Asset;
+import com.hexaware.assetManagement.service.IAssetService;
 
 @RestController
 @RequestMapping("/api/assets")

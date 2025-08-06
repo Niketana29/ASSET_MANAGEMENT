@@ -1,7 +1,11 @@
-package com.hexaware.AssetManagement.entities;
+package com.hexaware.assetManagement.entities;
 
+import java.util.List;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -17,6 +21,15 @@ public class Employee {
     private String contactNumber;
     private String address;
     private String role; // EMPLOYEE, ADMIN
+    
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    private List<AssetAllocation> allocations;
+
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    private List<ServiceRequest> serviceRequests;
+
+    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    private List<AuditRequest> auditRequests;
     
 	public Employee() {
 		super();
