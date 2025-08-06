@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.hexaware.assetManagement.entities.Asset;
 import com.hexaware.assetManagement.service.IAssetService;
 
+import lombok.extern.slf4j.Slf4j;
+
+
+@Slf4j
 @RestController
 @RequestMapping("/api/assets")
 public class AssetController {
@@ -24,24 +28,28 @@ public class AssetController {
 	
     @PostMapping("/insert")
     public Asset addAsset(@RequestBody Asset asset) {
+    	log.info("POST /insert - Adding asset: {}", asset);
         return assetService.addAsset(asset);
     }
 
  
     @PutMapping("/update")
     public Asset updateAsset(@RequestBody Asset asset) {
+        log.info("PUT /update - Updating asset: {}", asset);
         return assetService.updateAsset(asset);
     }
 
  
     @GetMapping("/getbyid/{aid}")
     public Asset getAssetById(@PathVariable int aid) {
+        log.info("GET /getbyid/{} - Fetching asset by ID", aid);
         return assetService.getAssetById(aid);
     }
 
 
     @DeleteMapping("/deletebyid/{aid}")
     public String deleteAsset(@PathVariable int aid) {
+        log.warn("DELETE /deletebyid/{} - Deleting asset by ID", aid);
         assetService.deleteAssetById(aid);
         return "Asset with ID " + aid + " deleted successfully.";
     }
@@ -49,6 +57,7 @@ public class AssetController {
 
     @GetMapping("/getall")
     public List<Asset> getAllAssets() {
+        log.info("GET /getall - Fetching all assets");
         return assetService.getAllAssets();
     }
 	
