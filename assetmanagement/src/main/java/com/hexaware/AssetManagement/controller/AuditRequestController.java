@@ -3,6 +3,7 @@ package com.hexaware.assetManagement.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,9 +13,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.hexaware.assetManagement.dto.AuditRequestDto;
+import com.hexaware.assetManagement.entities.Asset;
 import com.hexaware.assetManagement.entities.AuditRequest;
+import com.hexaware.assetManagement.entities.Employee;
 import com.hexaware.assetManagement.service.IAuditRequestService;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -27,21 +32,24 @@ public class AuditRequestController {
 	IAuditRequestService auditRequestService;
 	
 	@PostMapping("/insert")
-    public AuditRequest createAuditRequest(@RequestBody AuditRequest request) {
-        log.info("POST /insert - Creating Audit Request: {}", request);
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public AuditRequest createAuditRequest(@Valid @RequestBody AuditRequestDto requestDto) {
+        log.info("POST /insert - Creating Audit Request: {}", requestDto);
 		
-        return auditRequestService.createAuditRequest(request);
+        return auditRequestService.createAuditRequest(mapDtoToEntity(requestDto));
     }
 
 
     @PutMapping("/update")
-    public AuditRequest updateAuditRequest(@RequestBody AuditRequest request) {
-        log.info("PUT /update - Updating Audit Request: {}", request);
-        return auditRequestService.updateAuditRequest(request);
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public AuditRequest updateAuditRequest(@Valid @RequestBody AuditRequestDto requestDto) {
+        log.info("PUT /update - Updating Audit Request: {}", requestDto);
+        return auditRequestService.updateAuditRequest(mapDtoToEntity(requestDto));
     }
 
 
     @GetMapping("/getbyid/{arid}")
+    @PreAuthorize("hasAuthority('ADMIN' , 'USER')")
     public AuditRequest getAuditRequestById(@PathVariable int arid) {
     	log.info("GET /getbyid/{} - Retrieving Audit Request", arid);
         return auditRequestService.getAuditRequestById(arid);
@@ -49,6 +57,7 @@ public class AuditRequestController {
 
 
     @DeleteMapping("/deletebyid/{arid}")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public String deleteAuditRequest(@PathVariable int arid) {
         log.warn("DELETE /deletebyid/{} - Deleting Audit Request", arid);
         auditRequestService.deleteAuditRequestById(arid);
@@ -57,9 +66,26 @@ public class AuditRequestController {
 
 
     @GetMapping("/getall")
+    @PreAuthorize("hasAuthority('ADMIN' , 'USER')")
     public List<AuditRequest> getAllAuditRequests() {
     	log.info("GET/getall - Fetching all Audit Requests");
         return auditRequestService.getAllAuditRequests();
+    }
+    
+    private AuditRequest mapDtoToEntity(AuditRequestDto dto) {
+        AuditRequest ar = new AuditRequest();
+        ar.setArid(dto.getArid());
+
+        Employee e = new Employee();
+        e.setEid(dto.getEid());
+        ar.setEmployee(e);
+
+        Asset a = new Asset();
+        a.setAid(dto.getAid());
+        ar.setAsset(a);
+
+        ar.setStatus(dto.getStatus());
+        return ar;
     }
 
 }

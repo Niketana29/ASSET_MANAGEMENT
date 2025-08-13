@@ -15,11 +15,11 @@ public class ServiceRequestDto {
     @Min(1)
     private int srid;
 
-    @NotNull(message = "Employee ID is required")
+    @Min(1)
     @NotEmpty
     private int eid;
 
-    @NotNull(message = "Asset ID is required")
+    @Min(1)
     @NotEmpty
     private int aid;
 

@@ -1,5 +1,6 @@
 package com.hexaware.assetManagement.dto;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 import jakarta.validation.constraints.FutureOrPresent;
@@ -15,10 +16,10 @@ public class AssetAllocationDto {
     @Min(1)
     private int allocId;
 
-    @NotNull(message = "Employee ID is required")
+    @Min(1)
     private int eid;
 
-    @NotNull(message = "Asset ID is required")
+    @Min(1)
     private int aid;
 
     @NotNull(message = "Allocation date is required")
@@ -27,5 +28,7 @@ public class AssetAllocationDto {
 
     @FutureOrPresent(message = "Return date must be today or in the future")
     private Date returnDate;
+    
+    
 
 }

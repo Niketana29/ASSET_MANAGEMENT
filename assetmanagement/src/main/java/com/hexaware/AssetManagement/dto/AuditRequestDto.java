@@ -13,10 +13,10 @@ public class AuditRequestDto {
     @Min(1)
     private int arid;
 
-    @NotNull(message = "Employee ID is required")
+    @Min(1)
     private int eid;
 
-    @NotNull(message = "Asset ID is required")
+    @Min(1)
     private int aid;
 
     @Pattern(regexp = "PENDING|VERIFIED|REJECTED", message = "Status must be PENDING, VERIFIED, or REJECTED")
