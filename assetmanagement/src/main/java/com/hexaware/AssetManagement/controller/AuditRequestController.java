@@ -17,6 +17,7 @@ import com.hexaware.assetManagement.dto.AuditRequestDto;
 import com.hexaware.assetManagement.entities.Asset;
 import com.hexaware.assetManagement.entities.AuditRequest;
 import com.hexaware.assetManagement.entities.Employee;
+import com.hexaware.assetManagement.exception.BusinessException;
 import com.hexaware.assetManagement.service.IAuditRequestService;
 
 import jakarta.validation.Valid;
@@ -34,6 +35,9 @@ public class AuditRequestController {
 	@PostMapping("/insert")
     @PreAuthorize("hasAuthority('ADMIN')")
     public AuditRequest createAuditRequest(@Valid @RequestBody AuditRequestDto requestDto) {
+		if(requestDto.getArid() != null && requestDto.getArid() >0) {
+			throw new BusinessException("arId should not be given for insert operation");
+		}
         log.info("POST /insert - Creating Audit Request: {}", requestDto);
 		
         return auditRequestService.createAuditRequest(mapDtoToEntity(requestDto));
@@ -43,6 +47,10 @@ public class AuditRequestController {
     @PutMapping("/update")
     @PreAuthorize("hasAuthority('ADMIN')")
     public AuditRequest updateAuditRequest(@Valid @RequestBody AuditRequestDto requestDto) {
+    	
+        if(requestDto.getArid() == null || requestDto.getArid() <= 0) {
+        	throw new BusinessException("Invalid arId");
+        }
         log.info("PUT /update - Updating Audit Request: {}", requestDto);
         return auditRequestService.updateAuditRequest(mapDtoToEntity(requestDto));
     }
@@ -74,7 +82,9 @@ public class AuditRequestController {
     
     private AuditRequest mapDtoToEntity(AuditRequestDto dto) {
         AuditRequest ar = new AuditRequest();
-        ar.setArid(dto.getArid());
+        if(dto.getArid() != null && dto.getArid() > 0) {
+        	ar.setArid(dto.getArid());
+        }
 
         Employee e = new Employee();
         e.setEid(dto.getEid());

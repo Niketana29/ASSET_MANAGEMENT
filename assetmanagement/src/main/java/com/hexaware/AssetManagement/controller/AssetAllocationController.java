@@ -17,6 +17,7 @@ import com.hexaware.assetManagement.dto.AssetAllocationDto;
 import com.hexaware.assetManagement.entities.Asset;
 import com.hexaware.assetManagement.entities.AssetAllocation;
 import com.hexaware.assetManagement.entities.Employee;
+import com.hexaware.assetManagement.exception.BusinessException;
 import com.hexaware.assetManagement.service.IAssetAllocationService;
 
 import jakarta.validation.Valid;
@@ -34,6 +35,9 @@ public class AssetAllocationController {
 	@PostMapping("/insert")
     @PreAuthorize("hasAuthority('ADMIN')")
     public AssetAllocation allocateAsset(@Valid @RequestBody AssetAllocationDto allocationDto) {
+		if(allocationDto.getAllocId() != null && allocationDto.getAllocId() >0) {
+			throw new BusinessException("allocId should not be given for insert operation");
+		}
         log.info("POST /insert - Allocating asset: {}", allocationDto);
         return allocationService.allocateAsset(mapDtoToEntity(allocationDto));
     }
@@ -42,7 +46,10 @@ public class AssetAllocationController {
     @PutMapping("/update")
     @PreAuthorize("hasAuthority('ADMIN')")
     public AssetAllocation updateAllocation(@Valid @RequestBody AssetAllocationDto allocationDto) {
-        log.info("PUT /update - Updating asset allocation: {}", allocationDto);
+        if(allocationDto.getAllocId() == null || allocationDto.getAllocId() <= 0) {
+        	throw new BusinessException("Invalid allocId");
+        }
+    	log.info("PUT /update - Updating asset allocation: {}", allocationDto);
         return allocationService.updateAllocation(mapDtoToEntity(allocationDto));
     }
 
@@ -73,7 +80,9 @@ public class AssetAllocationController {
     
     private AssetAllocation mapDtoToEntity(AssetAllocationDto dto) {
         AssetAllocation allocation = new AssetAllocation();
+        if(dto.getAllocId() != null && dto.getAllocId() > 0) {
         allocation.setAllocId(dto.getAllocId());
+        }
 
         Employee e = new Employee();
         e.setEid(dto.getEid());

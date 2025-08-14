@@ -16,8 +16,7 @@ import lombok.NoArgsConstructor;
 @Data 
 public class AssetDto {
 	
-	@Min(1)
-	private int aid;
+	private Integer aid;
 	
 	@NotBlank(message = "Asset number is required")
     private String assetNo;

@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class AuditRequestDto {
 	
-    @Min(1)
-    private int arid;
+
+    private Integer arid;
 
     @Min(1)
     private int eid;

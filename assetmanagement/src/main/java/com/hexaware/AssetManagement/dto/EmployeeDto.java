@@ -13,8 +13,7 @@ import lombok.NoArgsConstructor;
 @Data 
 public class EmployeeDto {
 	
-    @Min(1)
-    private int eid;
+    private Integer eid;
 
     @NotNull
     @Size(min = 2, max = 30)

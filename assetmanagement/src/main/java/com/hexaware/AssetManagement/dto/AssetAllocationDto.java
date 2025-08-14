@@ -13,8 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 public class AssetAllocationDto {
 	
-    @Min(1)
-    private int allocId;
+    private Integer allocId;
 
     @Min(1)
     private int eid;

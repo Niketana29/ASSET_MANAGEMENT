@@ -17,6 +17,7 @@ import com.hexaware.assetManagement.dto.ServiceRequestDto;
 import com.hexaware.assetManagement.entities.Asset;
 import com.hexaware.assetManagement.entities.Employee;
 import com.hexaware.assetManagement.entities.ServiceRequest;
+import com.hexaware.assetManagement.exception.BusinessException;
 import com.hexaware.assetManagement.service.IServiceRequestService;
 
 import jakarta.validation.Valid;
@@ -34,6 +35,9 @@ public class ServiceRequestController {
 	@PostMapping("/insert")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ServiceRequest createServiceRequest(@Valid @RequestBody ServiceRequestDto srequestDto) {
+		if(srequestDto.getSrid() != null && srequestDto.getSrid() >0) {
+			throw new BusinessException("srId should not be given for insert operation");
+		}
         log.info("POST /insert - Creating new service request: {}", srequestDto);
         return serviceRequestService.createServiceRequest(mapDtoToEntity(srequestDto));
     }
@@ -42,6 +46,9 @@ public class ServiceRequestController {
     @PutMapping("/update")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ServiceRequest updateServiceRequest(@Valid @RequestBody ServiceRequestDto srequestDto) {
+        if(srequestDto.getSrid() == null || srequestDto.getSrid() <= 0) {
+        	throw new BusinessException("Invalid srId");
+        }
         log.info("PUT /update - Updating service request: {}", srequestDto);
         return serviceRequestService.updateServiceRequest(mapDtoToEntity(srequestDto));
     }
@@ -73,7 +80,10 @@ public class ServiceRequestController {
     
     private ServiceRequest mapDtoToEntity(ServiceRequestDto dto) {
         ServiceRequest sr = new ServiceRequest();
-        sr.setSrid(dto.getSrid());
+        if(dto.getSrid() != null && dto.getSrid() > 0) {
+            sr.setSrid(dto.getSrid());
+        }
+
 
         Employee e = new Employee();
         e.setEid(dto.getEid());

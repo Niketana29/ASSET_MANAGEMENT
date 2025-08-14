@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hexaware.assetManagement.dto.AssetDto;
 import com.hexaware.assetManagement.entities.Asset;
+import com.hexaware.assetManagement.exception.BusinessException;
 import com.hexaware.assetManagement.service.IAssetService;
 
 import jakarta.validation.Valid;
@@ -32,6 +33,9 @@ public class AssetController {
 	@PostMapping("/insert")
     @PreAuthorize("hasAuthority('ADMIN')")
     public Asset addAsset(@Valid @RequestBody AssetDto assetDto) {
+		if(assetDto.getAid() != null && assetDto.getAid() >0) {
+			throw new BusinessException("aId should not be given for insert operation");
+		}
         log.info("POST /insert - Adding asset: {}", assetDto);
         return assetService.addAsset(mapDtoToEntity(assetDto));
     }
@@ -39,6 +43,9 @@ public class AssetController {
     @PutMapping("/update")
     @PreAuthorize("hasAuthority('ADMIN')")
     public Asset updateAsset(@Valid @RequestBody AssetDto assetDto) {
+        if(assetDto.getAid() == null || assetDto.getAid() <= 0) {
+        	throw new BusinessException("Invalid aId");
+        }
         log.info("PUT /update - Updating asset: {}", assetDto);
         return assetService.updateAsset(mapDtoToEntity(assetDto));
     }
@@ -70,7 +77,10 @@ public class AssetController {
 	
     private Asset mapDtoToEntity(AssetDto dto) {
         Asset a = new Asset();
-        a.setAid(dto.getAid());
+        if(dto.getAid() != null && dto.getAid() > 0) {
+            a.setAid(dto.getAid());
+        }
+
         a.setAssetNo(dto.getAssetNo());
         a.setAname(dto.getAname());
         a.setCategory(dto.getCategory());

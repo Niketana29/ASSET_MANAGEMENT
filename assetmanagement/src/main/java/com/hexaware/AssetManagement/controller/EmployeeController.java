@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.hexaware.assetManagement.dto.EmployeeDto;
 import com.hexaware.assetManagement.entities.Employee;
+import com.hexaware.assetManagement.exception.BusinessException;
 import com.hexaware.assetManagement.service.IEmployeeService;
 
 import jakarta.validation.Valid;
@@ -32,6 +33,9 @@ public class EmployeeController {
 	 @PostMapping("/insert")
 	 @PreAuthorize("hasAuthority('ADMIN')")
 	 public Employee addEmployee(@Valid @RequestBody EmployeeDto employeeDto) {
+			if(employeeDto.getEid() != null && employeeDto.getEid() >0) {
+				throw new BusinessException("eId should not be given for insert operation");
+			}
 	        log.info("POST /insert - Adding employee: {}", employeeDto);
 	        return employeeService.addEmployee(mapDtoToEntity(employeeDto));
 	 }
@@ -39,6 +43,9 @@ public class EmployeeController {
 	 @PutMapping("/update")
 	 @PreAuthorize("hasAuthority('ADMIN')")
 	 public Employee updateEmployee(@Valid @RequestBody EmployeeDto employeeDto) {
+	        if(employeeDto.getEid() == null || employeeDto.getEid() <= 0) {
+	        	throw new BusinessException("Invalid eId");
+	        }
 	        log.info("PUT /update - Updating employee: {}", employeeDto);
 	        return employeeService.updateEmployee(mapDtoToEntity(employeeDto));
 	}
@@ -67,7 +74,10 @@ public class EmployeeController {
     
     private Employee mapDtoToEntity(EmployeeDto dto) {
         Employee e = new Employee();
-        e.setEid(dto.getEid());
+        if(dto.getEid() != null && dto.getEid() > 0) {
+            e.setEid(dto.getEid());
+        }
+
         e.setEname(dto.getEname());
         e.setEmail(dto.getEmail());
         e.setGender(dto.getGender());

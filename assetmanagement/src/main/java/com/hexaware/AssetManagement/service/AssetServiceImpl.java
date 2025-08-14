@@ -33,10 +33,7 @@ public class AssetServiceImpl implements IAssetService {
             asset.getExpiryDate().before(asset.getManufacturingDate())) {
             throw new BusinessException("Expiry date cannot be before manufacturing date");
         }
-        if (asset.getManufacturingDate() != null &&
-            asset.getManufacturingDate().after(java.sql.Date.valueOf(LocalDate.now()))) {
-            throw new BusinessException("Manufacturing date cannot be in the future");
-        }
+
         if (asset.getAssetValue() < 0) {
             throw new BusinessException("Asset value cannot be negative");
         }

@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 public class ServiceRequestDto {
 	
 
-    @Min(1)
-    private int srid;
+    private Integer srid;
 
     @Min(1)
     private int eid;
