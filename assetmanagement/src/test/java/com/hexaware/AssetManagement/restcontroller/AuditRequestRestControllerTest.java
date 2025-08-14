@@ -18,7 +18,7 @@ import com.hexaware.assetManagement.entities.AuditRequest;
 import com.hexaware.assetManagement.entities.ServiceRequest;
 
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class AuditRequestRestControllerTest {
 
 	

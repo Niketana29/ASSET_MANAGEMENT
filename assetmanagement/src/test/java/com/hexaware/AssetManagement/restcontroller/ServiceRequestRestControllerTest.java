@@ -16,7 +16,7 @@ import com.hexaware.assetManagement.dto.ServiceRequestDto;
 import com.hexaware.assetManagement.entities.ServiceRequest;
 
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class ServiceRequestRestControllerTest {
 
 	@Autowired

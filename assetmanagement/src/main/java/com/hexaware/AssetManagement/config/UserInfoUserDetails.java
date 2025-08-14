@@ -13,14 +13,14 @@ import com.hexaware.assetManagement.entities.UserInfo;
 
 public class UserInfoUserDetails implements UserDetails {
 	
-    private String name;
+    private String username;
     private String password;
     private List<GrantedAuthority> authorities;
     
     
 	public UserInfoUserDetails(UserInfo userInfo) {
 		super();
-		this.name = userInfo.getName();
+		this.username = userInfo.getUsername();
 		this.password = userInfo.getPassword();
 		this.authorities = Arrays.stream(userInfo.getRoles().split(","))
                 .map(SimpleGrantedAuthority::new)
@@ -39,7 +39,7 @@ public class UserInfoUserDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return name;
+        return username;
     }
 
     @Override

@@ -6,18 +6,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.hexaware.assetManagement.filter.JwtAuthFilter;
 
@@ -25,41 +22,35 @@ import com.hexaware.assetManagement.filter.JwtAuthFilter;
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
-	
-	@Autowired
-	JwtAuthFilter jwtAuthFilter;
-	
-    @Bean
-    //authentication
-    public UserDetailsService userDetailsService() {
-    	
-			UserDetails   user1 = User.withUsername("Niki")
-				.password("nickie123")
-				.roles("admin")
-				.build();
-	
-			UserDetails   user2 = User.withUsername("Simba")
-			.password("simba123")
-			.roles("user","hr")
-			.build();
 
-return new  InMemoryUserDetailsManager(user1,user2);
-    }
-    
+    @Autowired
+    private JwtAuthFilter jwtAuthFilter;
+
+    @Autowired
+    private UserInfoUserDetailsService userInfoUserDetailsService;
+
     @Bean
-    public SecurityFilterChain   securityFilterChain(HttpSecurity http) throws Exception {
-		
-		
-		return http.authorizeHttpRequests(auth->{
-			
-			auth.requestMatchers("/").permitAll();
-			auth.anyRequest().authenticated();
-			})
-		    .oauth2Login(Customizer.withDefaults())
-			.formLogin(Customizer.withDefaults())
-			.build();
-		
-	}
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> {
+                auth.requestMatchers(
+                    "/", 
+                    "/users/registration/new", 
+                    "/users/login/authenticate"
+                ).permitAll()
+                .anyRequest().authenticated();
+            })
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authenticationProvider(authenticationProvider())
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+            .formLogin().disable()
+            .httpBasic().disable()
+            .oauth2Login().disable();
+
+        return http.build();
+    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -68,7 +59,7 @@ return new  InMemoryUserDetailsManager(user1,user2);
     @Bean
     public AuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService());
+        provider.setUserDetailsService(userInfoUserDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
@@ -77,5 +68,4 @@ return new  InMemoryUserDetailsManager(user1,user2);
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
     }
-
 }

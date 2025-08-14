@@ -15,7 +15,7 @@ import com.hexaware.assetManagement.dto.AssetDto;
 import com.hexaware.assetManagement.entities.Asset;
 
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class AssetRestControllerTest {
 
 	

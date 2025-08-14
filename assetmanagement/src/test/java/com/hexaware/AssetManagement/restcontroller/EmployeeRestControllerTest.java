@@ -19,7 +19,7 @@ import com.hexaware.assetManagement.dto.EmployeeDto;
 import com.hexaware.assetManagement.entities.Employee;
 
 
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 class EmployeeRestControllerTest {
 
 	
