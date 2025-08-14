@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -18,8 +19,7 @@ public class AssetDto {
 	@Min(1)
 	private int aid;
 	
-    @NotNull
-    @NotEmpty
+	@NotBlank(message = "Asset number is required")
     private String assetNo;
     
     @NotNull

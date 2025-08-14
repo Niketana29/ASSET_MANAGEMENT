@@ -2,7 +2,6 @@ package com.hexaware.assetManagement.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,11 +15,9 @@ public class ServiceRequestDto {
     private int srid;
 
     @Min(1)
-    @NotEmpty
     private int eid;
 
     @Min(1)
-    @NotEmpty
     private int aid;
 
     @NotEmpty(message = "Description cannot be empty")
