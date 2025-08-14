@@ -22,8 +22,8 @@ class AssetAllocationServiceTest {
     @Test
     void testAllocateAsset() {
         AssetAllocation allocation = new AssetAllocation();
-        allocation.setEmployee(new Employee() {{ setEid(1); }});
-        allocation.setAsset(new Asset() {{ setAid(1); }});
+        allocation.setEmployee(new Employee() {{ setEid(201); }});
+        allocation.setAsset(new Asset() {{ setAid(101); }});
         allocation.setAllocationDate(Date.valueOf(LocalDate.now()));
         allocation.setReturnDate(Date.valueOf(LocalDate.now().plusMonths(6)));
 

@@ -19,8 +19,8 @@ class ServiceRequestServiceTest {
     @Test
     void testCreateServiceRequest() {
         ServiceRequest sr = new ServiceRequest();
-        sr.setEmployee(new Employee() {{ setEid(1); }});
-        sr.setAsset(new Asset() {{ setAid(1); }});
+        sr.setEmployee(new Employee() {{ setEid(201); }});
+        sr.setAsset(new Asset() {{ setAid(101); }});
         sr.setDescription("Repair request");
         sr.setIssueType("REPAIR");
         sr.setStatus("PENDING");

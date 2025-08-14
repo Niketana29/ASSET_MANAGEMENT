@@ -8,7 +8,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.hexaware.assetManagement.entities.Employee;
 
+import jakarta.transaction.Transactional;
+
 @SpringBootTest
+@Transactional
 class EmployeeServiceTest {
 
     @Autowired
@@ -18,7 +21,7 @@ class EmployeeServiceTest {
     void testAddEmployee() {
         Employee e = new Employee();
         e.setEname("John Doe");
-        e.setEmail("john.doe@example.com");
+        e.setEmail("jdoe@example.com");
         e.setGender("MALE");
         e.setContactNumber("9876543210");
         e.setAddress("123 Street, City");

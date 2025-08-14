@@ -22,8 +22,8 @@ class AssetServiceTest {
     @Test
     void testAddAsset() {
         Asset asset = new Asset();
-        asset.setAname("Laptop");
-        asset.setAssetNo("L1001");
+        asset.setAname("PersonalComputer");
+        asset.setAssetNo("PC1002");
         asset.setCategory("Electronics");
         asset.setModel("Dell XPS");
         asset.setAssetValue(55000.0);
@@ -34,7 +34,7 @@ class AssetServiceTest {
         Asset saved = assetService.addAsset(asset);
 
         assertNotNull(saved);
-        assertEquals("Laptop", saved.getAname());
+        assertEquals("PersonalComputer", saved.getAname());
 
         System.out.println("Added Asset: " + saved);
     }

@@ -19,8 +19,8 @@ class AuditRequestServiceTest {
     @Test
     void testCreateAuditRequest() {
         AuditRequest ar = new AuditRequest();
-        ar.setEmployee(new Employee() {{ setEid(1); }});
-        ar.setAsset(new Asset() {{ setAid(1); }});
+        ar.setEmployee(new Employee() {{ setEid(201); }});
+        ar.setAsset(new Asset() {{ setAid(101); }});
         ar.setStatus("PENDING");
 
         AuditRequest saved = auditRequestService.createAuditRequest(ar);
