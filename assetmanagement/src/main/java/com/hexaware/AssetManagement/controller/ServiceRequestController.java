@@ -48,7 +48,7 @@ public class ServiceRequestController {
 
 
     @GetMapping("/getbyid/{srid}")
-    @PreAuthorize("hasAuthority('ADMIN' , 'USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN' , 'USER')")
     public ServiceRequest getServiceRequestById(@PathVariable int srid) {
         log.info("GET /getbyid/{} - Fetching service request by ID", srid);
         return serviceRequestService.getServiceRequestById(srid);
@@ -65,7 +65,7 @@ public class ServiceRequestController {
 
 
     @GetMapping("/getall")
-    @PreAuthorize("hasAuthority('ADMIN' , 'USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN' , 'USER')")
     public List<ServiceRequest> getAllServiceRequests() {
         log.info("GET /getall - Fetching all service requests");
         return serviceRequestService.getAllServiceRequests();

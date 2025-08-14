@@ -44,7 +44,7 @@ public class EmployeeController {
 	}
 	
 	@GetMapping("/getbyid/{eid}")
-    @PreAuthorize("hasAuthority('ADMIN' , 'USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN' , 'USER')")
     public Employee getEmployeeById(@PathVariable int eid) {
         log.info("GET /getbyid/{} - Fetching employee by ID", eid);
         return employeeService.getEmployeeById(eid);
@@ -59,7 +59,7 @@ public class EmployeeController {
     }
 	
     @GetMapping("/getall")
-    @PreAuthorize("hasAuthority('ADMIN' , 'USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN' , 'USER')")
     public List<Employee> getAllEmployees() {
         log.info("GET /getall - Fetching all employees");
         return employeeService.getAllEmployees();

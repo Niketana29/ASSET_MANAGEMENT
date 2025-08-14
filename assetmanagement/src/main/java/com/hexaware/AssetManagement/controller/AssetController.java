@@ -45,7 +45,7 @@ public class AssetController {
 
  
     @GetMapping("/getbyid/{aid}")
-    @PreAuthorize("hasAuthority('ADMIN' , 'USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN' , 'USER')")
     public Asset getAssetById(@PathVariable int aid) {
         log.info("GET /getbyid/{} - Fetching asset by ID", aid);
         return assetService.getAssetById(aid);
@@ -62,7 +62,7 @@ public class AssetController {
 
 
     @GetMapping("/getall")
-    @PreAuthorize("hasAuthority('ADMIN' , 'USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN' , 'USER')")
     public List<Asset> getAllAssets() {
         log.info("GET /getall - Fetching all assets");
         return assetService.getAllAssets();

@@ -48,7 +48,7 @@ public class AssetAllocationController {
 
 
     @GetMapping("/getbyid/{allocId}")
-    @PreAuthorize("hasAuthority('ADMIN' , 'USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN' , 'USER')")
     public AssetAllocation getAllocationById(@PathVariable int allocId) {
         log.info("GET /getbyid/{} - Fetching asset allocation by ID", allocId);
         return allocationService.getAllocationById(allocId);
@@ -65,7 +65,7 @@ public class AssetAllocationController {
 
 
     @GetMapping("/getall")
-    @PreAuthorize("hasAuthority('ADMIN' , 'USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN' , 'USER')")
     public List<AssetAllocation> getAllAllocations() {
         log.info("GET /getall - Fetching all asset allocations");
         return allocationService.getAllAllocations();

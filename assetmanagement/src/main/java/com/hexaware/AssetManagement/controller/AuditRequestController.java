@@ -49,7 +49,7 @@ public class AuditRequestController {
 
 
     @GetMapping("/getbyid/{arid}")
-    @PreAuthorize("hasAuthority('ADMIN' , 'USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN' , 'USER')")
     public AuditRequest getAuditRequestById(@PathVariable int arid) {
     	log.info("GET /getbyid/{} - Retrieving Audit Request", arid);
         return auditRequestService.getAuditRequestById(arid);
@@ -66,7 +66,7 @@ public class AuditRequestController {
 
 
     @GetMapping("/getall")
-    @PreAuthorize("hasAuthority('ADMIN' , 'USER')")
+    @PreAuthorize("hasAnyAuthority('ADMIN' , 'USER')")
     public List<AuditRequest> getAllAuditRequests() {
     	log.info("GET/getall - Fetching all Audit Requests");
         return auditRequestService.getAllAuditRequests();
