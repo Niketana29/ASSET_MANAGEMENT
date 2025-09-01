@@ -10,16 +10,21 @@ export default function Register() {
 
 
     const [formData, setFormData] = useState({
-
-        name: "",
+        username: "",
+        ename: "",
         email: "",
         password: "",
-        confirmPassword: ""
+        confirmPassword: "",
+        roles: "",
+        gender: "",
+        contactNumber: "",
+        address: ""
     });
 
     const [errors, setErrors] = useState({});
 
-    const [apiErrors , setApiErrors] = useState("");
+    const [apiErrors, setApiErrors] = useState("");
+
 
     const handleChange = (e) => {
 
@@ -29,36 +34,45 @@ export default function Register() {
     };
 
     const validate = () => {
-
         let newErrors = {};
 
-        if (!formData.name.trim())
-            newErrors.name = "Name is required";
+        if (!formData.username.trim())
+            newErrors.username = "Username is required";
 
         if (!formData.email) {
-
             newErrors.email = "Email is required";
-        }
-        else if (!/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/.test(formData.email)) {
-            newErrors.email = "Email is Invalid";
+        } else if (
+            !/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/.test(formData.email)
+        ) {
+            newErrors.email = "Email is invalid";
         }
 
         if (!formData.password) {
-
             newErrors.password = "Password is required";
-        }
-        else if (formData.password.length < 8) {
-
+        } else if (formData.password.length < 8) {
             newErrors.password = "Password must be at least 8 characters";
         }
 
         if (formData.password !== formData.confirmPassword) {
-
             newErrors.confirmPassword = "Passwords do not match";
         }
 
+        if (!formData.roles.trim())
+            newErrors.roles = "Role is required (e.g. USER, ADMIN)";
+
+        if (!formData.ename.trim()) newErrors.ename = "Full Name is required";
+
+        if (!formData.gender) newErrors.gender = "Gender is required";
+
+        if (!/^\d{10}$/.test(formData.contactNumber)) {
+            newErrors.contactNumber = "Enter a valid 10-digit number";
+        }
+
+        if (!formData.address.trim()) newErrors.address = "Address is required";
+
+
         return newErrors;
-    }
+    };
 
     const handleSubmit = async (e) => {
 
@@ -71,18 +85,23 @@ export default function Register() {
         else {
 
             setErrors({});
-            try{
+            try {
                 await AuthService.register({
-                    name : formData.name,
-                    email : formData.email,
-                    password : formData.password
+                    username: formData.username,
+                    ename: formData.ename,
+                    email: formData.email,
+                    password: formData.password,
+                    roles: formData.roles,
+                    gender: formData.gender,
+                    contactNumber: formData.contactNumber,
+                    address: formData.address
 
                 });
 
                 alert("Registration successful! Redirecting to Login...");
                 navigate("/login");
             }
-            catch(error){
+            catch (error) {
                 setApiErrors(error.response?.data?.message || "Registration failed. Try again.");
             }
         }
@@ -94,20 +113,34 @@ export default function Register() {
             <div className="container mt-5" style={{ maxWidth: 520 }}>
                 <h2 className="mb-4">User Registration</h2>
 
-                {apiErrors && <div className = "alert alert-danger">{apiErrors}</div>}
+                {apiErrors && <div className="alert alert-danger">{apiErrors}</div>}
 
                 <form onSubmit={handleSubmit}>
+                    <div className="mb-3">
+                        <label className="form-label">Username</label>
+                        <input
+                            className="form-control"
+                            type="text"
+                            name="username"
+                            placeholder= /*Enter Your Name*/ "Choose a Username"
+                            value={formData.username}
+                            onChange={handleChange}
+                            required></input>
+                        {errors.username && (<small className="text-danger">{errors.username}</small>)}
+                    </div>
+
                     <div className="mb-3">
                         <label className="form-label">Full Name</label>
                         <input
                             className="form-control"
                             type="text"
-                            name="name"
-                            placeholder= /*Enter Your Name*/ "John Doe"
-                            value={formData.name}
+                            name="ename"
+                            placeholder="Enter your full name"
+                            value={formData.ename}
                             onChange={handleChange}
-                            required></input>
-                        {errors.name && (<small className="text-danger">{errors.name}</small>)}
+                            required
+                        />
+                        {errors.ename && <small className="text-danger">{errors.ename}</small>}
                     </div>
 
                     <div className="mb-3">
@@ -121,7 +154,7 @@ export default function Register() {
                             onChange={handleChange}
                             autoComplete="email"
                             required></input>
-                            {errors.email && (<small className="text-danger">{errors.email}</small>)}
+                        {errors.email && (<small className="text-danger">{errors.email}</small>)}
                     </div>
 
                     <div className="mb-3">
@@ -135,8 +168,8 @@ export default function Register() {
                             onChange={handleChange}
                             autoComplete="new-password"
                             required></input>
-                            {errors.password && (<small className="text-danger">{errors.password}</small>)}
-                            <PasswordStrengthBar password={formData.password}/>
+                        {errors.password && (<small className="text-danger">{errors.password}</small>)}
+                        <PasswordStrengthBar password={formData.password} />
                     </div>
 
                     <div className="mb-3">
@@ -149,7 +182,70 @@ export default function Register() {
                             value={formData.confirmPassword}
                             onChange={handleChange}
                             autoComplete="new-password"></input>
-                            {errors.confirmPassword && (<small className="text-danger">{errors.confirmPassword}</small>)}
+                        {errors.confirmPassword && (<small className="text-danger">{errors.confirmPassword}</small>)}
+                    </div>
+
+                    <div className="mb-3">
+                        <label className="form-label">Roles</label>
+                        <select
+                            className="form-control"
+                            type="text"
+                            name="roles"
+                            placeholder="USER or ADMIN"
+                            value={formData.roles}
+                            onChange={handleChange}
+                            required>
+                            <option value="">-- Select Role --</option>
+                            <option value="USER">USER</option>
+                            <option value="ADMIN">ADMIN</option>
+                        </select>
+                        {errors.roles && (<small className="text-danger">{errors.roles}</small>)}
+                    </div>
+
+
+                    <div className="mb-3">
+                        <label className="form-label">Gender</label>
+                        <select
+                            className="form-control"
+                            type="text"
+                            name="gender"
+                            placeholder="EnterYour Gender"
+                            value={formData.gender}
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="">-- Select Gender --</option>
+                            <option value="MALE">Male</option>
+                            <option value="FEMALE">Female</option>
+                        </select>
+                        {errors.gender && <small className="text-danger">{errors.gender}</small>}
+                    </div>
+
+                    <div className="mb-3">
+                        <label className="form-label">Contact Number</label>
+                        <input
+                            className="form-control"
+                            type="text"
+                            name="contactNumber"
+                            placeholder="10-digit mobile number"
+                            value={formData.contactNumber}
+                            onChange={handleChange}
+                            required
+                        />
+                        {errors.contactNumber && <small className="text-danger">{errors.contactNumber}</small>}
+                    </div>
+
+                    <div className="mb-3">
+                        <label className="form-label">Address</label>
+                        <textarea
+                            className="form-control"
+                            name="address"
+                            placeholder="Enter your address"
+                            value={formData.address}
+                            onChange={handleChange}
+                            required
+                        />
+                        {errors.address && <small className="text-danger">{errors.address}</small>}
                     </div>
 
                     <button className="btn btn-primary w-100" type="submit">
