@@ -1,30 +1,42 @@
 import api from "./api";
 
 class ServiceRequestService {
-  getAllServiceRequests() {
-    return api.get("/api/servicerequests/getall").then(res => res.data);
+  async getAllServiceRequests() {
+    const res = await api.get("/api/servicerequests/getall");
+    return res.data;
   }
 
-  getServiceRequestById(srid) {
-    return api.get(`/api/servicerequests/getbyid/${srid}`).then(res => res.data);
+  async getServiceRequestById(srid) {
+    const res = await api.get(`/api/servicerequests/getbyid/${srid}`);
+    return res.data;
   }
 
-  createServiceRequest(data) {
-    return api.post("/api/servicerequests/insert", {
-      eid: data.eid,
-      aid: data.aid,
+  async createServiceRequest(data) {
+    const res = await api.post("/api/servicerequests/insert", {
+      eid: data.eid,       
+      aid: data.aid,        
       description: data.description,
-      issueType: data.issueType, // MALFUNCTION or REPAIR
-      status: data.status, // PENDING, IN_PROGRESS, COMPLETED
-    }).then(res => res.data);
+      issueType: data.issueType,
+      status: data.status
+    });
+    return res.data;
   }
 
-  updateServiceRequest(request) {
-    return api.put("/api/servicerequests/update", request).then(res => res.data);
+  async updateServiceRequest(request) {
+    const res = await api.put("/api/servicerequests/update", {
+      srid: request.srid,
+      eid: request.eid,        
+      aid: request.aid,        
+      description: request.description,
+      issueType: request.issueType,
+      status: request.status,
+    });
+    return res.data;
   }
 
-  deleteServiceRequest(srid) {
-    return api.delete(`/api/servicerequests/deletebyid/${srid}`).then(res => res.data);
+  async deleteServiceRequest(srid) {
+    const res = await api.delete(`/api/servicerequests/deletebyid/${srid}`);
+    return res.data;
   }
 }
 

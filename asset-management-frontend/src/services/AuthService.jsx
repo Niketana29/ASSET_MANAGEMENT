@@ -1,8 +1,8 @@
 import api from "./api";
 
 class AuthService {
-  register(userData) {
-    return api.post("/users/registration/new", userData);
+  async register(userData) {
+    return await api.post("/users/registration/new", userData);
   }
 
   async login(credentials) {
@@ -12,7 +12,7 @@ class AuthService {
       localStorage.setItem("token", response.data.token);
 
       const userData = {
-        id: response.data.userId,          // backend sends userId
+        id: response.data.userId,          
         employeeId: response.data.employeeId,
         username: response.data.username,
         roles: response.data.roles,
@@ -38,7 +38,7 @@ class AuthService {
 
   getRoles() {
     const user = this.getCurrentUser();
-    return user ? user.roles : null;  // roles not role
+    return user ? user.roles : null; 
   }
 }
 

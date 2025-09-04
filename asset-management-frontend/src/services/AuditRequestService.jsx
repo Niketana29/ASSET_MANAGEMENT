@@ -1,24 +1,38 @@
 import api from "./api";
 
 class AuditRequestService {
-  getAllAuditRequests() {
-    return api.get("/api/auditrequests/getall").then(res => res.data);
+  async getAllAuditRequests() {
+    const res = await api.get("/api/auditrequests/getall");
+    return res.data;
   }
 
-  getAuditRequestById(arid) {
-    return api.get(`/api/auditrequests/getbyid/${arid}`).then(res => res.data);
+  async getAuditRequestById(arid) {
+    const res = await api.get(`/api/auditrequests/getbyid/${arid}`);
+    return res.data;
   }
 
-  createAuditRequest(request) {
-    return api.post("/api/auditrequests/insert", request).then(res => res.data);
+  async createAuditRequest(request) {
+    const res = await api.post("/api/auditrequests/insert", {
+      eid: request.eid,
+      aid: request.aid,
+      status: request.status
+    });
+    return res.data;
   }
 
-  updateAuditRequest(request) {
-    return api.put("/api/auditrequests/update", request).then(res => res.data);
+  async updateAuditRequest(request) {
+    const res = await api.put("/api/auditrequests/update", {
+      arid: request.arid,
+      eid: request.eid,
+      aid: request.aid,
+      status: request.status
+    });
+    return res.data;
   }
 
-  deleteAuditRequest(arid) {
-    return api.delete(`/api/auditrequests/deletebyid/${arid}`).then(res => res.data);
+  async deleteAuditRequest(arid) {
+    const res = await api.delete(`/api/auditrequests/deletebyid/${arid}`);
+    return res.data;
   }
 }
 

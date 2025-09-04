@@ -1,29 +1,52 @@
 import api from "./api";
 
 class AssetAllocationService {
-  getAllAllocations() {
-    return api.get("/api/allocations/getall").then(res => res.data);
+  async getAllAllocations() {
+    const res = await api.get("/api/allocations/getall");
+    return res.data;
   }
 
-  getAllocationById(allocId) {
-    return api.get(`/api/allocations/getbyid/${allocId}`).then(res => res.data);
+  async getAllocationById(allocId) {
+    const res = await api.get(`/api/allocations/getbyid/${allocId}`);
+    return res.data;
   }
 
-  allocateAsset(data) {
-    return api.post("/api/allocations/insert", {
-      eid: data.eid,
+  async allocateAsset(data) {
+    const res = await api.post("/api/allocations/insert", {
+      eid: data.eid,          
       aid: data.aid,
       allocationDate: data.allocationDate,
       returnDate: data.returnDate,
-    }).then(res => res.data);
+
+    });
+    return res.data;
   }
 
-  updateAllocation(allocation) {
-    return api.put("/api/allocations/update", allocation).then(res => res.data);
+  async updateAllocation(allocation) {
+    const res = await api.put("/api/allocations/update", {
+      allocId: allocation.allocId,
+      eid: allocation.eid,
+      aid: allocation.aid,
+      allocationDate: allocation.allocationDate,
+      returnDate: allocation.returnDate,
+      status: allocation.status
+    });
+    return res.data;
   }
 
-  deleteAllocation(allocId) {
-    return api.delete(`/api/allocations/deletebyid/${allocId}`).then(res => res.data);
+  async deleteAllocation(allocId) {
+    const res = await api.delete(`/api/allocations/deletebyid/${allocId}`);
+    return res.data;
+  }
+
+  async approveAllocation(allocId) {
+    const res = await api.put(`/api/allocations/approve/${allocId}`);
+    return res.data;
+  }
+
+  async rejectAllocation(allocId) {
+    const res = await api.put(`/api/allocations/reject/${allocId}`);
+    return res.data;
   }
 }
 
