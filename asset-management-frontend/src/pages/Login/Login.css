@@ -1,0 +1,144 @@
+.login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 2rem;
+    /* Background gradient + image */
+    background: linear-gradient(135deg, #f0f4f8, #d9e2ec);
+    background-image: url("../assets/login-bg.jpg");
+    /* Add your image in assets */
+    background-size: cover;
+    background-position: center;
+    font-family: 'Roboto', sans-serif;
+    /* Consistent font */
+}
+
+
+/* Card wrapper */
+.login-card {
+    background-color: #fff;
+    padding: 2rem 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 420px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.login-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+}
+
+.login-card h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #333;
+}
+
+/* Form Fields */
+.login-card .form-label {
+    font-weight: 500;
+    color: #555;
+}
+
+.login-card input {
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    padding: 0.65rem 0.8rem;
+    font-size: 0.95rem;
+    width: 100%;
+    margin-bottom: 0.5rem;
+    transition: border-color 0.3s ease;
+}
+
+.login-card input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+}
+
+/* Error messages */
+.text-danger {
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+/* Submit button */
+.login-card button {
+    background-color: #007bff;
+    color: #fff;
+    font-weight: 500;
+    padding: 0.65rem;
+    border: none;
+    border-radius: 6px;
+    margin-top: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+.login-card button:hover {
+    background-color: #0056b3;
+}
+
+/* API error alert */
+.login-card .alert {
+    margin-bottom: 1rem;
+}
+
+/* Link to registration */
+.login-card p {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.login-card p a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.login-card p a:hover {
+    text-decoration: underline;
+}
+
+/* Password wrapper */
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-wrapper input {
+    width: 100%;
+    height: 2.5rem;
+    /* same height as other inputs */
+    padding: 0.65rem 2.5rem 0.65rem 0.8rem;
+    /* top/bottom, right for eye, left padding */
+    font-size: 0.95rem;
+    /* match username input */
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    /* includes padding in width */
+}
+
+.password-wrapper .toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #555;
+    font-size: 1.1rem;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .login-card {
+        padding: 1.5rem;
+    }
+}

@@ -1,0 +1,31 @@
+
+.browse-assets-container {
+    margin-top: 2rem;
+  }
+  
+  .asset-card {
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+  
+  .asset-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .asset-img {
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  .search-category-row {
+    margin-bottom: 1rem;
+    gap: 1rem;
+  }
+  
+  .suggestions-list {
+    z-index: 10;
+    position: absolute;
+    width: 100%;
+  }
+  

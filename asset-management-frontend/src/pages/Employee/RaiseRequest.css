@@ -1,0 +1,17 @@
+.raise-request-container {
+    margin-top: 2rem;
+    max-width: 600px;
+  }
+  
+  .raise-request-container .card {
+    padding: 1.5rem;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    border-radius: 0.5rem;
+  }
+  
+  .suggestions-list {
+    z-index: 10;
+    position: absolute;
+    width: 100%;
+  }
+  

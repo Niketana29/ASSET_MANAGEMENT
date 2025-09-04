@@ -1,0 +1,25 @@
+.allocations-container {
+    margin-top: 2rem;
+  }
+  
+  .allocations-table {
+    background: #fff;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+  
+  .allocations-table th {
+    background-color: #007bff;
+    color: #fff;
+  }
+  
+  .allocations-table td, .allocations-table th {
+    vertical-align: middle;
+  }
+  
+  .no-allocations {
+    text-align: center;
+    padding: 2rem 0;
+  }
+  

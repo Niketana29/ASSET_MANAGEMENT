@@ -3,58 +3,70 @@ import Navbar from "./components/Navbar";
 import { Footer } from "./components/Footer";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import BrowseAssets from "./pages/BrowseAssets";
-import AssetDetails from "./pages/AssetDetails";
-import MyAllocations from "./pages/MyAllocations";
-import RaiseRequest from "./pages/RaiseRequest";
-import ServiceRequest from "./pages/ServiceRequest";
-import ManageAssets from "./pages/ManageAssets";
-import ManageEmployees from "./pages/ManageEmployees";
-import AuditRequests from "./pages/AuditRequests";
-import ServiceRequests from "./pages/ServiceRequests";
-import ManageCategories from "./pages/ManageCategories";
+//import DashboardRouter from "./pages/Dashboard/DashboardRouter";
+import AdminLogin from "./pages/Login/AdminLogin";
+import UserLogin from "./pages/Login/UserLogin";
+import ManageAssets from "./pages/Admin/ManageAssets";
+import ManageCategories from "./pages/Admin/ManageCategories";
+import ManageEmployees from "./pages/Admin/ManageEmployees";
+import AuditRequests from "./pages/Admin/AuditRequests";
+import ServiceRequests from "./pages/Admin/ServiceRequests";
+import BrowseAssets from "./pages/Employee/BrowseAssets";
+import AssetDetails from "./pages/Employee/AssetDetails";
+import MyAllocations from "./pages/Employee/MyAllocations";
+import RaiseRequest from "./pages/Employee/RaiseRequest";
+import ServiceRequest from "./pages/Employee/ServiceRequest";
 
-export default function App(){
+import PrivateRoute from "./components/PrivateRoute";
+import UserDashboard from "./pages/Dashboard/UserDashboard";
+import AdminDashboard from "./pages/Dashboard/AdminDashboard";
 
-
-  return(
-    <>
+export default function App() {
+  return (
     <BrowserRouter>
-    
-    <div>
-      {/* Navbar */}
-      <Navbar/>
+      <Navbar />
 
-      {/* Routing to Home Page , Regiter Page and Login Page */}
-      <div>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element = {<Dashboard/>}></Route>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login/admin" element={<AdminLogin />} />
+        <Route path="/login/user" element={<UserLogin />} />
 
-            <Route path="/assets/browse" element={<BrowseAssets />} />
-            <Route path="/assets/:id" element={<AssetDetails />} />
-            <Route path="/allocations" element={<MyAllocations />} />
-            <Route path="/requests/new" element={<RaiseRequest />} />
-            <Route path="/requests/service" element={<ServiceRequest />} />
+        {/* Admin Dashboard Routes */}
+        <Route
+          path="/dashboard/admin"
+          element={
+            <PrivateRoute>
+              <AdminDashboard />
+            </PrivateRoute>
+          }
+        >
+          <Route path="assets" element={<ManageAssets />} />
+          <Route path="categories" element={<ManageCategories />} />
+          <Route path="employees" element={<ManageEmployees />} />
+          <Route path="audit" element={<AuditRequests />} />
+          <Route path="service-requests" element={<ServiceRequests />} />
+        </Route>
 
+        {/* Employee Dashboard Routes */}
+        <Route
+          path="/dashboard/user"
+          element={
+            <PrivateRoute>
+              <UserDashboard />
+            </PrivateRoute>
+          }
+        >
+          <Route path="assets/browse" element={<BrowseAssets />} />
+          <Route path="assets/:id" element={<AssetDetails />} />
+          <Route path="allocations" element={<MyAllocations />} />
+          <Route path="requests/new" element={<RaiseRequest />} />
+          <Route path="requests/service" element={<ServiceRequest />} />
+        </Route>
+      </Routes>
 
-            <Route path="/admin/assets" element={<ManageAssets />} />
-            <Route path="/admin/employees" element={<ManageEmployees />} />
-            <Route path="/admin/audit" element={<AuditRequests />} />
-            <Route path="/admin/service-requests" element={<ServiceRequests />} />
-            <Route path="/admin/categories" element={<ManageCategories />} />
-          </Routes>
-        </div>
-
-      {/* Footer */}
-      <Footer/>
-
-    </div>
+      <Footer />
     </BrowserRouter>
-    </>
-  )
+  );
 }

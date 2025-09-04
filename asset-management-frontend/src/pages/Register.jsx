@@ -1,7 +1,9 @@
 import { useState } from "react"
 import PasswordStrengthBar from "../components/PasswordStrengthBar";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AuthService from "../services/AuthService";
+import "./Register.css";
+
 
 export default function Register() {
 
@@ -38,6 +40,9 @@ export default function Register() {
 
         if (!formData.username.trim())
             newErrors.username = "Username is required";
+
+        if (!formData.ename.trim())
+            newErrors.ename = "Full Name is required";
 
         if (!formData.email) {
             newErrors.email = "Email is required";
@@ -79,39 +84,27 @@ export default function Register() {
         e.preventDefault();
         const validationErrors = validate();
         if (Object.keys(validationErrors).length > 0) {
-
             setErrors(validationErrors);
-        }
-        else {
-
-            setErrors({});
-            try {
-                await AuthService.register({
-                    username: formData.username,
-                    ename: formData.ename,
-                    email: formData.email,
-                    password: formData.password,
-                    roles: formData.roles,
-                    gender: formData.gender,
-                    contactNumber: formData.contactNumber,
-                    address: formData.address
-
-                });
-
-                alert("Registration successful! Redirecting to Login...");
-                navigate("/login");
-            }
-            catch (error) {
-                setApiErrors(error.response?.data?.message || "Registration failed. Try again.");
-            }
+            return;
         }
 
+        setErrors({});
+        try {
+            await AuthService.register(formData);
+            alert("Registration successful!");
+
+            // Redirect based on role   
+            if (formData.roles === "ADMIN") navigate("/login/admin");
+            else navigate("/login/user");
+        } catch (error) {
+            setApiErrors(error.response?.data?.message || "Registration failed.");
+        }
     };
 
     return (
-        <>
-            <div className="container mt-5" style={{ maxWidth: 520 }}>
-                <h2 className="mb-4">User Registration</h2>
+        <div className="register-container">
+            <div className="register-card">
+                <h2>User Registration</h2>
 
                 {apiErrors && <div className="alert alert-danger">{apiErrors}</div>}
 
@@ -122,9 +115,9 @@ export default function Register() {
                             className="form-control"
                             type="text"
                             name="username"
-                            placeholder= /*Enter Your Name*/ "Choose a Username"
                             value={formData.username}
                             onChange={handleChange}
+                            placeholder="Choose a Username"
                             required></input>
                         {errors.username && (<small className="text-danger">{errors.username}</small>)}
                     </div>
@@ -135,9 +128,9 @@ export default function Register() {
                             className="form-control"
                             type="text"
                             name="ename"
-                            placeholder="Enter your full name"
                             value={formData.ename}
                             onChange={handleChange}
+                            placeholder="Enter your full name"
                             required
                         />
                         {errors.ename && <small className="text-danger">{errors.ename}</small>}
@@ -149,9 +142,9 @@ export default function Register() {
                             className="form-control"
                             type="email"
                             name="email"
-                            placeholder= /*Enter Your Email Id*/ "john@example.com"
                             value={formData.email}
                             onChange={handleChange}
+                            placeholder="john@example.com"
                             autoComplete="email"
                             required></input>
                         {errors.email && (<small className="text-danger">{errors.email}</small>)}
@@ -163,9 +156,9 @@ export default function Register() {
                             className="form-control"
                             type="password"
                             name="password"
-                            placeholder= /*Enter Your Password here*/ "********"
                             value={formData.password}
                             onChange={handleChange}
+                            placeholder="********"
                             autoComplete="new-password"
                             required></input>
                         {errors.password && (<small className="text-danger">{errors.password}</small>)}
@@ -178,10 +171,11 @@ export default function Register() {
                             className="form-control"
                             type="password"
                             name="confirmPassword"
-                            placeholder= /*Confirm Your Password*/ "********"
                             value={formData.confirmPassword}
                             onChange={handleChange}
-                            autoComplete="new-password"></input>
+                            placeholder="********"
+                            autoComplete="new-password"
+                            required></input>
                         {errors.confirmPassword && (<small className="text-danger">{errors.confirmPassword}</small>)}
                     </div>
 
@@ -189,12 +183,11 @@ export default function Register() {
                         <label className="form-label">Roles</label>
                         <select
                             className="form-control"
-                            type="text"
                             name="roles"
-                            placeholder="USER or ADMIN"
                             value={formData.roles}
                             onChange={handleChange}
-                            required>
+                            required
+                        >
                             <option value="">-- Select Role --</option>
                             <option value="USER">USER</option>
                             <option value="ADMIN">ADMIN</option>
@@ -207,9 +200,7 @@ export default function Register() {
                         <label className="form-label">Gender</label>
                         <select
                             className="form-control"
-                            type="text"
                             name="gender"
-                            placeholder="EnterYour Gender"
                             value={formData.gender}
                             onChange={handleChange}
                             required
@@ -227,9 +218,9 @@ export default function Register() {
                             className="form-control"
                             type="text"
                             name="contactNumber"
-                            placeholder="10-digit mobile number"
                             value={formData.contactNumber}
                             onChange={handleChange}
+                            placeholder="10-digit mobile number"
                             required
                         />
                         {errors.contactNumber && <small className="text-danger">{errors.contactNumber}</small>}
@@ -240,9 +231,9 @@ export default function Register() {
                         <textarea
                             className="form-control"
                             name="address"
-                            placeholder="Enter your address"
                             value={formData.address}
                             onChange={handleChange}
+                            placeholder="Enter your address"
                             required
                         />
                         {errors.address && <small className="text-danger">{errors.address}</small>}
@@ -252,9 +243,17 @@ export default function Register() {
                         Register
                     </button>
                 </form>
-            </div>
+                <p>
+                    Already have an account?
+                    <Link to="/login/admin">Admin Login</Link> |
+                    <Link to="/login/user">User Login</Link>
+                </p>
 
-        </>
+
+            </div>
+        </div>
+
+
     );
 
 
