@@ -38,6 +38,11 @@ class ServiceRequestService {
     const res = await api.delete(`/api/servicerequests/deletebyid/${srid}`);
     return res.data;
   }
+
+  async getRequestsByEmployee(eid) {
+    const res = await api.get(`/api/servicerequests/getbyemployee/${eid}`);
+    return res.data;
+  }
 }
 
 export default new ServiceRequestService();

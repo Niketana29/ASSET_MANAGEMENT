@@ -1,25 +1,84 @@
 .allocations-container {
-    margin-top: 2rem;
-  }
-  
-  .allocations-table {
-    background: #fff;
-    border-radius: 0.5rem;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    overflow: hidden;
-  }
-  
-  .allocations-table th {
-    background-color: #007bff;
-    color: #fff;
-  }
-  
-  .allocations-table td, .allocations-table th {
-    vertical-align: middle;
-  }
-  
-  .no-allocations {
-    text-align: center;
-    padding: 2rem 0;
-  }
-  
+  margin-top: 2rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.allocations-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.allocations-header h2 {
+  font-weight: 600;
+  font-size: 1.8rem;
+  color: #0d6efd;
+}
+
+.allocations-header .btn {
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+}
+
+.table-responsive {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.allocations-table {
+  margin-bottom: 0;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.allocations-table th {
+  background-color: #0d6efd;
+  color: #fff;
+  font-weight: 500;
+  text-align: center;
+  padding: 0.75rem;
+}
+
+.allocations-table td {
+  vertical-align: middle;
+  text-align: center;
+  padding: 0.75rem;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(13, 110, 253, 0.05);
+  transform: translateX(2px);
+  transition: all 0.2s;
+}
+
+.badge-status {
+  padding: 0.4rem 0.8rem;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.badge-approved {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.badge-requested {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.badge-rejected {
+  background-color: #fee2e2;
+  color: #991b1b;
+}
+
+.no-allocations {
+  text-align: center;
+  padding: 3rem 0;
+  font-size: 1.1rem;
+  color: #555;
+}

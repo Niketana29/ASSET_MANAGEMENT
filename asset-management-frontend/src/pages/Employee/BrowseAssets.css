@@ -1,31 +1,91 @@
-
 .browse-assets-container {
-    margin-top: 2rem;
-  }
-  
-  .asset-card {
-    transition: transform 0.2s, box-shadow 0.2s;
-    cursor: pointer;
-  }
-  
-  .asset-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  }
-  
-  .asset-img {
-    height: 200px;
-    object-fit: cover;
-  }
-  
-  .search-category-row {
-    margin-bottom: 1rem;
-    gap: 1rem;
-  }
-  
-  .suggestions-list {
-    z-index: 10;
-    position: absolute;
-    width: 100%;
-  }
-  
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.page-title {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  color: #0d6efd;
+}
+
+.search-category-row .form-select,
+.search-category-row .form-control {
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+}
+
+.suggestions-list {
+  z-index: 1000;
+  position: absolute;
+  width: 100%;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  max-height: 180px;
+  overflow-y: auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.suggestions-list li {
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+}
+
+.suggestions-list li:hover {
+  background-color: #f1f1f1;
+}
+
+.asset-card {
+  border-radius: 12px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.asset-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 25px rgba(0,0,0,0.15);
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-available {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-assigned {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-under_service {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.card-title {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.card-text {
+  font-size: 14px;
+  color: #555;
+}
+
+.btn {
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 0.5rem 0;
+}

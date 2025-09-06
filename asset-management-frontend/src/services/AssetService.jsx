@@ -11,15 +11,16 @@ class AssetService {
     return res.data;
   }
 
+  // AssetService.jsx
   async addAsset(asset) {
     const res = await api.post("/api/assets/insert", {
       assetNo: asset.assetNo,
       aname: asset.aname,
-      categoryId: asset.categoryId,       
+      categoryId: Number(asset.categoryId),
       model: asset.model,
       manufacturingDate: asset.manufacturingDate,
       expiryDate: asset.expiryDate,
-      assetValue: asset.assetValue,
+      assetValue: Number(asset.assetValue),
       status: asset.status
     });
     return res.data;
@@ -30,11 +31,11 @@ class AssetService {
       aid: asset.aid,
       assetNo: asset.assetNo,
       aname: asset.aname,
-      categoryId: asset.categoryId,       
+      categoryId: Number(asset.categoryId),
       model: asset.model,
       manufacturingDate: asset.manufacturingDate,
       expiryDate: asset.expiryDate,
-      assetValue: asset.assetValue,
+      assetValue: Number(asset.assetValue),
       status: asset.status
     });
     return res.data;
@@ -46,8 +47,8 @@ class AssetService {
   }
 
 
-  async getAssetsByName(name){
-    const res = await api.get(`api/assets/getbyname/${name}`);
+  async getAssetsByName(name) {
+    const res = await api.get(`/api/assets/getbyname/${name}`);
     return res.data;
   }
 }

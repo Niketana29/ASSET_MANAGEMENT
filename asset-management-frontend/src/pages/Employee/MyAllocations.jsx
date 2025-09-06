@@ -12,33 +12,32 @@ export default function MyAllocations() {
   useEffect(() => {
     if (!user) return setError("User not logged in");
 
-    AssetAllocationService.getAllAllocations()
+    AssetAllocationService.getAllocationsByEmployee(user.employeeId)
       .then((res) => {
-        console.log("Allocations from backend:", res);
-        const filtered = res.filter(a => a.employee?.eid === parseInt(user.employeeId));
-
-        console.log("Filtered allocations:", filtered);
-        setAllocations(filtered);
+        setAllocations(res);
       })
       .catch(() => setError("Failed to load allocations"));
-
   }, [user]);
 
   if (!user) return <p className="text-center mt-5">{error}</p>;
 
   return (
     <div className="container allocations-container mt-5">
-      <h2>My Allocations</h2>
+      <div className="allocations-header">
+        <h2>My Allocations</h2>
+        <Link to="/dashboard/user/requests/new" className="btn btn-primary">
+          Raise New Request
+        </Link>
+      </div>
 
       {allocations.length === 0 ? (
         <div className="no-allocations">
           <p>No allocations found.</p>
-          <Link to="/dashboard/user/requests/new" className="btn btn-primary">Raise New Request</Link>
         </div>
       ) : (
         <div className="table-responsive mt-3">
-          <table className="table table-striped table-hover shadow-sm">
-            <thead className="table-dark">
+          <table className="table table-striped shadow-sm allocations-table">
+            <thead>
               <tr>
                 <th>Allocation ID</th>
                 <th>Asset Name</th>
@@ -49,15 +48,21 @@ export default function MyAllocations() {
             </thead>
             <tbody>
               {allocations.map((a) => (
-                <tr key={a.id}>
-                  <td>{a.id}</td>
+                <tr key={a.allocId}>
+                  <td>{a.allocId}</td>
                   <td>{a.assetName}</td>
                   <td>
-                    {a.status === "AVAILABLE" ? (
-                      <span className="badge bg-success">{a.status}</span>
-                    ) : (
-                      <span className="badge bg-warning">{a.status}</span>
-                    )}
+                    <span
+                      className={`badge-status ${
+                        a.status === "APPROVED"
+                          ? "badge-approved"
+                          : a.status === "REQUESTED"
+                          ? "badge-requested"
+                          : "badge-rejected"
+                      }`}
+                    >
+                      {a.status}
+                    </span>
                   </td>
                   <td>{new Date(a.allocationDate).toLocaleDateString()}</td>
                   <td>{new Date(a.returnDate).toLocaleDateString()}</td>
@@ -66,9 +71,7 @@ export default function MyAllocations() {
             </tbody>
           </table>
         </div>
-
       )}
     </div>
-
   );
 }

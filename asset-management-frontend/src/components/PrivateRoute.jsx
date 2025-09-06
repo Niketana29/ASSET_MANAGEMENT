@@ -1,15 +1,16 @@
 import { Navigate } from "react-router-dom";
-import AuthService from "../services/AuthService";
+import { useAuth } from "../context/AuthContext";
+
 
 export default function PrivateRoute({ children, role }) {
-  const user = AuthService.getCurrentUser();
+  const {user} = useAuth();
 
   if (!user) {
     return <Navigate to="/" />;
   }
 
-  if (role && user.role !== role) {
-    return <Navigate to="/" />;
+  if (role && !user.roles.includes(role.toUpperCase())) {
+    return <Navigate to="/not-authorized" />;
   }
 
   return children;

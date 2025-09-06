@@ -4,6 +4,7 @@ import AuthService from "../../services/AuthService";
 import "./Login.css";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import loginBg from "../../assets/login-bg.jpg";
+import { useAuth } from "../../context/AuthContext";
 
 
 
@@ -14,6 +15,8 @@ export default function AdminLogin() {
     const [apiErrors, setApiErrors] = useState("");
 
     const [showPassword, setShowPassword] = useState(false);
+
+    const {login} = useAuth();
 
     const togglePassword = () => setShowPassword(prev => !prev);
 
@@ -44,25 +47,26 @@ export default function AdminLogin() {
         setErrors({});
 
         try {
-            const response = await AuthService.login(formData);
+            await login(formData);   // use AuthContext.login here
+            const user = JSON.parse(localStorage.getItem("user"));
+            console.log("Logged-in user:", user);
 
-            const roles = (response.roles || "").split(",").map((r) => r.trim().toUpperCase());
-            if (!roles.includes("ADMIN")) {
+            if (!user.roles.includes("ADMIN")) {
                 setApiErrors("You are not authorized as Admin.");
                 return;
             }
 
-            localStorage.setItem("token", response.token);
+            /* localStorage.setItem("token", response.token);
             localStorage.setItem(
                 "user",
-                JSON.stringify({
+                JSON.stringify({ 
                     id: response.userId,
                     employeeId: response.employeeId,
                     username: response.username,
                     roles: response.roles,
                     token: response.token
                 })
-            );
+            ); */
 
 
             alert("Admin login successful!");
@@ -78,7 +82,7 @@ export default function AdminLogin() {
                 backgroundImage: `url(${loginBg})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
-                height: "100vh", 
+                height: "100vh",
             }}>
             <div className="login-card">
                 <h2>Admin Login</h2>

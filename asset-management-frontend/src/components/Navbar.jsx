@@ -1,10 +1,13 @@
 import { Link } from "react-router-dom";
-import AuthService from "../services/AuthService";
+import { useAuth } from "../context/AuthContext";
 import "./Navbar.css";
 
-
 export default function Navbar() {
-  const user = AuthService.getCurrentUser();
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout(); 
+  };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
@@ -46,16 +49,24 @@ export default function Navbar() {
                   </li>
                 )}
                 <li className="nav-item">
-                  <Link className="nav-link" to="/logout">
+                  <button
+                    onClick={handleLogout}
+                    className="nav-link btn btn-link text-decoration-none"
+                  >
                     Logout
-                  </Link>
+                  </button>
                 </li>
               </>
             ) : (
               <>
                 <li className="nav-item">
-                  <Link className="nav-link" to="/login">
-                    Login
+                  <Link className="nav-link" to="/login/user">
+                    User Login
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link className="nav-link" to="/login/admin">
+                    Admin Login
                   </Link>
                 </li>
                 <li className="nav-item">

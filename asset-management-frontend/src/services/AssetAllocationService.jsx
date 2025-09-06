@@ -13,14 +13,15 @@ class AssetAllocationService {
 
   async allocateAsset(data) {
     const res = await api.post("/api/allocations/insert", {
-      eid: data.eid,          
+      eid: data.eid,
       aid: data.aid,
-      allocationDate: data.allocationDate,
-      returnDate: data.returnDate,
-
+      allocationDate: data.allocationDate.toISOString().split("T")[0],
+      returnDate: data.returnDate.toISOString().split("T")[0],
+      status: data.status || "ACTIVE",
     });
     return res.data;
   }
+
 
   async updateAllocation(allocation) {
     const res = await api.put("/api/allocations/update", {
@@ -48,6 +49,14 @@ class AssetAllocationService {
     const res = await api.put(`/api/allocations/reject/${allocId}`);
     return res.data;
   }
+
+  async getAllocationsByEmployee(eid) {
+    const res = await api.get(`/api/allocations/getbyemployee/${eid}`);
+    return res.data;
+  }
+
+
+
 }
 
 export default new AssetAllocationService();

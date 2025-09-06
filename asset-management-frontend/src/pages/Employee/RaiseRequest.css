@@ -1,17 +1,89 @@
 .raise-request-container {
-    margin-top: 2rem;
-    max-width: 600px;
-  }
-  
-  .raise-request-container .card {
-    padding: 1.5rem;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.1);
-    border-radius: 0.5rem;
-  }
-  
-  .suggestions-list {
-    z-index: 10;
-    position: absolute;
-    width: 100%;
-  }
-  
+  display: flex;
+  justify-content: center; /* center horizontally */
+  margin-top: 3rem;
+  padding: 0 1rem; /* horizontal padding for small screens */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.raise-request-container .card {
+  width: 100%;
+  max-width: 600px;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-title {
+  text-align: center;
+  font-weight: 600;
+  color: #0d6efd;
+  margin-bottom: 2rem;
+  font-size: 1.8rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem; /* uniform spacing between fields */
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.form-control,
+textarea.form-control {
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+textarea.form-control {
+  resize: none;
+  min-height: 100px;
+}
+
+.suggestions-list {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 1000;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.suggestions-list li {
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+}
+
+.suggestions-list li:hover {
+  background-color: #f1f1f1;
+}
+
+button.btn {
+  font-weight: 500;
+  padding: 0.6rem 0;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.alert {
+  text-align: center;
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+}

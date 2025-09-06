@@ -1,0 +1,87 @@
+.reports-container {
+    padding: 2rem;
+    background: #f9fafb;
+    min-height: 100vh;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  /* Heading */
+  .reports-container h2 {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    color: #1f2937; /* gray-800 */
+  }
+  
+  /* Summary Cards */
+  .summary-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 2rem 1rem;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .summary-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+  .summary-icon {
+    font-size: 2.5rem;
+    color: #007bff;
+  }
+  .summary-card h5 {
+    font-size: 1rem;
+    color: #374151;
+    margin-top: 0.5rem;
+  }
+  .summary-card h3 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-top: 0.25rem;
+    color: #111827;
+  }
+  
+  /* Charts Grid */
+  .reports-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  /* Chart Card */
+  .reports-chart {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .reports-chart:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.12);
+  }
+  .reports-chart h3 {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    color: #111827;
+  }
+  
+  /* Tooltip & Legend */
+  .recharts-tooltip-wrapper {
+    font-size: 0.85rem !important;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 767px) {
+    .summary-card {
+      padding: 1.5rem 1rem;
+    }
+    .summary-icon {
+      font-size: 2rem;
+    }
+    .reports-chart {
+      padding: 1rem;
+    }
+  }
+  

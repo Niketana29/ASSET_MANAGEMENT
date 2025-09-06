@@ -1,0 +1,52 @@
+.card-title {
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
+  
+  /* Form & Inputs */
+input,
+select {
+  height: 42px;
+}
+
+/* Table */
+.table-responsive {
+  overflow-x: auto;
+}
+
+.table-hover tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Badges */
+.badge {
+  font-size: 0.85rem;
+}
+
+/* Buttons on small screens */
+@media (max-width: 575px) {
+  .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Make table use full container width */
+.table {
+    width: 100%;
+  }
+  
+  /* Ensure table actions buttons wrap neatly on small screens */
+  .text-nowrap {
+    white-space: nowrap;
+  }
+  
+  @media (max-width: 575px) {
+    .table th,
+    .table td {
+      font-size: 0.85rem;
+    }
+  }
+
+  
+  

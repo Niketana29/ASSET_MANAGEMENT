@@ -1,0 +1,39 @@
+/* Card Header */
+.card-title {
+    font-size: 1.2rem;
+    font-weight: 500;
+  }
+  
+  /* Form input */
+  input.form-control {
+    height: 42px;
+  }
+  
+  /* Form buttons */
+  .form-btn {
+    min-width: 100px;
+    height: 42px; /* match input height */
+  }
+  
+  /* List buttons */
+  .list-btn {
+    min-width: 80px;
+  }
+  
+  /* List group */
+  .list-group-item .badge {
+    font-size: 0.85rem;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 575px) {
+    .form-btn {
+      width: 100%;
+    }
+  
+    .list-btn {
+      width: 48%;
+      margin-bottom: 0.25rem;
+    }
+  }
+  

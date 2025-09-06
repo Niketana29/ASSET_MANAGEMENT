@@ -1,0 +1,138 @@
+/* Page container */
+.service-requests-container {
+    padding: 2rem;
+    background: #f9fafb;
+    min-height: 100vh;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  /* Heading */
+  .service-requests-container h2 {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    color: #1f2937; /* gray-800 */
+  }
+  
+  /* Search box */
+  .service-requests-container input[type="text"] {
+    height: 42px;
+    padding: 0.35rem 0.75rem;
+    border-radius: 8px;
+    border: 1px solid #d1d5db; /* gray-300 */
+  }
+  
+  /* Table wrapper */
+  .service-table-wrapper {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+    overflow-x: auto;
+    transition: all 0.3s ease;
+  }
+  
+  /* Table styling */
+  .service-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+  
+  .service-table th,
+  .service-table td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    vertical-align: middle;
+  }
+  
+  .service-table th.sortable {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+  }
+  .service-table th.sortable::after {
+    content: "⇅";
+    font-size: 0.7rem;
+    margin-left: 6px;
+    color: #9ca3af; /* gray-400 */
+  }
+  
+  /* Row hover */
+  .service-table tbody tr:hover {
+    background-color: #f3f4f6;
+    transition: background 0.2s ease;
+  }
+  
+  /* Status badges */
+  .status-badge {
+    display: inline-block;
+    padding: 0.35rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-align: center;
+    min-width: 80px;
+  }
+  
+  .status-pending {
+    background-color: #fef3c7; /* amber-100 */
+    color: #92400e; /* amber-800 */
+  }
+  
+  .status-approved {
+    background-color: #d1fae5; /* emerald-100 */
+    color: #065f46; /* emerald-800 */
+  }
+  
+  .status-rejected {
+    background-color: #fee2e2; /* red-100 */
+    color: #991b1b; /* red-800 */
+  }
+  
+  .status-none {
+    background-color: #e5e7eb; /* gray-200 */
+    color: #374151; /* gray-700 */
+  }
+  
+  /* Action buttons */
+  .service-actions button {
+    padding: 0.45rem 1rem;
+    font-size: 0.85rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  }
+  
+  .service-actions button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+  }
+  
+  .btn-approve {
+    background-color: #10b981; /* emerald-500 */
+    color: #fff;
+  }
+  
+  .btn-reject {
+    background-color: #ef4444; /* red-500 */
+    color: #fff;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 767px) {
+    .service-table th,
+    .service-table td {
+      padding: 0.5rem 0.75rem;
+    }
+    .service-actions button {
+      width: 100%;
+    }
+    .service-requests-container input[type="text"] {
+      width: 100%;
+    }
+  }
+  

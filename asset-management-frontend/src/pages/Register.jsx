@@ -65,15 +65,16 @@ export default function Register() {
         if (!formData.roles.trim())
             newErrors.roles = "Role is required (e.g. USER, ADMIN)";
 
-        if (!formData.ename.trim()) newErrors.ename = "Full Name is required";
 
-        if (!formData.gender) newErrors.gender = "Gender is required";
+        if (!formData.gender)
+            newErrors.gender = "Gender is required";
 
         if (!/^\d{10}$/.test(formData.contactNumber)) {
             newErrors.contactNumber = "Enter a valid 10-digit number";
         }
 
-        if (!formData.address.trim()) newErrors.address = "Address is required";
+        if (!formData.address.trim())
+            newErrors.address = "Address is required";
 
 
         return newErrors;

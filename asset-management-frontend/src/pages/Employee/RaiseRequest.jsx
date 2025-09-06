@@ -15,11 +15,8 @@ export default function RaiseRequest() {
   const [message, setMessage] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
-
-
   useEffect(() => {
     const currentUser = AuthService.getCurrentUser();
-    console.log("Current user:", currentUser);
     if (currentUser && currentUser.employeeId) {
       setUser(currentUser);
       AssetService.getAllAssets()
@@ -33,11 +30,9 @@ export default function RaiseRequest() {
   const handleAssetChange = (e) => {
     const value = e.target.value;
     setAssetName(value);
-
     const matched = assets
       .filter(a => a.aname.toLowerCase().includes(value.toLowerCase()))
       .map(a => a.aname);
-
     setSuggestions(matched.slice(0, 5));
   };
 
@@ -49,23 +44,18 @@ export default function RaiseRequest() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    /*if (submitting) return;
-    setSubmitting(true);*/
-
     if (!user || !user.employeeId) {
       setMessage("Invalid user. Please login again.");
       return;
     }
 
     const eid = user.employeeId;
-
     const asset = assets.find(a => a.aname.toLowerCase().trim() === assetName.toLowerCase().trim());
 
     if (!asset) {
       setMessage("Please select a valid asset from suggestions");
       return;
     }
-
     if (!allocationDate || !returnDate) {
       setMessage("Please select allocation and return dates");
       return;
@@ -74,8 +64,8 @@ export default function RaiseRequest() {
     const payload = {
       eid,
       aid: asset.aid,
-      allocationDate,
-      returnDate
+      allocationDate: new Date(allocationDate),
+      returnDate: new Date(returnDate)
     };
 
     AssetAllocationService.allocateAsset(payload)
@@ -84,7 +74,6 @@ export default function RaiseRequest() {
         setTimeout(() => navigate("/dashboard/user/allocations"), 3000);
       })
       .catch(err => {
-        console.error(err.response?.data);
         const errMsg = err.response?.data?.message || "Failed to raise request";
         setMessage(errMsg);
       });
@@ -93,17 +82,27 @@ export default function RaiseRequest() {
   return (
     <div className="container raise-request-container mt-5">
       <div className="card">
-        <h2>Raise Asset Request</h2>
+        <h2 className="card-title">Raise Asset Request</h2>
         {message && <div className="alert alert-info">{message}</div>}
 
         {user ? (
           <form onSubmit={handleSubmit}>
-            <div className="mb-3 position-relative">
-              <input type="text" className="form-control" placeholder="Asset Name" value={assetName} onChange={handleAssetChange} />
+            <div className="mb-4 position-relative">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Asset Name"
+                value={assetName}
+                onChange={handleAssetChange}
+              />
               {suggestions.length > 0 && (
-                <ul className="list-group position-absolute w-100" style={{ zIndex: 1000 }}>
+                <ul className="list-group suggestions-list">
                   {suggestions.map((s, idx) => (
-                    <li key={idx} className="list-group-item list-group-item-action" onClick={() => handleSuggestionClick(s)}>
+                    <li
+                      key={idx}
+                      className="list-group-item list-group-item-action"
+                      onClick={() => handleSuggestionClick(s)}
+                    >
                       {s}
                     </li>
                   ))}
@@ -111,23 +110,31 @@ export default function RaiseRequest() {
               )}
             </div>
 
-            <input
-              type="date"
-              className="form-control mb-2 mt-5"
-              value={allocationDate}
-              onChange={e => setAllocationDate(e.target.value)}
-            />
-            <input
-              type="date"
-              className="form-control mb-2"
-              value={returnDate}
-              onChange={e => setReturnDate(e.target.value)}
-            />
+            <div className="row g-3 mb-3">
+              <div className="col-md-6">
+                <label className="form-label">Allocation Date</label>
+                <input
+                  type="date"
+                  className="form-control"
+                  value={allocationDate}
+                  onChange={e => setAllocationDate(e.target.value)}
+                />
+              </div>
+              <div className="col-md-6">
+                <label className="form-label">Return Date</label>
+                <input
+                  type="date"
+                  className="form-control"
+                  value={returnDate}
+                  onChange={e => setReturnDate(e.target.value)}
+                />
+              </div>
+            </div>
 
-            <button className="btn btn-primary mt-2 w-100">Submit</button>
+            <button className="btn btn-primary w-100">Submit Request</button>
           </form>
         ) : (
-          <p>Please login to raise an asset request.</p>
+          <p className="text-center">Please login to raise an asset request.</p>
         )}
       </div>
     </div>

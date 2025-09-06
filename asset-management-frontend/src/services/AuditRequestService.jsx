@@ -15,7 +15,7 @@ class AuditRequestService {
     const res = await api.post("/api/auditrequests/insert", {
       eid: request.eid,
       aid: request.aid,
-      status: request.status
+      status: request.status || "PENDING" // Default status
     });
     return res.data;
   }

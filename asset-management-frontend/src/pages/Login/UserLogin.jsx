@@ -4,6 +4,7 @@ import AuthService from "../../services/AuthService";
 import "./Login.css";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import loginBg from "../../assets/login-bg.jpg";
+import { useAuth } from "../../context/AuthContext";
 
 
 
@@ -14,6 +15,8 @@ export default function UserLogin() {
     const [apiErrors, setApiErrors] = useState("");
 
     const [showPassword, setShowPassword] = useState(false);
+
+    const { login } = useAuth(); 
 
     const togglePassword = () => setShowPassword(prev => !prev);
 
@@ -44,15 +47,17 @@ export default function UserLogin() {
         setErrors({});
 
         try {
-            const response = await AuthService.login(formData);
+            await login(formData);   // use AuthContext.login here
+            const user = JSON.parse(localStorage.getItem("user"));
+            console.log("Logged-in user:", user);
 
-            const roles = (response.roles || "").split(",").map((r) => r.trim().toUpperCase());
-            if (!roles.includes("USER")) {
+            if (!user.roles.includes("USER")) {
                 setApiErrors("You are not authorized as User.");
                 return;
             }
 
-            localStorage.setItem("token", response.token);
+
+            /* localStorage.setItem("token", response.token);
             localStorage.setItem(
                 "user",
                 JSON.stringify({
@@ -62,12 +67,13 @@ export default function UserLogin() {
                     roles: response.roles,
                     token: response.token
                 })
-            );
+            ); */
 
 
             alert("User login successful!");
             navigate("/dashboard/user");
         } catch (error) {
+            console.error("Login error:", error);
             setApiErrors(error.response?.data?.message || "Invalid Username or Password");
         }
     };

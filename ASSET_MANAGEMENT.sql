@@ -62,9 +62,12 @@ SELECT * FROM SERVICE_REQUEST;
 
 SELECT * FROM user_info;
 
+SELECT * FROM CATEGORY;
+desc category;
+
 SHOW TABLES;
 delete from employee;
-delete from asset;
+delete from asset where aid = 114;
 delete from asset_allocation;
 delete from audit_request;
 delete from service_request;
@@ -109,3 +112,8 @@ ALTER TABLE SERVICE_REQUEST RENAME TO Service_Request;
 ALTER TABLE AUDIT_REQUEST RENAME TO Audit_Request;
 ALTER TABLE ASSET_ALLOCATION RENAME TO Asset_Allocation;
 ALTER TABLE ASSET RENAME TO Asset;
+
+ALTER TABLE asset DROP COLUMN category;
+
+UPDATE asset SET category_id = 1 WHERE category_id = 0;
+
