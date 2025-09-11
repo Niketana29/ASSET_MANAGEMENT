@@ -1,16 +1,12 @@
-package com.hexaware.assetManagement.exception;
+package com.hexaware.AssetManagement.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.web.server.ResponseStatusException;
+public class ResourceNotFoundException extends RuntimeException {
 
-public class ResourceNotFoundException extends ResponseStatusException {
-
-	public ResourceNotFoundException(HttpStatusCode status, String reason) {
-		super(HttpStatus.NOT_FOUND, reason);
-		// TODO Auto-generated constructor stub
+	public ResourceNotFoundException(String message) {
+		super(message);
 	}
-	
-	
 
+	public ResourceNotFoundException(String resource, String field, Object value) {
+		super(String.format("%s not found with %s : '%s'", resource, field, value));
+	}
 }

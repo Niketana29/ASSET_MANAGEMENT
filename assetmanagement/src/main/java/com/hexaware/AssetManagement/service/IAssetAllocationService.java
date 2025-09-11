@@ -1,17 +1,24 @@
-package com.hexaware.assetManagement.service;
+package com.hexaware.AssetManagement.service;
 
 import java.util.List;
 
-import com.hexaware.assetManagement.entities.AssetAllocation;
+import com.hexaware.AssetManagement.dto.AssetAllocationResponseDto;
+import com.hexaware.AssetManagement.dto.AssetRequestDto;
 
 public interface IAssetAllocationService {
-	
-    public AssetAllocation allocateAsset(AssetAllocation allocation);
-    public AssetAllocation updateAllocation(AssetAllocation allocation);
-    
-    public AssetAllocation getAllocationById(int allocId);
-    public String deleteAllocationById(int allocId);
-    
-    public List<AssetAllocation> getAllAllocations();
+	public AssetAllocationResponseDto requestAsset(AssetRequestDto requestDto);
 
+	public List<AssetAllocationResponseDto> getEmployeeAllocations(Long employeeId);
+
+	public List<AssetAllocationResponseDto> getAllAllocations();
+
+	public List<AssetAllocationResponseDto> getPendingAllocations();
+
+	public AssetAllocationResponseDto approveAllocation(Long allocationId, String adminComments);
+
+	public AssetAllocationResponseDto rejectAllocation(Long allocationId, String adminComments);
+
+	public AssetAllocationResponseDto returnAsset(Long allocationId);
+
+	public AssetAllocationResponseDto getAllocationById(Long allocationId);
 }

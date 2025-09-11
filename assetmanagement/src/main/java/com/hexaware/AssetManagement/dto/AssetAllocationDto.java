@@ -1,33 +1,23 @@
-package com.hexaware.assetManagement.dto;
+package com.hexaware.AssetManagement.dto;
 
-import java.time.LocalDate;
-import java.util.Date;
-
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AssetAllocationDto {
-	
-    private Integer allocId;
+	private Long allocationId;
 
-    @Min(1)
-    private int eid;
+	@NotNull(message = "Employee ID is required")
+	private Long employeeId;
 
-    @Min(1)
-    private int aid;
+	@NotNull(message = "Asset ID is required")
+	private Long assetId;
 
-    @NotNull(message = "Allocation date is required")
-    @FutureOrPresent(message = "Allocation date must be today or in the future")
-    private Date allocationDate;
-
-    @FutureOrPresent(message = "Return date must be today or in the future")
-    private Date returnDate;
-    
-    
-
+	private String requestReason;
+	private String status;
+	private String adminComments;
 }

@@ -1,18 +1,21 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import AssetAllocationService from "../../services/AssetAllocationService";
-import AuthService from "../../services/AuthService";
 import "./MyAllocations.css";
+import allocationService from "../../services/allocationService";
+import authService from "../../services/AuthService";
 
 export default function MyAllocations() {
   const [allocations, setAllocations] = useState([]);
   const [error, setError] = useState("");
-  const user = AuthService.getCurrentUser();
+  const user = authService.getCurrentUser();
 
   useEffect(() => {
-    if (!user) return setError("User not logged in");
+    if (!user) {
+      setError("User not logged in");
+      return;
+    }
 
-    AssetAllocationService.getAllocationsByEmployee(user.employeeId)
+    allocationService.getMyAllocations(user.employeeId)
       .then((res) => {
         setAllocations(res);
       })
@@ -23,7 +26,7 @@ export default function MyAllocations() {
 
   return (
     <div className="container allocations-container mt-5">
-      <div className="allocations-header">
+      <div className="allocations-header d-flex justify-content-between align-items-center">
         <h2>My Allocations</h2>
         <Link to="/dashboard/user/requests/new" className="btn btn-primary">
           Raise New Request
@@ -37,10 +40,12 @@ export default function MyAllocations() {
       ) : (
         <div className="table-responsive mt-3">
           <table className="table table-striped shadow-sm allocations-table">
-            <thead>
+            <thead className="table-dark">
               <tr>
                 <th>Allocation ID</th>
-                <th>Asset Name</th>
+                <th>Asset</th>
+                <th>Category</th>
+                <th>Serial Number</th>
                 <th>Status</th>
                 <th>Allocation Date</th>
                 <th>Return Date</th>
@@ -48,15 +53,17 @@ export default function MyAllocations() {
             </thead>
             <tbody>
               {allocations.map((a) => (
-                <tr key={a.allocId}>
-                  <td>{a.allocId}</td>
-                  <td>{a.assetName}</td>
+                <tr key={a.allocationId}>
+                  <td>{a.allocationId}</td>
+                  <td>{a.asset?.assetName}</td>
+                  <td>{a.asset?.categoryName}</td>
+                  <td>{a.asset?.serialNumber}</td>
                   <td>
                     <span
                       className={`badge-status ${
-                        a.status === "APPROVED"
+                        a.status === "ACTIVE"
                           ? "badge-approved"
-                          : a.status === "REQUESTED"
+                          : a.status === "RETURNED"
                           ? "badge-requested"
                           : "badge-rejected"
                       }`}
@@ -64,8 +71,8 @@ export default function MyAllocations() {
                       {a.status}
                     </span>
                   </td>
-                  <td>{new Date(a.allocationDate).toLocaleDateString()}</td>
-                  <td>{new Date(a.returnDate).toLocaleDateString()}</td>
+                  <td>{a.allocationDate}</td>
+                  <td>{a.returnDate || "-"}</td>
                 </tr>
               ))}
             </tbody>

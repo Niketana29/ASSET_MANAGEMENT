@@ -1,61 +1,44 @@
-package com.hexaware.assetManagement.dto;
+package com.hexaware.AssetManagement.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-/**
- * DTO for user registration
- */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class RegisterRequest {
-	
-    private String username;
-    private String email;
-    private String password;
-    private String roles; // ADMIN or USER or multiple
-    
-	public RegisterRequest() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
+	@NotBlank(message = "Username is required")
+	@Size(min = 3, max = 50, message = "Username must be between 3 and 50 characters")
+	@Pattern(regexp = "^[a-zA-Z0-9._-]+$", message = "Username can only contain letters, numbers, dots, underscores, and hyphens")
+	private String username;
 
-	public RegisterRequest(String username, String email, String password, String roles) {
-		super();
-		this.username = username;
-		this.email = email;
-		this.password = password;
-		this.roles = roles;
-	}
+	@NotBlank(message = "Password is required")
+	@Size(min = 6, max = 100, message = "Password must be between 6 and 100 characters")
+	@Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$", message = "Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character")
+	private String password;
 
-	public String getUsername() {
-		return username;
-	}
+	@NotBlank(message = "Employee name is required")
+	@Size(min = 2, max = 100, message = "Employee name must be between 2 and 100 characters")
+	@Pattern(regexp = "^[a-zA-Z\\s.'-]+$", message = "Employee name can only contain letters, spaces, dots, apostrophes, and hyphens")
+	private String employeeName;
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+	@Email(message = "Email should be valid")
+	@NotBlank(message = "Email is required")
+	@Size(max = 100, message = "Email must not exceed 100 characters")
+	private String email;
 
-	public String getEmail() {
-		return email;
-	}
+	@Pattern(regexp = "^[+]?[0-9\\s()-]{10,15}$", message = "Contact number should be valid (10-15 digits)")
+	private String contactNumber;
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+	@NotBlank(message = "Gender is required")
+	@Pattern(regexp = "^(Male|Female|Other)$", message = "Gender must be Male, Female, or Other")
+	private String gender;
 
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getRoles() {
-		return roles;
-	}
-
-	public void setRoles(String roles) {
-		this.roles = roles;
-	}
-    
-    
-
+	@Size(max = 500, message = "Address must not exceed 500 characters")
+	private String address;
 }

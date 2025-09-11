@@ -1,261 +1,505 @@
-import { useState } from "react"
-import PasswordStrengthBar from "../components/PasswordStrengthBar";
-import { Link, useNavigate } from "react-router-dom";
-import AuthService from "../services/AuthService";
-import "./Register.css";
+// Register.jsx
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import PasswordStrengthBar from '../components/PasswordStrengthBar';
+import { GENDER_OPTIONS, VALIDATION_MESSAGES, SUCCESS_MESSAGES } from '../utils/constants';
+import { validateEmail, validatePhone, validatePassword } from '../utils/constants';
+import './Register.css';
 
+const Register = () => {
+  const { register, isAuthenticated, isLoading, error, clearError } = useAuth();
+  const navigate = useNavigate();
 
-export default function Register() {
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+    confirmPassword: '',
+    employeeName: '',
+    email: '',
+    contactNumber: '',
+    gender: '',
+    address: ''
+  });
 
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
 
-    const navigate = useNavigate();
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, navigate]);
 
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(clearError, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error, clearError]);
 
-    const [formData, setFormData] = useState({
-        username: "",
-        ename: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-        roles: "",
-        gender: "",
-        contactNumber: "",
-        address: ""
+  const validateField = (name, value) => {
+    let errorMessage = '';
+
+    switch (name) {
+      case 'username':
+        if (!value.trim()) {
+          errorMessage = VALIDATION_MESSAGES.REQUIRED;
+        } else if (value.length < 3 || value.length > 50) {
+          errorMessage = 'Username must be between 3 and 50 characters';
+        } else if (!/^[a-zA-Z0-9._-]+$/.test(value)) {
+          errorMessage = 'Username can only contain letters, numbers, dots, underscores, and hyphens';
+        }
+        break;
+
+      case 'password':
+        if (!value) {
+          errorMessage = VALIDATION_MESSAGES.REQUIRED;
+        } else if (!validatePassword(value)) {
+          errorMessage = VALIDATION_MESSAGES.PASSWORD_WEAK;
+        }
+        break;
+
+      case 'confirmPassword':
+        if (!value) {
+          errorMessage = VALIDATION_MESSAGES.REQUIRED;
+        } else if (value !== formData.password) {
+          errorMessage = 'Passwords do not match';
+        }
+        break;
+
+      case 'employeeName':
+        if (!value.trim()) {
+          errorMessage = VALIDATION_MESSAGES.REQUIRED;
+        } else if (value.length < 2 || value.length > 100) {
+          errorMessage = 'Employee name must be between 2 and 100 characters';
+        } else if (!/^[a-zA-Z\s.'-]+$/.test(value)) {
+          errorMessage = 'Employee name can only contain letters, spaces, dots, apostrophes, and hyphens';
+        }
+        break;
+
+      case 'email':
+        if (!value.trim()) {
+          errorMessage = VALIDATION_MESSAGES.REQUIRED;
+        } else if (!validateEmail(value)) {
+          errorMessage = VALIDATION_MESSAGES.EMAIL_INVALID;
+        }
+        break;
+
+      case 'contactNumber':
+        if (value && !validatePhone(value)) {
+          errorMessage = VALIDATION_MESSAGES.PHONE_INVALID;
+        }
+        break;
+
+      case 'gender':
+        if (!value) {
+          errorMessage = VALIDATION_MESSAGES.REQUIRED;
+        }
+        break;
+
+      case 'address':
+        if (value.length > 500) {
+          errorMessage = 'Address must not exceed 500 characters';
+        }
+        break;
+
+      default:
+        break;
+    }
+
+    return errorMessage;
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+
+    // Clear field error when user starts typing
+    if (fieldErrors[name]) {
+      setFieldErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+
+    // Clear general error
+    if (error) {
+      clearError();
+    }
+  };
+
+  const handleBlur = (e) => {
+    const { name, value } = e.target;
+    const errorMessage = validateField(name, value);
+    
+    if (errorMessage) {
+      setFieldErrors(prev => ({
+        ...prev,
+        [name]: errorMessage
+      }));
+    }
+  };
+
+  const validateForm = () => {
+    const errors = {};
+    Object.keys(formData).forEach(field => {
+      const errorMessage = validateField(field, formData[field]);
+      if (errorMessage) {
+        errors[field] = errorMessage;
+      }
     });
 
-    const [errors, setErrors] = useState({});
+    setFieldErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
-    const [apiErrors, setApiErrors] = useState("");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+      return;
+    }
 
+    setIsSubmitting(true);
+    
+    try {
+      const { confirmPassword, ...registrationData } = formData;
+      const result = await register(registrationData);
 
-    const handleChange = (e) => {
+      if (result.success) {
+        setSuccessMessage(SUCCESS_MESSAGES.REGISTRATION_SUCCESS);
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 2000);
+      }
+    } catch (err) {
+      console.error('Registration error:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-        const { name, value } = e.target;
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
-        setFormData((prev) => ({ ...prev, [name]: value }));
-    };
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
 
-    const validate = () => {
-        let newErrors = {};
+  return (
+    <div className="register-container">
+      <div className="register-wrapper">
+        <div className="register-card">
+          {/* Header */}
+          <div className="register-header">
+            <Link to="/" className="logo-link">
+              <div className="w-12 h-12 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
+                <span className="text-white font-bold text-xl">AM</span>
+              </div>
+            </Link>
+            <h1 className="register-title">Create Your Account</h1>
+            <p className="register-subtitle">
+              Join our asset management platform and streamline your workflow
+            </p>
+          </div>
 
-        if (!formData.username.trim())
-            newErrors.username = "Username is required";
-
-        if (!formData.ename.trim())
-            newErrors.ename = "Full Name is required";
-
-        if (!formData.email) {
-            newErrors.email = "Email is required";
-        } else if (
-            !/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/.test(formData.email)
-        ) {
-            newErrors.email = "Email is invalid";
-        }
-
-        if (!formData.password) {
-            newErrors.password = "Password is required";
-        } else if (formData.password.length < 8) {
-            newErrors.password = "Password must be at least 8 characters";
-        }
-
-        if (formData.password !== formData.confirmPassword) {
-            newErrors.confirmPassword = "Passwords do not match";
-        }
-
-        if (!formData.roles.trim())
-            newErrors.roles = "Role is required (e.g. USER, ADMIN)";
-
-
-        if (!formData.gender)
-            newErrors.gender = "Gender is required";
-
-        if (!/^\d{10}$/.test(formData.contactNumber)) {
-            newErrors.contactNumber = "Enter a valid 10-digit number";
-        }
-
-        if (!formData.address.trim())
-            newErrors.address = "Address is required";
-
-
-        return newErrors;
-    };
-
-    const handleSubmit = async (e) => {
-
-        e.preventDefault();
-        const validationErrors = validate();
-        if (Object.keys(validationErrors).length > 0) {
-            setErrors(validationErrors);
-            return;
-        }
-
-        setErrors({});
-        try {
-            await AuthService.register(formData);
-            alert("Registration successful!");
-
-            // Redirect based on role   
-            if (formData.roles === "ADMIN") navigate("/login/admin");
-            else navigate("/login/user");
-        } catch (error) {
-            setApiErrors(error.response?.data?.message || "Registration failed.");
-        }
-    };
-
-    return (
-        <div className="register-container">
-            <div className="register-card">
-                <h2>User Registration</h2>
-
-                {apiErrors && <div className="alert alert-danger">{apiErrors}</div>}
-
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                        <label className="form-label">Username</label>
-                        <input
-                            className="form-control"
-                            type="text"
-                            name="username"
-                            value={formData.username}
-                            onChange={handleChange}
-                            placeholder="Choose a Username"
-                            required></input>
-                        {errors.username && (<small className="text-danger">{errors.username}</small>)}
-                    </div>
-
-                    <div className="mb-3">
-                        <label className="form-label">Full Name</label>
-                        <input
-                            className="form-control"
-                            type="text"
-                            name="ename"
-                            value={formData.ename}
-                            onChange={handleChange}
-                            placeholder="Enter your full name"
-                            required
-                        />
-                        {errors.ename && <small className="text-danger">{errors.ename}</small>}
-                    </div>
-
-                    <div className="mb-3">
-                        <label className="form-label">Email</label>
-                        <input
-                            className="form-control"
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            placeholder="john@example.com"
-                            autoComplete="email"
-                            required></input>
-                        {errors.email && (<small className="text-danger">{errors.email}</small>)}
-                    </div>
-
-                    <div className="mb-3">
-                        <label className="form-label">Password</label>
-                        <input
-                            className="form-control"
-                            type="password"
-                            name="password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            placeholder="********"
-                            autoComplete="new-password"
-                            required></input>
-                        {errors.password && (<small className="text-danger">{errors.password}</small>)}
-                        <PasswordStrengthBar password={formData.password} />
-                    </div>
-
-                    <div className="mb-3">
-                        <label className="form-label">Confirm Password</label>
-                        <input
-                            className="form-control"
-                            type="password"
-                            name="confirmPassword"
-                            value={formData.confirmPassword}
-                            onChange={handleChange}
-                            placeholder="********"
-                            autoComplete="new-password"
-                            required></input>
-                        {errors.confirmPassword && (<small className="text-danger">{errors.confirmPassword}</small>)}
-                    </div>
-
-                    <div className="mb-3">
-                        <label className="form-label">Roles</label>
-                        <select
-                            className="form-control"
-                            name="roles"
-                            value={formData.roles}
-                            onChange={handleChange}
-                            required
-                        >
-                            <option value="">-- Select Role --</option>
-                            <option value="USER">USER</option>
-                            <option value="ADMIN">ADMIN</option>
-                        </select>
-                        {errors.roles && (<small className="text-danger">{errors.roles}</small>)}
-                    </div>
-
-
-                    <div className="mb-3">
-                        <label className="form-label">Gender</label>
-                        <select
-                            className="form-control"
-                            name="gender"
-                            value={formData.gender}
-                            onChange={handleChange}
-                            required
-                        >
-                            <option value="">-- Select Gender --</option>
-                            <option value="MALE">Male</option>
-                            <option value="FEMALE">Female</option>
-                        </select>
-                        {errors.gender && <small className="text-danger">{errors.gender}</small>}
-                    </div>
-
-                    <div className="mb-3">
-                        <label className="form-label">Contact Number</label>
-                        <input
-                            className="form-control"
-                            type="text"
-                            name="contactNumber"
-                            value={formData.contactNumber}
-                            onChange={handleChange}
-                            placeholder="10-digit mobile number"
-                            required
-                        />
-                        {errors.contactNumber && <small className="text-danger">{errors.contactNumber}</small>}
-                    </div>
-
-                    <div className="mb-3">
-                        <label className="form-label">Address</label>
-                        <textarea
-                            className="form-control"
-                            name="address"
-                            value={formData.address}
-                            onChange={handleChange}
-                            placeholder="Enter your address"
-                            required
-                        />
-                        {errors.address && <small className="text-danger">{errors.address}</small>}
-                    </div>
-
-                    <button className="btn btn-primary w-100" type="submit">
-                        Register
-                    </button>
-                </form>
-                <p>
-                    Already have an account?
-                    <Link to="/login/admin">Admin Login</Link> |
-                    <Link to="/login/user">User Login</Link>
-                </p>
-
-
+          {/* Success Message */}
+          {successMessage && (
+            <div className="success-message">
+              <div className="flex items-center">
+                <span className="success-icon">✅</span>
+                <span>{successMessage}</span>
+              </div>
             </div>
+          )}
+
+          {/* Error Message */}
+          {error && (
+            <div className="error-message">
+              <div className="flex items-center">
+                <span className="error-icon">❌</span>
+                <span>{error}</span>
+              </div>
+            </div>
+          )}
+
+          {/* Registration Form */}
+          <form onSubmit={handleSubmit} className="register-form">
+            <div className="form-grid">
+              {/* Username */}
+              <div className="form-group">
+                <label htmlFor="username" className="form-label">
+                  Username *
+                </label>
+                <input
+                  type="text"
+                  id="username"
+                  name="username"
+                  value={formData.username}
+                  onChange={handleInputChange}
+                  onBlur={handleBlur}
+                  className={`form-input ${fieldErrors.username ? 'error' : ''}`}
+                  placeholder="Enter your username"
+                  autoComplete="username"
+                />
+                {fieldErrors.username && (
+                  <p className="error-text">{fieldErrors.username}</p>
+                )}
+              </div>
+
+              {/* Employee Name */}
+              <div className="form-group">
+                <label htmlFor="employeeName" className="form-label">
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  id="employeeName"
+                  name="employeeName"
+                  value={formData.employeeName}
+                  onChange={handleInputChange}
+                  onBlur={handleBlur}
+                  className={`form-input ${fieldErrors.employeeName ? 'error' : ''}`}
+                  placeholder="Enter your full name"
+                  autoComplete="name"
+                />
+                {fieldErrors.employeeName && (
+                  <p className="error-text">{fieldErrors.employeeName}</p>
+                )}
+              </div>
+
+              {/* Email */}
+              <div className="form-group">
+                <label htmlFor="email" className="form-label">
+                  Email Address *
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  onBlur={handleBlur}
+                  className={`form-input ${fieldErrors.email ? 'error' : ''}`}
+                  placeholder="Enter your email address"
+                  autoComplete="email"
+                />
+                {fieldErrors.email && (
+                  <p className="error-text">{fieldErrors.email}</p>
+                )}
+              </div>
+
+              {/* Contact Number */}
+              <div className="form-group">
+                <label htmlFor="contactNumber" className="form-label">
+                  Contact Number
+                </label>
+                <input
+                  type="tel"
+                  id="contactNumber"
+                  name="contactNumber"
+                  value={formData.contactNumber}
+                  onChange={handleInputChange}
+                  onBlur={handleBlur}
+                  className={`form-input ${fieldErrors.contactNumber ? 'error' : ''}`}
+                  placeholder="Enter your contact number"
+                  autoComplete="tel"
+                />
+                {fieldErrors.contactNumber && (
+                  <p className="error-text">{fieldErrors.contactNumber}</p>
+                )}
+              </div>
+
+              {/* Gender */}
+              <div className="form-group">
+                <label htmlFor="gender" className="form-label">
+                  Gender *
+                </label>
+                <select
+                  id="gender"
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleInputChange}
+                  onBlur={handleBlur}
+                  className={`form-input ${fieldErrors.gender ? 'error' : ''}`}
+                >
+                  <option value="">Select gender</option>
+                  {GENDER_OPTIONS.map(option => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                {fieldErrors.gender && (
+                  <p className="error-text">{fieldErrors.gender}</p>
+                )}
+              </div>
+
+              {/* Address */}
+              <div className="form-group form-group-full">
+                <label htmlFor="address" className="form-label">
+                  Address
+                </label>
+                <textarea
+                  id="address"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleInputChange}
+                  onBlur={handleBlur}
+                  rows={3}
+                  className={`form-input ${fieldErrors.address ? 'error' : ''}`}
+                  placeholder="Enter your address (optional)"
+                />
+                {fieldErrors.address && (
+                  <p className="error-text">{fieldErrors.address}</p>
+                )}
+              </div>
+
+              {/* Password */}
+              <div className="form-group">
+                <label htmlFor="password" className="form-label">
+                  Password *
+                </label>
+                <div className="password-input-group">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    id="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    onBlur={handleBlur}
+                    className={`form-input ${fieldErrors.password ? 'error' : ''}`}
+                    placeholder="Enter your password"
+                    autoComplete="new-password"
+                  />
+                  <button
+                    type="button"
+                    onClick={togglePasswordVisibility}
+                    className="password-toggle"
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showPassword ? '👁️' : '🔒'}
+                  </button>
+                </div>
+                {fieldErrors.password && (
+                  <p className="error-text">{fieldErrors.password}</p>
+                )}
+                <PasswordStrengthBar password={formData.password} showDetails={true} />
+              </div>
+
+              {/* Confirm Password */}
+              <div className="form-group">
+                <label htmlFor="confirmPassword" className="form-label">
+                  Confirm Password *
+                </label>
+                <div className="password-input-group">
+                  <input
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange}
+                    onBlur={handleBlur}
+                    className={`form-input ${fieldErrors.confirmPassword ? 'error' : ''}`}
+                    placeholder="Confirm your password"
+                    autoComplete="new-password"
+                  />
+                  <button
+                    type="button"
+                    onClick={toggleConfirmPasswordVisibility}
+                    className="password-toggle"
+                    aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+                  >
+                    {showConfirmPassword ? '👁️' : '🔒'}
+                  </button>
+                </div>
+                {fieldErrors.confirmPassword && (
+                  <p className="error-text">{fieldErrors.confirmPassword}</p>
+                )}
+              </div>
+            </div>
+
+            {/* Terms and Conditions */}
+            <div className="terms-section">
+              <p className="terms-text">
+                By creating an account, you agree to our{' '}
+                <a href="#" className="terms-link">Terms of Service</a>
+                {' '}and{' '}
+                <a href="#" className="terms-link">Privacy Policy</a>
+              </p>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isSubmitting || isLoading}
+              className="submit-button"
+            >
+              {isSubmitting || isLoading ? (
+                <>
+                  <div className="loading-spinner"></div>
+                  Creating Account...
+                </>
+              ) : (
+                <>
+                  <span>Create Account</span>
+                  <span className="button-arrow">→</span>
+                </>
+              )}
+            </button>
+          </form>
+
+          {/* Footer */}
+          <div className="register-footer">
+            <p>
+              Already have an account?{' '}
+              <Link to="/login" className="login-link">
+                Login here
+              </Link>
+            </p>
+          </div>
         </div>
 
+        {/* Side Panel */}
+        <div className="register-side-panel">
+          <div className="side-panel-content">
+            <div className="feature-highlight">
+              <div className="feature-icon">⚡</div>
+              <h3>Quick Setup</h3>
+              <p>Get started in under 2 minutes with our streamlined registration process.</p>
+            </div>
+            
+            <div className="feature-highlight">
+              <div className="feature-icon">🔒</div>
+              <h3>Secure & Private</h3>
+              <p>Your data is protected with enterprise-grade security and encryption.</p>
+            </div>
+            
+            <div className="feature-highlight">
+              <div className="feature-icon">📱</div>
+              <h3>Mobile Friendly</h3>
+              <p>Access your assets from anywhere with our responsive design.</p>
+            </div>
 
-    );
+            <div className="testimonial">
+              <blockquote>
+                "The auto-approval system has saved us countless hours in asset management."
+              </blockquote>
+              <cite>— IT Manager, TechCorp</cite>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-
-}
+export default Register;

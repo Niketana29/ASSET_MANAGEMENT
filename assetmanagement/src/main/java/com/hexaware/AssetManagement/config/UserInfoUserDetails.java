@@ -1,4 +1,4 @@
-package com.hexaware.assetManagement.config;
+package com.hexaware.AssetManagement.config;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -9,59 +9,53 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.hexaware.assetManagement.entities.UserInfo;
+import com.hexaware.AssetManagement.entities.UserInfo;
 
 public class UserInfoUserDetails implements UserDetails {
-	
-    private String username;
-    private String password;
-    private List<GrantedAuthority> authorities;
-    
-    
+
+	private String username;
+	private String password;
+	private List<GrantedAuthority> authorities;
+
 	public UserInfoUserDetails(UserInfo userInfo) {
-		super();
 		this.username = userInfo.getUsername();
 		this.password = userInfo.getPassword();
-		this.authorities = Arrays.stream(userInfo.getRoles().split(","))
-                .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+		this.authorities = Arrays.stream(userInfo.getRoles().split(",")).map(SimpleGrantedAuthority::new)
+				.collect(Collectors.toList());
 	}
-	
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return authorities;
-    }
 
-    @Override
-    public String getPassword() {
-        return password;
-    }
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		return authorities;
+	}
 
-    @Override
-    public String getUsername() {
-        return username;
-    }
+	@Override
+	public String getPassword() {
+		return password;
+	}
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+	@Override
+	public String getUsername() {
+		return username;
+	}
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
 
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
 
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-    
-    
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
 
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
 }

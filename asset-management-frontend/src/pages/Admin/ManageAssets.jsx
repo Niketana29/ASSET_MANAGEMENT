@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import AssetService from "../../services/AssetService";
-import CategoryService from "../../services/CategoryService";
+import assetService from "../../services/assetService";
+import categoryService from "../../services/categoryService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "./ManageAssets.css"; // Create a CSS file for custom styles
+import "./ManageAssets.css";
 
 export default function ManageAssets() {
   const [assets, setAssets] = useState([]);
@@ -11,14 +11,16 @@ export default function ManageAssets() {
   const [editingId, setEditingId] = useState(null);
 
   const [newAsset, setNewAsset] = useState({
-    assetNo: "",
-    aname: "",
-    status: "AVAILABLE",
+    assetName: "",
     categoryId: "",
     model: "",
     assetValue: "",
     manufacturingDate: "",
     expiryDate: "",
+    status: "AVAILABLE",
+    description: "",
+    serialNumber: "",
+    location: ""
   });
 
   useEffect(() => {
@@ -27,20 +29,20 @@ export default function ManageAssets() {
   }, []);
 
   const loadAssets = () => {
-    AssetService.getAllAssets()
+    assetService.getAllAssets()
       .then((data) => setAssets(data || []))
       .catch(() => toast.error("❌ Failed to load assets"));
   };
 
   const loadCategories = () => {
-    CategoryService.getAllCategories()
+    categoryService.getAllCategories()
       .then((data) => setCategories(data || []))
       .catch(() => toast.error("❌ Failed to load categories"));
   };
 
   const handleDelete = (id) => {
     if (window.confirm("Delete this asset?")) {
-      AssetService.deleteAsset(id)
+      assetService.deleteAsset(id)
         .then(() => {
           toast.success("🗑️ Asset deleted");
           loadAssets();
@@ -57,21 +59,23 @@ export default function ManageAssets() {
   const resetForm = () => {
     setEditingId(null);
     setNewAsset({
-      assetNo: "",
-      aname: "",
-      status: "AVAILABLE",
+      assetName: "",
       categoryId: "",
       model: "",
       assetValue: "",
       manufacturingDate: "",
       expiryDate: "",
+      status: "AVAILABLE",
+      description: "",
+      serialNumber: "",
+      location: ""
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     if (editingId) {
-      AssetService.updateAsset({ ...newAsset, aid: editingId })
+      assetService.updateAsset(editingId, newAsset)
         .then(() => {
           toast.success("✅ Asset updated");
           resetForm();
@@ -79,7 +83,7 @@ export default function ManageAssets() {
         })
         .catch(() => toast.error("❌ Failed to update asset"));
     } else {
-      AssetService.addAsset(newAsset)
+      assetService.createAsset(newAsset)
         .then(() => {
           toast.success("✅ Asset added");
           resetForm();
@@ -90,16 +94,18 @@ export default function ManageAssets() {
   };
 
   const handleEdit = (asset) => {
-    setEditingId(asset.aid);
+    setEditingId(asset.assetId);
     setNewAsset({
-      assetNo: asset.assetNo,
-      aname: asset.aname,
-      status: asset.status,
-      categoryId: asset.category?.categoryId || "",
-      model: asset.model,
-      assetValue: asset.assetValue,
-      manufacturingDate: asset.manufacturingDate,
-      expiryDate: asset.expiryDate,
+      assetName: asset.assetName,
+      categoryId: asset.categoryId || "",
+      model: asset.model || "",
+      assetValue: asset.assetValue || "",
+      manufacturingDate: asset.manufacturingDate || "",
+      expiryDate: asset.expiryDate || "",
+      status: asset.status || "AVAILABLE",
+      description: asset.description || "",
+      serialNumber: asset.serialNumber || "",
+      location: asset.location || ""
     });
   };
 
@@ -116,21 +122,10 @@ export default function ManageAssets() {
           <div className="col-12 col-md-6 col-lg-3">
             <input
               type="text"
-              name="assetNo"
-              className="form-control"
-              placeholder="Asset Number"
-              value={newAsset.assetNo}
-              onChange={handleChange}
-              required
-            />
-          </div>
-          <div className="col-12 col-md-6 col-lg-3">
-            <input
-              type="text"
-              name="aname"
+              name="assetName"
               className="form-control"
               placeholder="Asset Name"
-              value={newAsset.aname}
+              value={newAsset.assetName}
               onChange={handleChange}
               required
             />
@@ -190,6 +185,16 @@ export default function ManageAssets() {
             />
           </div>
           <div className="col-12 col-md-6 col-lg-3">
+            <input
+              type="text"
+              name="serialNumber"
+              className="form-control"
+              placeholder="Serial Number"
+              value={newAsset.serialNumber}
+              onChange={handleChange}
+            />
+          </div>
+          <div className="col-12 col-md-6 col-lg-3">
             <select
               name="status"
               className="form-select"
@@ -197,8 +202,9 @@ export default function ManageAssets() {
               onChange={handleChange}
             >
               <option value="AVAILABLE">Available</option>
-              <option value="ASSIGNED">Assigned</option>
-              <option value="UNDER_SERVICE">Under Service</option>
+              <option value="ALLOCATED">Allocated</option>
+              <option value="UNDER_MAINTENANCE">Under Maintenance</option>
+              <option value="RETIRED">Retired</option>
             </select>
           </div>
           <div className="col-12 mt-2">
@@ -216,7 +222,6 @@ export default function ManageAssets() {
             )}
           </div>
         </form>
-
       </div>
 
       {/* Table Section */}
@@ -226,29 +231,33 @@ export default function ManageAssets() {
             <tr>
               <th>ID</th>
               <th>Name</th>
-              <th>Status</th>
               <th>Category</th>
+              <th>Status</th>
+              <th>Serial</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {assets.map((a) => (
-              <tr key={a.aid}>
-                <td>{a.aid}</td>
-                <td>{a.aname}</td>
+              <tr key={a.assetId}>
+                <td>{a.assetId}</td>
+                <td>{a.assetName}</td>
+                <td>{a.categoryName}</td>
                 <td>
                   <span
                     className={`badge ${a.status === "AVAILABLE"
                         ? "bg-success"
-                        : a.status === "ASSIGNED"
+                        : a.status === "ALLOCATED"
                           ? "bg-warning text-dark"
-                          : "bg-danger"
+                          : a.status === "UNDER_MAINTENANCE"
+                            ? "bg-info text-dark"
+                            : "bg-secondary"
                       }`}
                   >
                     {a.status.replace("_", " ")}
                   </span>
                 </td>
-                <td>{a.category?.categoryName}</td>
+                <td>{a.serialNumber}</td>
                 <td className="text-nowrap">
                   <div className="d-flex flex-wrap gap-2">
                     <button
@@ -259,7 +268,7 @@ export default function ManageAssets() {
                     </button>
                     <button
                       className="btn btn-danger btn-sm"
-                      onClick={() => handleDelete(a.aid)}
+                      onClick={() => handleDelete(a.assetId)}
                     >
                       Delete
                     </button>
@@ -270,7 +279,6 @@ export default function ManageAssets() {
           </tbody>
         </table>
       </div>
-
 
       <ToastContainer position="top-right" autoClose={3000} hideProgressBar />
     </div>

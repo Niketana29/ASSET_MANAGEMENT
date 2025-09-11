@@ -1,9 +1,11 @@
-package com.hexaware.assetManagement.controller;
+package com.hexaware.AssetManagement.controller;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,85 +13,79 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hexaware.assetManagement.dto.AssetDto;
-import com.hexaware.assetManagement.entities.Asset;
-import com.hexaware.assetManagement.exception.BusinessException;
-import com.hexaware.assetManagement.service.IAssetService;
+import com.hexaware.AssetManagement.dto.AssetDto;
+import com.hexaware.AssetManagement.service.IAssetService;
 
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 
-
-@Slf4j
 @RestController
 @RequestMapping("/api/assets")
+@CrossOrigin(origins = "*")
 public class AssetController {
-	
+
 	@Autowired
-	IAssetService assetService;
-	
-	@PostMapping("/insert")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public Asset addAsset(@Valid @RequestBody AssetDto assetDto) {
-		if(assetDto.getAid() != null && assetDto.getAid() >0) {
-			throw new BusinessException("aId should not be given for insert operation");
-		}
-        log.info("POST /insert - Adding asset: {}", assetDto);
-        return assetService.addAsset(mapDtoToEntity(assetDto));
-    }
+	private IAssetService assetService;
 
-    @PutMapping("/update")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public Asset updateAsset(@Valid @RequestBody AssetDto assetDto) {
-        if(assetDto.getAid() == null || assetDto.getAid() <= 0) {
-        	throw new BusinessException("Invalid aId");
-        }
-        log.info("PUT /update - Updating asset: {}", assetDto);
-        return assetService.updateAsset(mapDtoToEntity(assetDto));
-    }
+	@GetMapping
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<List<AssetDto>> getAllAssets() {
+		List<AssetDto> assets = assetService.getAllAssets();
+		return ResponseEntity.ok(assets);
+	}
 
- 
-    @GetMapping("/getbyid/{aid}")
-    @PreAuthorize("hasAnyAuthority('ADMIN' , 'USER')")
-    public Asset getAssetById(@PathVariable int aid) {
-        log.info("GET /getbyid/{} - Fetching asset by ID", aid);
-        return assetService.getAssetById(aid);
-    }
+	@GetMapping("/browse")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	public ResponseEntity<List<AssetDto>> getAvailableAssets() {
+		List<AssetDto> assets = assetService.getAvailableAssets();
+		return ResponseEntity.ok(assets);
+	}
 
+	@GetMapping("/{id}")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	public ResponseEntity<AssetDto> getAssetById(@PathVariable Long id) {
+		AssetDto asset = assetService.getAssetById(id);
+		return ResponseEntity.ok(asset);
+	}
 
-    @DeleteMapping("/deletebyid/{aid}")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public String deleteAsset(@PathVariable int aid) {
-        log.warn("DELETE /deletebyid/{} - Deleting asset by ID", aid);
-        assetService.deleteAssetById(aid);
-        return "Asset with ID " + aid + " deleted successfully.";
-    }
+	@GetMapping("/asset-no/{assetNo}")
+	public ResponseEntity<AssetDto> getAssetByAssetNo(@PathVariable String assetNo) {
+		AssetDto asset = assetService.getAssetByAssetNo(assetNo);
+		return ResponseEntity.ok(asset);
+	}
 
+	@GetMapping("/category/{categoryId}")
+	public ResponseEntity<List<AssetDto>> getAssetsByCategory(@PathVariable Long categoryId) {
+		List<AssetDto> assets = assetService.getAssetsByCategory(categoryId);
+		return ResponseEntity.ok(assets);
+	}
 
-    @GetMapping("/getall")
-    @PreAuthorize("hasAnyAuthority('ADMIN' , 'USER')")
-    public List<Asset> getAllAssets() {
-        log.info("GET /getall - Fetching all assets");
-        return assetService.getAllAssets();
-    }
-	
-    private Asset mapDtoToEntity(AssetDto dto) {
-        Asset a = new Asset();
-        if(dto.getAid() != null && dto.getAid() > 0) {
-            a.setAid(dto.getAid());
-        }
+	@GetMapping("/search")
+	public ResponseEntity<List<AssetDto>> searchAssetsByName(@RequestParam String name) {
+		List<AssetDto> assets = assetService.searchAssetsByName(name);
+		return ResponseEntity.ok(assets);
+	}
 
-        a.setAssetNo(dto.getAssetNo());
-        a.setAname(dto.getAname());
-        a.setCategory(dto.getCategory());
-        a.setModel(dto.getModel());
-        a.setManufacturingDate(java.sql.Date.valueOf(dto.getManufacturingDate()));
-        a.setExpiryDate(java.sql.Date.valueOf(dto.getExpiryDate()));
-        a.setAssetValue(dto.getAssetValue());
-        a.setStatus(dto.getStatus());
-        return a;
-    }
+	@PostMapping
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<AssetDto> createAsset(@Valid @RequestBody AssetDto assetDto) {
+		AssetDto createdAsset = assetService.createAsset(assetDto);
+		return ResponseEntity.ok(createdAsset);
+	}
 
+	@PutMapping("/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<AssetDto> updateAsset(@PathVariable Long id, @Valid @RequestBody AssetDto assetDto) {
+		AssetDto updatedAsset = assetService.updateAsset(id, assetDto);
+		return ResponseEntity.ok(updatedAsset);
+	}
+
+	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<Void> deleteAsset(@PathVariable Long id) {
+		assetService.deleteAsset(id);
+		return ResponseEntity.ok().build();
+	}
 }

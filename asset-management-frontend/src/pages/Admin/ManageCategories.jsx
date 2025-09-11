@@ -1,57 +1,82 @@
 import { useEffect, useState } from "react";
-import CategoryService from "../../services/CategoryService";
+import categoryService from "../../services/categoryService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "./ManageCategories.css"; // Custom CSS
+import "./ManageCategories.css";
 
 export default function ManageCategories() {
   const [categories, setCategories] = useState([]);
-  const [newCategory, setNewCategory] = useState("");
-  const [requiresApproval, setRequiresApproval] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [newCategory, setNewCategory] = useState({
+    categoryName: "",
+    description: "",
+    isActive: true,
+  });
 
-  useEffect(() => loadCategories(), []);
+  useEffect(() => {
+    loadCategories();
+  }, []);
 
   const loadCategories = () => {
-    CategoryService.getAllCategories()
-      .then(setCategories)
+    categoryService
+      .getAllCategories()
+      .then((data) => setCategories(data || []))
       .catch(() => toast.error("❌ Failed to load categories"));
   };
 
   const resetForm = () => {
-    setNewCategory("");
-    setRequiresApproval(false);
     setEditingId(null);
+    setNewCategory({
+      categoryName: "",
+      description: "",
+      isActive: true,
+    });
   };
 
-  const handleSubmit = () => {
-    if (!newCategory) return;
-
-    const payload = { categoryName: newCategory, requiresApproval };
-    if (editingId) payload.categoryId = editingId;
-
-    const action = editingId
-      ? CategoryService.updateCategory(payload)
-      : CategoryService.addCategory(payload);
-
-    action
-      .then(() => {
-        toast.success(editingId ? "✅ Category updated" : "✅ Category added");
-        resetForm();
-        loadCategories();
-      })
-      .catch(() => toast.error("❌ Operation failed"));
+  const handleChange = (e) => {
+    const { name, value, type, checked } = e.target;
+    setNewCategory((prev) => ({
+      ...prev,
+      [name]: type === "checkbox" ? checked : value,
+    }));
   };
 
-  const handleEdit = (category) => {
-    setEditingId(category.categoryId);
-    setNewCategory(category.categoryName);
-    setRequiresApproval(category.requiresApproval);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (editingId) {
+      categoryService
+        .updateCategory(editingId, newCategory)
+        .then(() => {
+          toast.success("✅ Category updated");
+          resetForm();
+          loadCategories();
+        })
+        .catch(() => toast.error("❌ Failed to update category"));
+    } else {
+      categoryService
+        .createCategory(newCategory)
+        .then(() => {
+          toast.success("✅ Category added");
+          resetForm();
+          loadCategories();
+        })
+        .catch(() => toast.error("❌ Failed to add category"));
+    }
+  };
+
+  const handleEdit = (cat) => {
+    setEditingId(cat.categoryId);
+    setNewCategory({
+      categoryName: cat.categoryName,
+      description: cat.description || "",
+      isActive: cat.isActive,
+    });
   };
 
   const handleDelete = (id) => {
     if (window.confirm("Delete this category?")) {
-      CategoryService.deleteCategory(id)
+      categoryService
+        .deleteCategory(id)
         .then(() => {
           toast.success("🗑️ Category deleted");
           loadCategories();
@@ -70,45 +95,52 @@ export default function ManageCategories() {
           {editingId ? "Edit Category" : "Add New Category"}
         </h5>
 
-        <div className="row g-2 align-items-center">
-          <div className="col-12 col-md-5">
+        <form onSubmit={handleSubmit} className="row g-2 align-items-center">
+          <div className="col-12 col-md-4">
             <input
               type="text"
+              name="categoryName"
               className="form-control"
               placeholder="Category Name"
-              value={newCategory}
-              onChange={(e) => setNewCategory(e.target.value)}
+              value={newCategory.categoryName}
+              onChange={handleChange}
+              required
             />
           </div>
 
-          <div className="col-12 col-md-7 d-flex flex-column flex-md-row align-items-start align-md-center gap-2">
-            <div className="form-check me-2">
+          <div className="col-12 col-md-4">
+            <input
+              type="text"
+              name="description"
+              className="form-control"
+              placeholder="Description"
+              value={newCategory.description}
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="col-12 col-md-2 d-flex align-items-center">
+            <div className="form-check">
               <input
                 type="checkbox"
+                name="isActive"
                 className="form-check-input"
-                id="requiresApproval"
-                checked={requiresApproval}
-                onChange={(e) => setRequiresApproval(e.target.checked)}
+                id="isActive"
+                checked={newCategory.isActive}
+                onChange={handleChange}
               />
-              <label
-                className="form-check-label"
-                htmlFor="requiresApproval"
-              >
-                Requires Approval
+              <label className="form-check-label" htmlFor="isActive">
+                Active
               </label>
             </div>
+          </div>
 
-            <button className="btn btn-success form-btn" onClick={handleSubmit}>
+          <div className="col-12 col-md-2">
+            <button className="btn btn-success w-100">
               {editingId ? "Update" : "Add"}
             </button>
-
-            {editingId && (
-              <button className="btn btn-secondary form-btn" onClick={resetForm}>
-                Cancel
-              </button>
-            )}
           </div>
-        </div>
+        </form>
       </div>
 
       {/* Category List */}
@@ -118,24 +150,31 @@ export default function ManageCategories() {
             key={c.categoryId}
             className="list-group-item d-flex flex-wrap align-items-center justify-content-between"
           >
-            <div className="d-flex align-items-center flex-wrap gap-2 mb-2 mb-md-0">
-              <span>{c.categoryName}</span>
+            <div>
+              <strong>{c.categoryName}</strong> – {c.description}
               <span
-                className={`badge ${c.requiresApproval ? "bg-warning text-dark" : "bg-secondary"}`}
+                className={`badge ms-2 ${
+                  c.isActive ? "bg-success" : "bg-secondary"
+                }`}
               >
-                {c.requiresApproval ? "Requires Approval" : "No Approval"}
+                {c.isActive ? "Active" : "Inactive"}
               </span>
+              {typeof c.assetCount !== "undefined" && (
+                <span className="badge bg-info ms-2">
+                  Assets: {c.assetCount}
+                </span>
+              )}
             </div>
 
             <div className="d-flex gap-2 flex-wrap justify-content-start">
               <button
-                className="btn btn-warning btn-sm list-btn"
+                className="btn btn-warning btn-sm"
                 onClick={() => handleEdit(c)}
               >
                 Edit
               </button>
               <button
-                className="btn btn-danger btn-sm list-btn"
+                className="btn btn-danger btn-sm"
                 onClick={() => handleDelete(c.categoryId)}
               >
                 Delete

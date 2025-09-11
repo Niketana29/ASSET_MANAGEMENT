@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
-import AssetService from "../../services/AssetService";
-import EmployeeService from "../../services/EmployeeService";
-import AssetAllocationService from "../../services/AssetAllocationService";
-import AuditRequestService from "../../services/AuditRequestService";
+
 import {
   BarChart,
   Bar,
@@ -17,6 +14,10 @@ import {
 } from "recharts";
 import { FaClipboardList, FaUsers, FaBoxes, FaHourglassHalf } from "react-icons/fa";
 import "./Reports.css";
+import auditService from "../../services/auditService";
+import allocationService from "../../services/allocationService";
+import employeeService from "../../services/EmployeeService";
+import assetService from "../../services/assetService";
 
 export default function Reports() {
   const [summary, setSummary] = useState({
@@ -33,24 +34,24 @@ export default function Reports() {
 
   const loadReports = async () => {
     try {
-      const [assets, employees, allocations, requests] = await Promise.all([
-        AssetService.getAllAssets(),
-        EmployeeService.getAllEmployees(),
-        AssetAllocationService.getAllAllocations(),
-        AuditRequestService.getAllAuditRequests(),
+      const [assets, employees, allocations, audits] = await Promise.all([
+        assetService.getAllAssets(),
+        employeeService.getAllEmployees(),
+        allocationService.getAllAllocations(),
+        auditService.getAllAuditRequests(),
       ]);
 
       setSummary({
         assets: assets.length,
         employees: employees.length,
         allocations: allocations.length,
-        pendingRequests: requests.filter((r) => r.status === "PENDING").length,
+        pendingRequests: audits.filter((r) => (r.status || "").toUpperCase() === "PENDING").length,
       });
 
       const statusCounts = [
-        { name: "Approved", value: requests.filter((r) => r.status === "VERIFIED").length },
-        { name: "Pending", value: requests.filter((r) => r.status === "PENDING").length },
-        { name: "Rejected", value: requests.filter((r) => r.status === "REJECTED").length },
+        { name: "Verified", value: audits.filter((r) => r.status === "VERIFIED").length },
+        { name: "Pending", value: audits.filter((r) => r.status === "PENDING").length },
+        { name: "Rejected", value: audits.filter((r) => r.status === "REJECTED").length },
       ];
 
       setStatusData(statusCounts);
@@ -87,20 +88,11 @@ export default function Reports() {
 
       {/* Charts Section */}
       <div className="reports-grid">
-        {/* Pie Chart */}
         <div className="reports-chart">
           <h3>Audit Requests by Status</h3>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
-              <Pie
-                data={statusData}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius={100}
-                label
-              >
+              <Pie data={statusData} dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={100} label>
                 {statusData.map((entry, index) => (
                   <Cell key={index} fill={COLORS[index % COLORS.length]} />
                 ))}
@@ -111,7 +103,6 @@ export default function Reports() {
           </ResponsiveContainer>
         </div>
 
-        {/* Bar Chart */}
         <div className="reports-chart">
           <h3>Audit Requests Overview</h3>
           <ResponsiveContainer width="100%" height={300}>

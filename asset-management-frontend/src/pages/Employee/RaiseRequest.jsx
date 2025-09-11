@@ -1,26 +1,30 @@
 import { useEffect, useState } from "react";
-import AssetAllocationService from "../../services/AssetAllocationService";
-import AssetService from "../../services/AssetService";
-import AuthService from "../../services/AuthService";
+import allocationService from "../../services/allocationService";
+import assetService from "../../services/assetService";
+import serviceRequestService from "../../services/serviceRequestService";
+
 import { useNavigate } from "react-router-dom";
 import "./RaiseRequest.css";
+import authService from "../../services/AuthService";
 
 export default function RaiseRequest() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [assetName, setAssetName] = useState("");
   const [assets, setAssets] = useState([]);
-  const [allocationDate, setAllocationDate] = useState("");
-  const [returnDate, setReturnDate] = useState("");
   const [message, setMessage] = useState("");
   const [suggestions, setSuggestions] = useState([]);
 
+  // Define "simple" assets
+  const simpleAssets = ["printer", "mouse", "keyboard", "headphones", "stationery", "pen drive", "calculator"];
+
   useEffect(() => {
-    const currentUser = AuthService.getCurrentUser();
+    const currentUser = authService.getCurrentUser();
     if (currentUser && currentUser.employeeId) {
       setUser(currentUser);
-      AssetService.getAllAssets()
-        .then(res => setAssets(res))
+      assetService
+        .getAvailableAssets()
+        .then((res) => setAssets(res))
         .catch(() => setMessage("Failed to fetch assets"));
     } else {
       setMessage("User not logged in. Please login to raise request.");
@@ -31,8 +35,8 @@ export default function RaiseRequest() {
     const value = e.target.value;
     setAssetName(value);
     const matched = assets
-      .filter(a => a.aname.toLowerCase().includes(value.toLowerCase()))
-      .map(a => a.aname);
+      .filter((a) => a.aname.toLowerCase().includes(value.toLowerCase()))
+      .map((a) => a.aname);
     setSuggestions(matched.slice(0, 5));
   };
 
@@ -43,40 +47,63 @@ export default function RaiseRequest() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     if (!user || !user.employeeId) {
       setMessage("Invalid user. Please login again.");
       return;
     }
 
     const eid = user.employeeId;
-    const asset = assets.find(a => a.aname.toLowerCase().trim() === assetName.toLowerCase().trim());
+    const asset = assets.find(
+      (a) => a.aname.toLowerCase().trim() === assetName.toLowerCase().trim()
+    );
 
     if (!asset) {
       setMessage("Please select a valid asset from suggestions");
       return;
     }
-    if (!allocationDate || !returnDate) {
-      setMessage("Please select allocation and return dates");
-      return;
+
+    // Check if asset is "simple"
+    const isSimple = simpleAssets.some((s) =>
+      asset.aname.toLowerCase().includes(s)
+    );
+
+    if (isSimple) {
+      // Auto approve allocation
+      allocationService
+        .allocateAsset(asset.aid, eid, "Auto-approved request")
+        .then(() => {
+          setMessage("Asset allocated successfully (auto-approved).");
+          setTimeout(() => navigate("/dashboard/user/allocations"), 3000);
+        })
+        .catch((err) => {
+          const errMsg = err.response?.data?.message || "Failed to allocate asset";
+          setMessage(errMsg);
+        });
+    } else {
+      // Create service request (pending approval)
+      const requestData = {
+        employeeId: eid,
+        assetId: asset.aid,
+        requestType: "NEW_ASSET",
+        priority: "HIGH",
+        status: "PENDING",
+        adminComments: "",
+      };
+
+      serviceRequestService
+        .createServiceRequest(requestData)
+        .then(() => {
+          setMessage(
+            "Request submitted successfully. Waiting for admin approval."
+          );
+          setTimeout(() => navigate("/dashboard/user/requests"), 3000);
+        })
+        .catch((err) => {
+          const errMsg =
+            err.response?.data?.message || "Failed to create service request";
+          setMessage(errMsg);
+        });
     }
-
-    const payload = {
-      eid,
-      aid: asset.aid,
-      allocationDate: new Date(allocationDate),
-      returnDate: new Date(returnDate)
-    };
-
-    AssetAllocationService.allocateAsset(payload)
-      .then(() => {
-        setMessage("Asset request submitted successfully");
-        setTimeout(() => navigate("/dashboard/user/allocations"), 3000);
-      })
-      .catch(err => {
-        const errMsg = err.response?.data?.message || "Failed to raise request";
-        setMessage(errMsg);
-      });
   };
 
   return (
@@ -108,27 +135,6 @@ export default function RaiseRequest() {
                   ))}
                 </ul>
               )}
-            </div>
-
-            <div className="row g-3 mb-3">
-              <div className="col-md-6">
-                <label className="form-label">Allocation Date</label>
-                <input
-                  type="date"
-                  className="form-control"
-                  value={allocationDate}
-                  onChange={e => setAllocationDate(e.target.value)}
-                />
-              </div>
-              <div className="col-md-6">
-                <label className="form-label">Return Date</label>
-                <input
-                  type="date"
-                  className="form-control"
-                  value={returnDate}
-                  onChange={e => setReturnDate(e.target.value)}
-                />
-              </div>
             </div>
 
             <button className="btn btn-primary w-100">Submit Request</button>

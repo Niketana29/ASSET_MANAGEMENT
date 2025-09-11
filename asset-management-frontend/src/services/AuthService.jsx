@@ -1,50 +1,69 @@
-import api from "./api";
+import api from './api';
 
 class AuthService {
   async register(userData) {
-    const res = await api.post("/users/registration/new", userData);
-    return res.data;
+    try {
+      const response = await api.post('/register', userData);
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify({
+          username: response.data.username,
+          role: response.data.role,
+          employeeId: response.data.employeeId
+        }));
+      }
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Registration failed' };
+    }
   }
 
   async login(credentials) {
-    const res = await api.post("/users/login/authenticate", credentials);
-    console.log("Login API raw response:", res.data);
-
-    if (res.data.token) {
-      localStorage.setItem("token", res.data.token);
-
-      const rolesArray = (res.data.roles || "")
-        .split(",")
-        .map((r) => r.replace(/^ROLE_/, "").trim().toUpperCase());
-
-      const userData = {
-        id: res.data.userId,
-        employeeId: res.data.employeeId,
-        username: res.data.username,
-        roles: rolesArray,
-        token: res.data.token
-      };
-      localStorage.setItem("user", JSON.stringify(userData));
-
-      console.log("User stored in localStorage:", userData);
+    try {
+      const response = await api.post('/auth/login', credentials);
+      if (response.data.token) {
+        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('user', JSON.stringify({
+          username: response.data.username,
+          role: response.data.role,
+          employeeId: response.data.employeeId
+        }));
+      }
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Login failed' };
     }
-
-    return res.data;
   }
 
-
   logout() {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
   }
 
   getCurrentUser() {
-    return JSON.parse(localStorage.getItem("user"));
+    const user = localStorage.getItem('user');
+    return user ? JSON.parse(user) : null;
   }
 
-  getRoles() {
+  getToken() {
+    return localStorage.getItem('token');
+  }
+
+  isAuthenticated() {
+    return !!this.getToken();
+  }
+
+  hasRole(role) {
     const user = this.getCurrentUser();
-    return user ? user.roles : null;
+    return user?.role === role;
+  }
+
+  isAdmin() {
+    return this.hasRole('ROLE_ADMIN');
+  }
+
+  isUser() {
+    return this.hasRole('ROLE_USER');
   }
 }
 

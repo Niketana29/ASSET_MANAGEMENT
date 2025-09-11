@@ -1,47 +1,61 @@
-import api from "./api";
+import api from './api';
 
 class ServiceRequestService {
+  async createServiceRequest(requestData) {
+    try {
+      const response = await api.post('/service-requests', requestData);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to create service request' };
+    }
+  }
+
+  async getMyServiceRequests(employeeId) {
+    try {
+      const response = await api.get(`/service-requests/my/${employeeId}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to fetch my service requests' };
+    }
+  }
+
   async getAllServiceRequests() {
-    const res = await api.get("/api/servicerequests/getall");
-    return res.data;
+    try {
+      const response = await api.get('/service-requests');
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to fetch all service requests' };
+    }
   }
 
-  async getServiceRequestById(srid) {
-    const res = await api.get(`/api/servicerequests/getbyid/${srid}`);
-    return res.data;
+  async getPendingServiceRequests() {
+    try {
+      const response = await api.get('/service-requests/pending');
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to fetch pending service requests' };
+    }
   }
 
-  async createServiceRequest(data) {
-    const res = await api.post("/api/servicerequests/insert", {
-      eid: data.eid,       
-      aid: data.aid,        
-      description: data.description,
-      issueType: data.issueType,
-      status: data.status
-    });
-    return res.data;
+  async updateServiceRequestStatus(requestId, status, comments) {
+    try {
+      const response = await api.put(`/service-requests/${requestId}/status`, {
+        status,
+        adminComments: comments
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to update service request status' };
+    }
   }
 
-  async updateServiceRequest(request) {
-    const res = await api.put("/api/servicerequests/update", {
-      srid: request.srid,
-      eid: request.eid,        
-      aid: request.aid,        
-      description: request.description,
-      issueType: request.issueType,
-      status: request.status,
-    });
-    return res.data;
-  }
-
-  async deleteServiceRequest(srid) {
-    const res = await api.delete(`/api/servicerequests/deletebyid/${srid}`);
-    return res.data;
-  }
-
-  async getRequestsByEmployee(eid) {
-    const res = await api.get(`/api/servicerequests/getbyemployee/${eid}`);
-    return res.data;
+  async deleteServiceRequest(requestId) {
+    try {
+      const response = await api.delete(`/service-requests/${requestId}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to delete service request' };
+    }
   }
 }
 

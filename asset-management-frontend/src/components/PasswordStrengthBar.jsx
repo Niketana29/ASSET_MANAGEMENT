@@ -1,45 +1,80 @@
+import React from 'react';
+import { getPasswordStrength } from '../utils/constants';
 
+const PasswordStrengthBar = ({ password, showDetails = false }) => {
+  const strength = getPasswordStrength(password || '');
 
-export default function PasswordStrengthBar({ password }) {
+  const getStrengthColor = (score) => {
+    if (score < 2) return 'bg-red-500';
+    if (score < 4) return 'bg-yellow-500';
+    return 'bg-green-500';
+  };
 
-    const getStrength = () => {
+  const getStrengthText = (score) => {
+    if (score < 2) return { text: 'Weak', color: 'text-red-600' };
+    if (score < 4) return { text: 'Medium', color: 'text-yellow-600' };
+    return { text: 'Strong', color: 'text-green-600' };
+  };
 
-        if (!password)
-            return "Password is required";
+  if (!password) return null;
 
-        if (password.length < 8)
-            return "Weak";
+  const strengthInfo = getStrengthText(strength.score);
 
-        if (/[A-Z]/.test(password) && /[0-9]/.test(password) && /[!@#$%^&*]/.test(password)) {
+  return (
+    <div className="mt-2">
+      {/* Progress Bar */}
+      <div className="flex space-x-1">
+        {[1, 2, 3, 4, 5].map((level) => (
+          <div
+            key={level}
+            className={`h-2 flex-1 rounded-full ${level <= strength.score
+                ? getStrengthColor(strength.score)
+                : 'bg-gray-200'
+              } transition-colors duration-200`}
+          />
+        ))}
+      </div>
 
-            return "Strong";
-        }
+      {/* Strength Text */}
+      <div className="flex justify-between items-center mt-1">
+        <span className={`text-sm font-medium ${strengthInfo.color}`}>
+          Password strength: {strengthInfo.text}
+        </span>
+        <span className="text-xs text-gray-500">
+          {strength.score}/5
+        </span>
+      </div>
 
-        return "Medium";
-    };
-
-    const strength = getStrength();
-
-    const getColor = () => {
-
-        if (strength === "Strong")
-            return "green";
-
-        if (strength === "Medium")
-            return "orange";
-
-        return "red";
-    };
-
-    return(
-        <div className = "mt-2">
-            <small>
-                Password Strength:{" "}
-                <span style = {{color : getColor(), fontWeight : "bold"}}>
-                    {strength}
-                </span>
-            </small>
+      {/* Detailed Requirements */}
+      {showDetails && (
+        <div className="mt-3 space-y-2">
+          <p className="text-xs text-gray-600 font-medium">Requirements:</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-1 text-xs">
+            <div className={`flex items-center space-x-2 ${strength.checks.length ? 'text-green-600' : 'text-gray-400'}`}>
+              <span>{strength.checks.length ? '✓' : '○'}</span>
+              <span>At least 8 characters</span>
+            </div>
+            <div className={`flex items-center space-x-2 ${strength.checks.lowercase ? 'text-green-600' : 'text-gray-400'}`}>
+              <span>{strength.checks.lowercase ? '✓' : '○'}</span>
+              <span>Lowercase letter</span>
+            </div>
+            <div className={`flex items-center space-x-2 ${strength.checks.uppercase ? 'text-green-600' : 'text-gray-400'}`}>
+              <span>{strength.checks.uppercase ? '✓' : '○'}</span>
+              <span>Uppercase letter</span>
+            </div>
+            <div className={`flex items-center space-x-2 ${strength.checks.number ? 'text-green-600' : 'text-gray-400'}`}>
+              <span>{strength.checks.number ? '✓' : '○'}</span>
+              <span>Number</span>
+            </div>
+            <div className={`flex items-center space-x-2 ${strength.checks.special ? 'text-green-600' : 'text-gray-400'} sm:col-span-2`}>
+              <span>{strength.checks.special ? '✓' : '○'}</span>
+              <span>Special character (@$!%*?&)</span>
+            </div>
+          </div>
         </div>
-    );
+      )}
+    </div>
+  );
+};
 
-}
+export default PasswordStrengthBar;

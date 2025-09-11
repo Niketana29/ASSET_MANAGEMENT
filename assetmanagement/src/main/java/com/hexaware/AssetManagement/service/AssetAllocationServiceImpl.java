@@ -1,81 +1,220 @@
-package com.hexaware.assetManagement.service;
+package com.hexaware.AssetManagement.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.hexaware.assetManagement.entities.AssetAllocation;
-import com.hexaware.assetManagement.exception.BusinessException;
-import com.hexaware.assetManagement.exception.ResourceNotFoundException;
-import com.hexaware.assetManagement.repository.AssetAllocationRepository;
+import com.hexaware.AssetManagement.dto.AssetAllocationResponseDto;
+import com.hexaware.AssetManagement.dto.AssetRequestDto;
+import com.hexaware.AssetManagement.entities.Asset;
+import com.hexaware.AssetManagement.entities.AssetAllocation;
+import com.hexaware.AssetManagement.entities.Category;
+import com.hexaware.AssetManagement.entities.Employee;
+import com.hexaware.AssetManagement.exception.BusinessException;
+import com.hexaware.AssetManagement.exception.ResourceNotFoundException;
+import com.hexaware.AssetManagement.repository.AssetAllocationRepository;
+import com.hexaware.AssetManagement.repository.AssetRepository;
+import com.hexaware.AssetManagement.repository.CategoryRepository;
+import com.hexaware.AssetManagement.repository.EmployeeRepository;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Service
+@Transactional
 public class AssetAllocationServiceImpl implements IAssetAllocationService {
 
-	
+	private static final Logger logger = LoggerFactory.getLogger(AssetAllocationServiceImpl.class);
+
 	@Autowired
-	AssetAllocationRepository allocationRepo;
-	
+	private AssetAllocationRepository allocationRepository;
+
+	@Autowired
+	private EmployeeRepository employeeRepository;
+
+	@Autowired
+	private AssetRepository assetRepository;
+
+	@Autowired
+	private CategoryRepository categoryRepository;
+
 	@Override
-	public AssetAllocation allocateAsset(AssetAllocation allocation) {
-		// TODO Auto-generated method stub
-        log.info("Service - allocateAsset() called with: {}", allocation);
-        if (allocation.getEmployee() == null) {
-            throw new BusinessException("Employee must be provided for allocation");
-        }
-        if (allocation.getAsset() == null) {
-            throw new BusinessException("Asset must be provided for allocation");
-        }
-        if (allocation.getAllocationDate() != null && allocation.getReturnDate() != null &&
-            allocation.getReturnDate().before(allocation.getAllocationDate())) {
-            throw new BusinessException("Return date cannot be before allocation date");
-        }
-		return allocationRepo.save(allocation);
+	public AssetAllocationResponseDto requestAsset(AssetRequestDto requestDto) {
+		logger.info("Processing asset request for employee: {}, asset: {}", requestDto.getEmployeeId(),
+				requestDto.getAssetName());
+
+		Employee employee = employeeRepository.findById(requestDto.getEmployeeId())
+				.orElseThrow(() -> new ResourceNotFoundException("Employee", "id", requestDto.getEmployeeId()));
+
+		// Find available asset by name
+		List<Asset> availableAssets = assetRepository
+				.findByStatusAndAssetNameContainingIgnoreCase(Asset.AssetStatus.AVAILABLE, requestDto.getAssetName());
+
+		if (availableAssets.isEmpty()) {
+			throw new BusinessException("No available assets found with name: " + requestDto.getAssetName());
+		}
+
+		// Get the first available asset
+		Asset asset = availableAssets.get(0);
+
+		// Check if asset is already allocated to someone
+		List<AssetAllocation> activeAllocations = allocationRepository
+				.findActiveAllocationsByAssetId(asset.getAssetId());
+		if (!activeAllocations.isEmpty()) {
+			throw new BusinessException("Asset is already allocated to another employee");
+		}
+
+		// Create allocation
+		AssetAllocation allocation = new AssetAllocation();
+		allocation.setEmployee(employee);
+		allocation.setAsset(asset);
+		allocation.setRequestReason(requestDto.getRequestReason());
+
+		// Check if category supports auto-approval
+		Category category = asset.getCategory();
+		if (category.getIsAutoApproved()) {
+			// Auto-approve simple assets
+			allocation.setStatus(AssetAllocation.AllocationStatus.APPROVED);
+			allocation.setAllocatedDate(LocalDateTime.now());
+			allocation.setAdminComments("Auto-approved for simple asset category");
+
+			// Update asset status
+			asset.setStatus(Asset.AssetStatus.ALLOCATED);
+			assetRepository.save(asset);
+
+			logger.info("Asset request auto-approved for employee: {}, asset: {}", employee.getEmployeeId(),
+					asset.getAssetName());
+		} else {
+			// Complex assets need admin approval
+			allocation.setStatus(AssetAllocation.AllocationStatus.REQUESTED);
+
+			logger.info("Asset request submitted for admin approval - employee: {}, asset: {}",
+					employee.getEmployeeId(), asset.getAssetName());
+		}
+
+		AssetAllocation savedAllocation = allocationRepository.save(allocation);
+		return convertToResponseDto(savedAllocation);
 	}
 
 	@Override
-	public AssetAllocation updateAllocation(AssetAllocation allocation) {
-		// TODO Auto-generated method stub
-        log.info("Service - updateAllocation() called with: {}", allocation);
-        if (!allocationRepo.existsById(allocation.getAllocId())) {
-            throw new ResourceNotFoundException(HttpStatus.NOT_FOUND, "Cannot update — Allocation not found with ID: " + allocation.getAllocId());
-        }
-        
-        if (allocation.getReturnDate() != null && allocation.getAllocationDate() != null &&
-                allocation.getReturnDate().before(allocation.getAllocationDate())) {
-                throw new BusinessException("Return date cannot be before allocation date");
-        }
-		return allocationRepo.save(allocation);
+	public List<AssetAllocationResponseDto> getEmployeeAllocations(Long employeeId) {
+		return allocationRepository.findByEmployeeId(employeeId).stream().map(this::convertToResponseDto)
+				.collect(Collectors.toList());
 	}
 
 	@Override
-	public AssetAllocation getAllocationById(int allocId) {
-		// TODO Auto-generated method stub
-        log.debug("Service - getAllocationById() called with ID: {}", allocId);
-		return allocationRepo.findById(allocId).orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND, "Allocation not found with ID: " + allocId));
+	public List<AssetAllocationResponseDto> getAllAllocations() {
+		return allocationRepository.findAllWithDetails().stream().map(this::convertToResponseDto)
+				.collect(Collectors.toList());
 	}
 
 	@Override
-	public String deleteAllocationById(int allocId) {
-		// TODO Auto-generated method stub
-        log.warn("Service - deleteAllocationById() called with ID: {}", allocId);
-        if (!allocationRepo.existsById(allocId)) {
-            throw new ResourceNotFoundException(HttpStatus.NOT_FOUND, "Cannot delete — Allocation not found with ID: " + allocId);
-        }
-		allocationRepo.deleteById(allocId);
-		return "Allocation deleted successfully";
+	public List<AssetAllocationResponseDto> getPendingAllocations() {
+		return allocationRepository.findByStatusWithDetails(AssetAllocation.AllocationStatus.REQUESTED).stream()
+				.map(this::convertToResponseDto).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<AssetAllocation> getAllAllocations() {
-		// TODO Auto-generated method stub
-        log.debug("Service - getAllAllocations() called");
-		return allocationRepo.findAll();
+	public AssetAllocationResponseDto approveAllocation(Long allocationId, String adminComments) {
+		logger.info("Approving allocation: {}", allocationId);
+
+		AssetAllocation allocation = allocationRepository.findById(allocationId)
+				.orElseThrow(() -> new ResourceNotFoundException("Allocation", "id", allocationId));
+
+		if (allocation.getStatus() != AssetAllocation.AllocationStatus.REQUESTED) {
+			throw new BusinessException("Only requested allocations can be approved");
+		}
+
+		// Update allocation status
+		allocation.setStatus(AssetAllocation.AllocationStatus.APPROVED);
+		allocation.setAllocatedDate(LocalDateTime.now());
+		allocation.setAdminComments(adminComments);
+
+		// Update asset status
+		Asset asset = allocation.getAsset();
+		asset.setStatus(Asset.AssetStatus.ALLOCATED);
+		assetRepository.save(asset);
+
+		AssetAllocation savedAllocation = allocationRepository.save(allocation);
+
+		logger.info("Allocation approved successfully: {}", allocationId);
+		return convertToResponseDto(savedAllocation);
 	}
 
+	@Override
+	public AssetAllocationResponseDto rejectAllocation(Long allocationId, String adminComments) {
+		logger.info("Rejecting allocation: {}", allocationId);
+
+		AssetAllocation allocation = allocationRepository.findById(allocationId)
+				.orElseThrow(() -> new ResourceNotFoundException("Allocation", "id", allocationId));
+
+		if (allocation.getStatus() != AssetAllocation.AllocationStatus.REQUESTED) {
+			throw new BusinessException("Only requested allocations can be rejected");
+		}
+
+		// Update allocation status
+		allocation.setStatus(AssetAllocation.AllocationStatus.REJECTED);
+		allocation.setAdminComments(adminComments);
+
+		AssetAllocation savedAllocation = allocationRepository.save(allocation);
+
+		logger.info("Allocation rejected successfully: {}", allocationId);
+		return convertToResponseDto(savedAllocation);
+	}
+
+	@Override
+	public AssetAllocationResponseDto returnAsset(Long allocationId) {
+		logger.info("Processing asset return: {}", allocationId);
+
+		AssetAllocation allocation = allocationRepository.findById(allocationId)
+				.orElseThrow(() -> new ResourceNotFoundException("Allocation", "id", allocationId));
+
+		if (allocation.getStatus() != AssetAllocation.AllocationStatus.APPROVED) {
+			throw new BusinessException("Only approved allocations can be returned");
+		}
+
+		// Update allocation status
+		allocation.setStatus(AssetAllocation.AllocationStatus.RETURNED);
+		allocation.setReturnDate(LocalDateTime.now());
+
+		// Update asset status
+		Asset asset = allocation.getAsset();
+		asset.setStatus(Asset.AssetStatus.AVAILABLE);
+		assetRepository.save(asset);
+
+		AssetAllocation savedAllocation = allocationRepository.save(allocation);
+
+		logger.info("Asset returned successfully: {}", allocationId);
+		return convertToResponseDto(savedAllocation);
+	}
+
+	@Override
+	public AssetAllocationResponseDto getAllocationById(Long allocationId) {
+		AssetAllocation allocation = allocationRepository.findById(allocationId)
+				.orElseThrow(() -> new ResourceNotFoundException("Allocation", "id", allocationId));
+		return convertToResponseDto(allocation);
+	}
+
+	private AssetAllocationResponseDto convertToResponseDto(AssetAllocation allocation) {
+		AssetAllocationResponseDto dto = new AssetAllocationResponseDto();
+		dto.setAllocationId(allocation.getAllocationId());
+		dto.setEmployeeId(allocation.getEmployee().getEmployeeId());
+		dto.setEmployeeName(allocation.getEmployee().getEmployeeName());
+		dto.setEmployeeEmail(allocation.getEmployee().getEmail());
+		dto.setAssetId(allocation.getAsset().getAssetId());
+		dto.setAssetNo(allocation.getAsset().getAssetNo());
+		dto.setAssetName(allocation.getAsset().getAssetName());
+		dto.setCategoryName(allocation.getAsset().getCategory().getCategoryName());
+		dto.setAllocatedDate(allocation.getAllocatedDate());
+		dto.setReturnDate(allocation.getReturnDate());
+		dto.setStatus(allocation.getStatus().toString());
+		dto.setRequestReason(allocation.getRequestReason());
+		dto.setAdminComments(allocation.getAdminComments());
+		dto.setCreatedAt(allocation.getCreatedAt());
+		dto.setIsAutoApproved(allocation.getAsset().getCategory().getIsAutoApproved());
+		return dto;
+	}
 }

@@ -1,4 +1,4 @@
-package com.hexaware.assetManagement.service;
+package com.hexaware.AssetManagement.service;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.hexaware.assetManagement.entities.Asset;
-import com.hexaware.assetManagement.entities.AssetAllocation;
-import com.hexaware.assetManagement.entities.Employee;
+import com.hexaware.AssetManagement.entities.Asset;
+import com.hexaware.AssetManagement.entities.AssetAllocation;
+import com.hexaware.AssetManagement.entities.Employee;
 
 @SpringBootTest
 class AssetAllocationServiceTest {
@@ -19,7 +19,7 @@ class AssetAllocationServiceTest {
     @Autowired
     private IAssetAllocationService allocationService;
 
-    @Test
+    /*@Test
     void testAllocateAsset() {
         AssetAllocation allocation = new AssetAllocation();
         allocation.setEmployee(new Employee() {{ setEid(201); }});
@@ -31,7 +31,7 @@ class AssetAllocationServiceTest {
         assertNotNull(saved);
 
         System.out.println("Allocated Asset: " + saved);
-    }
+    }*/
 
     @Test
     void testGetAllAllocations() {

@@ -1,17 +1,25 @@
-package com.hexaware.assetManagement.service;
+package com.hexaware.AssetManagement.service;
 
 import java.util.List;
 
-import com.hexaware.assetManagement.entities.Asset;
+import com.hexaware.AssetManagement.dto.AssetDto;
 
 public interface IAssetService {
-	
-    public Asset addAsset(Asset asset);
-    public Asset updateAsset(Asset asset);
-    
-    public Asset getAssetById(int aid);
-    public String deleteAssetById(int aid);
-    
-    public List<Asset> getAllAssets();
+	public AssetDto createAsset(AssetDto assetDto);
 
+	public AssetDto getAssetById(Long assetId);
+
+	public AssetDto getAssetByAssetNo(String assetNo);
+
+	public List<AssetDto> getAllAssets();
+
+	public List<AssetDto> getAvailableAssets();
+
+	public List<AssetDto> getAssetsByCategory(Long categoryId);
+
+	public List<AssetDto> searchAssetsByName(String assetName);
+
+	public AssetDto updateAsset(Long assetId, AssetDto assetDto);
+
+	public void deleteAsset(Long assetId);
 }

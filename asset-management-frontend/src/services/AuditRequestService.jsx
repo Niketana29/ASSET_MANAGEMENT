@@ -1,38 +1,80 @@
-import api from "./api";
+import api from './api';
 
 class AuditRequestService {
+  async createAuditRequestsForAll() {
+    try {
+      const response = await api.post('/audit-requests/create-all');
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to create audit requests' };
+    }
+  }
+
+  async createAuditRequest(employeeId, assetId) {
+    try {
+      const response = await api.post(`/audit-requests?employeeId=${employeeId}&assetId=${assetId}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to create audit request' };
+    }
+  }
+
+  async getMyAuditRequests(employeeId) {
+    try {
+      const response = await api.get(`/audit-requests/my/${employeeId}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to fetch my audit requests' };
+    }
+  }
+
   async getAllAuditRequests() {
-    const res = await api.get("/api/auditrequests/getall");
-    return res.data;
+    try {
+      const response = await api.get('/audit-requests');
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to fetch all audit requests' };
+    }
   }
 
-  async getAuditRequestById(arid) {
-    const res = await api.get(`/api/auditrequests/getbyid/${arid}`);
-    return res.data;
+  async getPendingAuditRequests() {
+    try {
+      const response = await api.get('/audit-requests/pending');
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to fetch pending audit requests' };
+    }
   }
 
-  async createAuditRequest(request) {
-    const res = await api.post("/api/auditrequests/insert", {
-      eid: request.eid,
-      aid: request.aid,
-      status: request.status || "PENDING" // Default status
-    });
-    return res.data;
+  async verifyAuditRequest(auditId, comments) {
+    try {
+      const response = await api.put(`/audit-requests/${auditId}/verify`, {
+        employeeComments: comments
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to verify audit request' };
+    }
   }
 
-  async updateAuditRequest(request) {
-    const res = await api.put("/api/auditrequests/update", {
-      arid: request.arid,
-      eid: request.eid,
-      aid: request.aid,
-      status: request.status
-    });
-    return res.data;
+  async rejectAuditRequest(auditId, comments) {
+    try {
+      const response = await api.put(`/audit-requests/${auditId}/reject`, {
+        employeeComments: comments
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to reject audit request' };
+    }
   }
 
-  async deleteAuditRequest(arid) {
-    const res = await api.delete(`/api/auditrequests/deletebyid/${arid}`);
-    return res.data;
+  async deleteAuditRequest(auditId) {
+    try {
+      const response = await api.delete(`/audit-requests/${auditId}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to delete audit request' };
+    }
   }
 }
 

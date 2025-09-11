@@ -1,29 +1,49 @@
-import api from "./api";
+import api from './api';
 
 class CategoryService {
   async getAllCategories() {
-    const res = await api.get("/api/categories/getall");
-      return res.data;
+    try {
+      const response = await api.get('/categories');
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to fetch categories' };
+    }
   }
 
-  async getCategoryById(categoryId) {
-    const res = await api.get(`/api/categories/getbyid/${categoryId}`);
-      return res.data;
+  async getCategoryById(id) {
+    try {
+      const response = await api.get(`/categories/${id}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to fetch category details' };
+    }
   }
 
-  async addCategory(category) {
-    const res = await api.post("/api/categories/add", category);
-      return res.data;
+  async createCategory(categoryData) {
+    try {
+      const response = await api.post('/categories', categoryData);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to create category' };
+    }
   }
 
-  async updateCategory(category) {
-    const res = await api.put("/api/categories/update", category);
-      return res.data;
+  async updateCategory(id, categoryData) {
+    try {
+      const response = await api.put(`/categories/${id}`, categoryData);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to update category' };
+    }
   }
 
-  async deleteCategory(categoryId) {
-    const res = await api.delete(`/api/categories/deletebyid/${categoryId}`);
-      return res.data;
+  async deleteCategory(id) {
+    try {
+      const response = await api.delete(`/categories/${id}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to delete category' };
+    }
   }
 }
 

@@ -1,28 +1,30 @@
 import { useEffect, useState } from "react";
-import EmployeeService from "../../services/EmployeeService";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./ManageEmployees.css";
+import employeeService from "../../services/EmployeeService";
 
 export default function ManageEmployees() {
   const [employees, setEmployees] = useState([]);
   const [filteredEmployees, setFilteredEmployees] = useState([]);
   const [newEmployee, setNewEmployee] = useState({
-    ename: "",
+    employeeName: "",
     email: "",
-    gender: "MALE",
-    contactNumber: "",
-    address: "",
-    role: "USER",
+    phoneNumber: "",
+    location: "",
+    department: "",
+    designation: "",
+    role: "EMPLOYEE",
+    isActive: true,
   });
   const [editingId, setEditingId] = useState(null);
   const [search, setSearch] = useState("");
-  const [sortConfig, setSortConfig] = useState({ key: "eid", direction: "asc" });
+  const [sortConfig, setSortConfig] = useState({ key: "employeeId", direction: "asc" });
 
   useEffect(() => loadEmployees(), []);
 
   const loadEmployees = () => {
-    EmployeeService.getAllEmployees()
+    employeeService.getAllEmployees()
       .then((data) => {
         setEmployees(data);
         setFilteredEmployees(data);
@@ -35,10 +37,10 @@ export default function ManageEmployees() {
     setNewEmployee((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleAdd = (e) => {
+  const handleAddOrUpdate = (e) => {
     e.preventDefault();
     if (editingId) {
-      EmployeeService.updateEmployee({ ...newEmployee, eid: editingId })
+      employeeService.updateEmployee(editingId, newEmployee)
         .then(() => {
           toast.success("✅ Employee updated successfully");
           resetForm();
@@ -46,7 +48,7 @@ export default function ManageEmployees() {
         })
         .catch(() => toast.error("❌ Failed to update employee"));
     } else {
-      EmployeeService.addEmployee(newEmployee)
+      employeeService.createEmployee(newEmployee)
         .then(() => {
           toast.success("✅ Employee added successfully");
           resetForm();
@@ -57,13 +59,13 @@ export default function ManageEmployees() {
   };
 
   const handleEdit = (employee) => {
-    setEditingId(employee.eid);
+    setEditingId(employee.employeeId);
     setNewEmployee({ ...employee });
   };
 
-  const handleDelete = (eid) => {
+  const handleDelete = (id) => {
     if (window.confirm("Are you sure you want to delete this employee?")) {
-      EmployeeService.deleteEmployee(eid)
+      employeeService.deleteEmployee(id)
         .then(() => {
           toast.success("🗑️ Employee deleted successfully");
           loadEmployees();
@@ -75,29 +77,29 @@ export default function ManageEmployees() {
   const resetForm = () => {
     setEditingId(null);
     setNewEmployee({
-      ename: "",
+      employeeName: "",
       email: "",
-      gender: "MALE",
-      contactNumber: "",
-      address: "",
-      role: "USER",
+      phoneNumber: "",
+      location: "",
+      department: "",
+      designation: "",
+      role: "EMPLOYEE",
+      isActive: true,
     });
   };
 
-  // Search filter
   const handleSearch = (e) => {
     const query = e.target.value.toLowerCase();
     setSearch(query);
     const filtered = employees.filter(
       (emp) =>
-        emp.ename.toLowerCase().includes(query) ||
+        emp.employeeName.toLowerCase().includes(query) ||
         emp.email.toLowerCase().includes(query) ||
         emp.role.toLowerCase().includes(query)
     );
     setFilteredEmployees(filtered);
   };
 
-  // Sort columns
   const handleSort = (key) => {
     let direction = "asc";
     if (sortConfig.key === key && sortConfig.direction === "asc") {
@@ -116,20 +118,19 @@ export default function ManageEmployees() {
     <div className="container mt-5">
       <h2 className="mb-4">Manage Employees</h2>
 
-      {/* Form Section */}
       <div className="card p-4 shadow-sm mb-4">
         <h5 className="card-title mb-3 text-white bg-primary p-2 rounded">
           {editingId ? "Edit Employee" : "Add New Employee"}
         </h5>
 
-        <form onSubmit={handleAdd} className="row g-3 align-items-center">
+        <form onSubmit={handleAddOrUpdate} className="row g-3 align-items-center">
           <div className="col-12 col-md-6">
             <input
               type="text"
               className="form-control"
-              name="ename"
+              name="employeeName"
               placeholder="Name"
-              value={newEmployee.ename}
+              value={newEmployee.employeeName}
               onChange={handleChange}
               required
             />
@@ -149,9 +150,9 @@ export default function ManageEmployees() {
             <input
               type="text"
               className="form-control"
-              name="contactNumber"
+              name="phoneNumber"
               placeholder="Contact Number"
-              value={newEmployee.contactNumber}
+              value={newEmployee.phoneNumber}
               onChange={handleChange}
             />
           </div>
@@ -159,22 +160,31 @@ export default function ManageEmployees() {
             <input
               type="text"
               className="form-control"
-              name="address"
-              placeholder="Address"
-              value={newEmployee.address}
+              name="location"
+              placeholder="Location"
+              value={newEmployee.location}
               onChange={handleChange}
             />
           </div>
           <div className="col-12 col-md-6">
-            <select
+            <input
+              type="text"
               className="form-control"
-              name="gender"
-              value={newEmployee.gender}
+              name="department"
+              placeholder="Department"
+              value={newEmployee.department}
               onChange={handleChange}
-            >
-              <option value="MALE">Male</option>
-              <option value="FEMALE">Female</option>
-            </select>
+            />
+          </div>
+          <div className="col-12 col-md-6">
+            <input
+              type="text"
+              className="form-control"
+              name="designation"
+              placeholder="Designation"
+              value={newEmployee.designation}
+              onChange={handleChange}
+            />
           </div>
           <div className="col-12 col-md-6">
             <select
@@ -183,7 +193,6 @@ export default function ManageEmployees() {
               value={newEmployee.role}
               onChange={handleChange}
             >
-              <option value="USER">User</option>
               <option value="EMPLOYEE">Employee</option>
               <option value="ADMIN">Admin</option>
             </select>
@@ -193,11 +202,7 @@ export default function ManageEmployees() {
               {editingId ? "Update Employee" : "Add Employee"}
             </button>
             {editingId && (
-              <button
-                type="button"
-                className="btn btn-secondary form-btn"
-                onClick={resetForm}
-              >
+              <button type="button" className="btn btn-secondary form-btn" onClick={resetForm}>
                 Cancel
               </button>
             )}
@@ -205,7 +210,6 @@ export default function ManageEmployees() {
         </form>
       </div>
 
-      {/* Search */}
       <div className="mb-3 d-flex justify-content-end">
         <input
           type="text"
@@ -216,31 +220,22 @@ export default function ManageEmployees() {
         />
       </div>
 
-      {/* Employee Table */}
       <div className="table-responsive shadow-sm">
         <table className="table table-striped table-hover align-middle mb-0">
           <thead className="table-dark">
             <tr>
-              <th onClick={() => handleSort("eid")} className="sortable">
-                ID
-              </th>
-              <th onClick={() => handleSort("ename")} className="sortable">
-                Name
-              </th>
-              <th onClick={() => handleSort("email")} className="sortable">
-                Email
-              </th>
-              <th onClick={() => handleSort("role")} className="sortable">
-                Role
-              </th>
+              <th onClick={() => handleSort("employeeId")} className="sortable">ID</th>
+              <th onClick={() => handleSort("employeeName")} className="sortable">Name</th>
+              <th onClick={() => handleSort("email")} className="sortable">Email</th>
+              <th onClick={() => handleSort("role")} className="sortable">Role</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredEmployees.map((e) => (
-              <tr key={e.eid}>
-                <td>{e.eid}</td>
-                <td>{e.ename}</td>
+              <tr key={e.employeeId}>
+                <td>{e.employeeId}</td>
+                <td>{e.employeeName}</td>
                 <td>{e.email}</td>
                 <td>
                   <span
@@ -256,16 +251,10 @@ export default function ManageEmployees() {
                   </span>
                 </td>
                 <td className="d-flex gap-2 flex-wrap">
-                  <button
-                    className="btn btn-warning btn-sm list-btn"
-                    onClick={() => handleEdit(e)}
-                  >
+                  <button className="btn btn-warning btn-sm list-btn" onClick={() => handleEdit(e)}>
                     Edit
                   </button>
-                  <button
-                    className="btn btn-danger btn-sm list-btn"
-                    onClick={() => handleDelete(e.eid)}
-                  >
+                  <button className="btn btn-danger btn-sm list-btn" onClick={() => handleDelete(e.employeeId)}>
                     Delete
                   </button>
                 </td>

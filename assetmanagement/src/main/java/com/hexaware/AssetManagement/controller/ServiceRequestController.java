@@ -1,9 +1,12 @@
-package com.hexaware.assetManagement.controller;
+package com.hexaware.AssetManagement.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,90 +16,71 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hexaware.assetManagement.dto.ServiceRequestDto;
-import com.hexaware.assetManagement.entities.Asset;
-import com.hexaware.assetManagement.entities.Employee;
-import com.hexaware.assetManagement.entities.ServiceRequest;
-import com.hexaware.assetManagement.exception.BusinessException;
-import com.hexaware.assetManagement.service.IServiceRequestService;
+import com.hexaware.AssetManagement.dto.ServiceRequestDto;
+import com.hexaware.AssetManagement.dto.ServiceRequestResponseDto;
+import com.hexaware.AssetManagement.service.IServiceRequestService;
 
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 
-
-@Slf4j
 @RestController
-@RequestMapping("/api/servicerequests")
+@RequestMapping("/api/service-requests")
+@CrossOrigin(origins = "*")
 public class ServiceRequestController {
-	
+
 	@Autowired
-	IServiceRequestService serviceRequestService;
-	
-	@PostMapping("/insert")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public ServiceRequest createServiceRequest(@Valid @RequestBody ServiceRequestDto srequestDto) {
-		if(srequestDto.getSrid() != null && srequestDto.getSrid() >0) {
-			throw new BusinessException("srId should not be given for insert operation");
-		}
-        log.info("POST /insert - Creating new service request: {}", srequestDto);
-        return serviceRequestService.createServiceRequest(mapDtoToEntity(srequestDto));
-    }
+	private IServiceRequestService serviceRequestService;
 
+	@PostMapping
+	@PreAuthorize("hasRole('USER')")
+	public ResponseEntity<ServiceRequestResponseDto> createServiceRequest(
+			@Valid @RequestBody ServiceRequestDto serviceRequestDto) {
+		ServiceRequestResponseDto response = serviceRequestService.createServiceRequest(serviceRequestDto);
+		return ResponseEntity.ok(response);
+	}
 
-    @PutMapping("/update")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public ServiceRequest updateServiceRequest(@Valid @RequestBody ServiceRequestDto srequestDto) {
-        if(srequestDto.getSrid() == null || srequestDto.getSrid() <= 0) {
-        	throw new BusinessException("Invalid srId");
-        }
-        log.info("PUT /update - Updating service request: {}", srequestDto);
-        return serviceRequestService.updateServiceRequest(mapDtoToEntity(srequestDto));
-    }
+	@GetMapping("/my/{employeeId}")
+	@PreAuthorize("hasRole('USER') and @employeeService.getEmployeeById(#employeeId).email == authentication.name")
+	public ResponseEntity<List<ServiceRequestResponseDto>> getMyServiceRequests(@PathVariable Long employeeId) {
+		List<ServiceRequestResponseDto> requests = serviceRequestService.getEmployeeServiceRequests(employeeId);
+		return ResponseEntity.ok(requests);
+	}
 
+	@GetMapping
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<List<ServiceRequestResponseDto>> getAllServiceRequests() {
+		List<ServiceRequestResponseDto> requests = serviceRequestService.getAllServiceRequests();
+		return ResponseEntity.ok(requests);
+	}
 
-    @GetMapping("/getbyid/{srid}")
-    @PreAuthorize("hasAnyAuthority('ADMIN' , 'USER')")
-    public ServiceRequest getServiceRequestById(@PathVariable int srid) {
-        log.info("GET /getbyid/{} - Fetching service request by ID", srid);
-        return serviceRequestService.getServiceRequestById(srid);
-    }
+	@GetMapping("/pending")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<List<ServiceRequestResponseDto>> getPendingServiceRequests() {
+		List<ServiceRequestResponseDto> requests = serviceRequestService.getPendingServiceRequests();
+		return ResponseEntity.ok(requests);
+	}
 
+	@GetMapping("/{id}")
+	@PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+	public ResponseEntity<ServiceRequestResponseDto> getServiceRequestById(@PathVariable Long id) {
+		ServiceRequestResponseDto request = serviceRequestService.getServiceRequestById(id);
+		return ResponseEntity.ok(request);
+	}
 
-    @DeleteMapping("/deletebyid/{srid}")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public String deleteServiceRequest(@PathVariable int srid) {
-        log.warn("DELETE /deletebyid/{} - Deleting service request", srid);
-        serviceRequestService.deleteServiceRequestById(srid);
-        return "Service request with ID " + srid + " deleted successfully.";
-    }
+	@PutMapping("/{id}/status")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<ServiceRequestResponseDto> updateServiceRequestStatus(@PathVariable Long id,
+			@RequestBody Map<String, String> request) {
+		String status = request.get("status");
+		String comments = request.getOrDefault("adminComments", "");
+		ServiceRequestResponseDto serviceRequest = serviceRequestService.updateServiceRequestStatus(id, status,
+				comments);
+		return ResponseEntity.ok(serviceRequest);
+	}
 
-
-    @GetMapping("/getall")
-    @PreAuthorize("hasAnyAuthority('ADMIN' , 'USER')")
-    public List<ServiceRequest> getAllServiceRequests() {
-        log.info("GET /getall - Fetching all service requests");
-        return serviceRequestService.getAllServiceRequests();
-    }
-    
-    private ServiceRequest mapDtoToEntity(ServiceRequestDto dto) {
-        ServiceRequest sr = new ServiceRequest();
-        if(dto.getSrid() != null && dto.getSrid() > 0) {
-            sr.setSrid(dto.getSrid());
-        }
-
-
-        Employee e = new Employee();
-        e.setEid(dto.getEid());
-        sr.setEmployee(e);
-
-        Asset a = new Asset();
-        a.setAid(dto.getAid());
-        sr.setAsset(a);
-
-        sr.setDescription(dto.getDescription());
-        sr.setIssueType(dto.getIssueType());
-        sr.setStatus(dto.getStatus());
-        return sr;
-    }
-
+	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<Void> deleteServiceRequest(@PathVariable Long id) {
+		serviceRequestService.deleteServiceRequest(id);
+		return ResponseEntity.ok().build();
+	}
 }

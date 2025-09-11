@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import AssetAllocationService from "../../services/AssetAllocationService";
-import ServiceRequestService from "../../services/ServiceRequestService";
-import AuthService from "../../services/AuthService";
 import "./RequestHistory.css";
+import authService from "../../services/AuthService";
+import allocationService from "../../services/allocationService";
+import serviceRequestService from "../../services/serviceRequestService";
+
 
 export default function RequestHistory() {
-  const user = AuthService.getCurrentUser();
+  const user = authService.getCurrentUser();
   const [allocations, setAllocations] = useState([]);
   const [serviceRequests, setServiceRequests] = useState([]);
   const [error, setError] = useState("");
@@ -16,11 +17,11 @@ export default function RequestHistory() {
       return;
     }
 
-    AssetAllocationService.getAllocationsByEmployee(user.employeeId)
+    allocationService.getAllocationsByEmployee(user.employeeId)
       .then(setAllocations)
       .catch(() => setError("Failed to load allocations"));
 
-    ServiceRequestService.getRequestsByEmployee(user.employeeId)
+    serviceRequestService.getServiceRequestsByEmployee(user.employeeId)
       .then(setServiceRequests)
       .catch(() => setError("Failed to load service requests"));
   }, [user]);
@@ -33,7 +34,7 @@ export default function RequestHistory() {
 
       {/* Asset Allocations */}
       <section className="history-section">
-        <h4 className="section-title">Asset Allocation Requests</h4>
+        <h4 className="section-title">Asset Allocations</h4>
         {allocations.length === 0 ? (
           <p className="no-history">No allocation history.</p>
         ) : (
@@ -50,22 +51,22 @@ export default function RequestHistory() {
               </thead>
               <tbody>
                 {allocations.map((a) => (
-                  <tr key={a.allocId}>
-                    <td>{a.allocId}</td>
-                    <td>{a.assetName}</td>
+                  <tr key={a.allocationId}>
+                    <td>{a.allocationId}</td>
+                    <td>{a.asset?.assetName}</td>
                     <td>
-                      {a.status === "APPROVED" && (
+                      {a.status === "ACTIVE" && (
                         <span className="badge bg-success">{a.status}</span>
                       )}
-                      {a.status === "PENDING" && (
-                        <span className="badge bg-warning">REQUESTED</span>
+                      {a.status === "RETURNED" && (
+                        <span className="badge bg-warning">{a.status}</span>
                       )}
-                      {a.status === "REJECTED" && (
+                      {a.status === "DAMAGED" && (
                         <span className="badge bg-danger">{a.status}</span>
                       )}
                     </td>
-                    <td>{new Date(a.allocationDate).toLocaleDateString()}</td>
-                    <td>{new Date(a.returnDate).toLocaleDateString()}</td>
+                    <td>{a.allocationDate}</td>
+                    <td>{a.returnDate || "-"}</td>
                   </tr>
                 ))}
               </tbody>
@@ -93,9 +94,9 @@ export default function RequestHistory() {
               </thead>
               <tbody>
                 {serviceRequests.map((r) => (
-                  <tr key={r.srid}>
-                    <td>{r.srid}</td>
-                    <td>{r.asset?.aname}</td>
+                  <tr key={r.requestId}>
+                    <td>{r.requestId}</td>
+                    <td>{r.asset?.assetName}</td>
                     <td>{r.issueType}</td>
                     <td>{r.description}</td>
                     <td>
@@ -107,6 +108,9 @@ export default function RequestHistory() {
                       )}
                       {r.status === "REJECTED" && (
                         <span className="badge bg-danger">{r.status}</span>
+                      )}
+                      {r.status === "IN_PROGRESS" && (
+                        <span className="badge bg-info">{r.status}</span>
                       )}
                     </td>
                   </tr>

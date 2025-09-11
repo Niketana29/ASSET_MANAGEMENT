@@ -1,26 +1,30 @@
-package com.hexaware.assetManagement.controller;
+package com.hexaware.AssetManagement.controller;
 
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/api/test")
+@CrossOrigin(origins = "*")
 public class OAuthTestController {
-	
-    @GetMapping("/")
-    public String sayHello() {
-        return "Hello Friends, Welcome back";
-    }
 
-    @GetMapping("/secure")
-    public String secureResource() {
-        return "This is secured resource, access using app login / GitHub credentials";
-    }
+	@GetMapping("/all")
+	public String allAccess() {
+		return "Public Content.";
+	}
 
-    @GetMapping("/oauth2/success")
-    public String oauth2Success(OAuth2AuthenticationToken authentication) {
-        String githubUsername = authentication.getPrincipal().getAttribute("login");
-        return "OAuth2 Login Successful! GitHub username: " + githubUsername;
-    }
+	@GetMapping("/user")
+	@PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+	public String userAccess() {
+		return "User Content.";
+	}
 
+	@GetMapping("/admin")
+	@PreAuthorize("hasRole('ADMIN')")
+	public String adminAccess() {
+		return "Admin Content.";
+	}
 }

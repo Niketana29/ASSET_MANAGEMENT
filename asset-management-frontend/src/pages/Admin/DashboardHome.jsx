@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import AssetService from "../../services/AssetService";
-import EmployeeService from "../../services/EmployeeService";
-import AuditRequestService from "../../services/AuditRequestService";
-import AllocationService from "../../services/AllocationService";
-import { apiErrorHandler } from "../../utils/apiErrorHandler";
+import assetService from "../../services/assetService";
+import employeeService from "../../services/EmployeeService";
+import auditService from "../../services/auditService";
+import allocationService from "../../services/allocationService";
+
 
 export default function DashboardHome() {
   const [stats, setStats] = useState({
@@ -12,32 +12,39 @@ export default function DashboardHome() {
     audits: 0,
     allocations: 0,
   });
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchStats();
   }, []);
 
   const fetchStats = async () => {
+    setLoading(true);
     try {
-      const [assetRes, empRes, auditRes, allocRes] = await Promise.all([
-        AssetService.getAllAssets(),
-        EmployeeService.getAllEmployees(),
-        AuditRequestService.getAllAuditRequests(),
-        AllocationService.getAllAllocations(),
+      const [assets, employees, audits, allocations] = await Promise.all([
+        assetService.getAllAssets(),
+        employeeService.getAllEmployees(),
+        auditService.getAllAuditRequests(),
+        allocationService.getAllAllocations(),
       ]);
+
       setStats({
-        assets: assetRes.data.length,
-        employees: empRes.data.length,
-        audits: auditRes.data.filter((a) => a.status === "PENDING").length,
-        allocations: allocRes.data.length,
+        assets: assets.length,
+        employees: employees.length,
+        audits: audits.filter((a) => (a.status || "").toUpperCase() === "PENDING").length,
+        allocations: allocations.length,
       });
     } catch (err) {
-      apiErrorHandler(err);
+      console.error("Failed to load dashboard stats", err);
+    } finally {
+      setLoading(false);
     }
   };
 
+  if (loading) return <div className="p-6">Loading dashboard metrics...</div>;
+
   return (
-    <div className="p-6 grid grid-cols-2 gap-6">
+    <div className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
       <div className="bg-blue-100 p-6 rounded shadow">
         <h3 className="text-lg font-bold">Total Assets</h3>
         <p className="text-2xl">{stats.assets}</p>

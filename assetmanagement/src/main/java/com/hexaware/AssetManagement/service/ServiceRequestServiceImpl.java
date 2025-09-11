@@ -1,76 +1,157 @@
-package com.hexaware.assetManagement.service;
+package com.hexaware.AssetManagement.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.hexaware.assetManagement.entities.ServiceRequest;
-import com.hexaware.assetManagement.exception.BusinessException;
-import com.hexaware.assetManagement.exception.ResourceNotFoundException;
-import com.hexaware.assetManagement.repository.ServiceRequestRepository;
+import com.hexaware.AssetManagement.dto.ServiceRequestDto;
+import com.hexaware.AssetManagement.dto.ServiceRequestResponseDto;
+import com.hexaware.AssetManagement.entities.Asset;
+import com.hexaware.AssetManagement.entities.Employee;
+import com.hexaware.AssetManagement.entities.ServiceRequest;
+import com.hexaware.AssetManagement.exception.BusinessException;
+import com.hexaware.AssetManagement.exception.ResourceNotFoundException;
+import com.hexaware.AssetManagement.repository.AssetRepository;
+import com.hexaware.AssetManagement.repository.EmployeeRepository;
+import com.hexaware.AssetManagement.repository.ServiceRequestRepository;
 
-import lombok.extern.slf4j.Slf4j;
-
-
-@Slf4j
 @Service
+@Transactional
 public class ServiceRequestServiceImpl implements IServiceRequestService {
 
-	
+	private static final Logger logger = LoggerFactory.getLogger(ServiceRequestServiceImpl.class);
+
 	@Autowired
-	ServiceRequestRepository serviceRequestRepo;
-	
+	private ServiceRequestRepository serviceRequestRepository;
+
+	@Autowired
+	private EmployeeRepository employeeRepository;
+
+	@Autowired
+	private AssetRepository assetRepository;
+
 	@Override
-	public ServiceRequest createServiceRequest(ServiceRequest srequest) {
-		// TODO Auto-generated method stub
-        log.info("Service - createServiceRequest() called with: {}", srequest);
-        if (srequest.getEmployee() == null) {
-            throw new BusinessException("Employee must be specified for service request");
-        }
-        if (srequest.getAsset() == null) {
-            throw new BusinessException("Asset must be specified for service request");
-        }
-        if (srequest.getIssueType() == null || srequest.getIssueType().trim().isEmpty()) {
-            throw new BusinessException("Issue type is required");
-        }
-		return serviceRequestRepo.save(srequest);
+	public ServiceRequestResponseDto createServiceRequest(ServiceRequestDto serviceRequestDto) {
+		logger.info("Creating service request for asset: {}", serviceRequestDto.getAssetNo());
+
+		Employee employee = employeeRepository.findById(serviceRequestDto.getEmployeeId())
+				.orElseThrow(() -> new ResourceNotFoundException("Employee", "id", serviceRequestDto.getEmployeeId()));
+
+		Asset asset = assetRepository.findById(serviceRequestDto.getAssetId())
+				.orElseThrow(() -> new ResourceNotFoundException("Asset", "id", serviceRequestDto.getAssetId()));
+
+		// Verify asset number matches
+		if (!asset.getAssetNo().equals(serviceRequestDto.getAssetNo())) {
+			throw new BusinessException("Asset number does not match with asset ID");
+		}
+
+		ServiceRequest serviceRequest = new ServiceRequest();
+		serviceRequest.setEmployee(employee);
+		serviceRequest.setAsset(asset);
+		serviceRequest.setAssetNo(serviceRequestDto.getAssetNo());
+		serviceRequest.setDescription(serviceRequestDto.getDescription());
+		serviceRequest.setIssueType(ServiceRequest.IssueType.valueOf(serviceRequestDto.getIssueType()));
+		serviceRequest.setStatus(ServiceRequest.ServiceStatus.PENDING);
+
+		ServiceRequest savedRequest = serviceRequestRepository.save(serviceRequest);
+
+		logger.info("Service request created successfully with ID: {}", savedRequest.getRequestId());
+		return convertToResponseDto(savedRequest);
 	}
 
 	@Override
-	public ServiceRequest updateServiceRequest(ServiceRequest srequest) {
-		// TODO Auto-generated method stub
-        log.info("Service - updateServiceRequest() called with: {}", srequest);
-        if (!serviceRequestRepo.existsById(srequest.getSrid())) {
-            throw new ResourceNotFoundException(HttpStatus.NOT_FOUND, "Cannot update — ServiceRequest not found with ID: " + srequest.getSrid());
-        }
-		return serviceRequestRepo.save(srequest);
+	public ServiceRequestResponseDto getServiceRequestById(Long requestId) {
+		ServiceRequest serviceRequest = serviceRequestRepository.findById(requestId)
+				.orElseThrow(() -> new ResourceNotFoundException("ServiceRequest", "id", requestId));
+		return convertToResponseDto(serviceRequest);
 	}
 
 	@Override
-	public ServiceRequest getServiceRequestById(int srid) {
-		// TODO Auto-generated method stub
-        log.debug("Service - getServiceRequestById() called with ID: {}", srid);
-		return serviceRequestRepo.findById(srid).orElseThrow(() -> new ResourceNotFoundException( HttpStatus.NOT_FOUND, "ServiceRequest not found with ID: " + srid));
+	public List<ServiceRequestResponseDto> getEmployeeServiceRequests(Long employeeId) {
+		return serviceRequestRepository.findByEmployeeId(employeeId).stream().map(this::convertToResponseDto)
+				.collect(Collectors.toList());
 	}
 
 	@Override
-	public String deleteServiceRequestById(int srid) {
-		// TODO Auto-generated method stub
-        log.warn("Service - deleteServiceRequestById() called with ID: {}", srid);
-        if (!serviceRequestRepo.existsById(srid)) {
-            throw new ResourceNotFoundException(HttpStatus.NOT_FOUND, "Cannot delete — ServiceRequest not found with ID: " + srid);
-        }
-		serviceRequestRepo.deleteById(srid);
-		return "Service Request Deleted successfully";
+	public List<ServiceRequestResponseDto> getAllServiceRequests() {
+		return serviceRequestRepository.findAllWithDetails().stream().map(this::convertToResponseDto)
+				.collect(Collectors.toList());
 	}
 
 	@Override
-	public List<ServiceRequest> getAllServiceRequests() {
-		// TODO Auto-generated method stub
-        log.debug("Service - getAllServiceRequests() called");
-		return serviceRequestRepo.findAll();
+	public List<ServiceRequestResponseDto> getPendingServiceRequests() {
+		return serviceRequestRepository.findByStatusWithDetails(ServiceRequest.ServiceStatus.PENDING).stream()
+				.map(this::convertToResponseDto).collect(Collectors.toList());
 	}
 
+	@Override
+	public ServiceRequestResponseDto updateServiceRequestStatus(Long requestId, String status, String adminComments) {
+		logger.info("Updating service request status: {}", requestId);
+
+		ServiceRequest serviceRequest = serviceRequestRepository.findById(requestId)
+				.orElseThrow(() -> new ResourceNotFoundException("ServiceRequest", "id", requestId));
+
+		try {
+			ServiceRequest.ServiceStatus newStatus = ServiceRequest.ServiceStatus.valueOf(status);
+			serviceRequest.setStatus(newStatus);
+			serviceRequest.setAdminComments(adminComments);
+
+			// If request is completed, update asset status if needed
+			if (newStatus == ServiceRequest.ServiceStatus.COMPLETED) {
+				Asset asset = serviceRequest.getAsset();
+				if (asset.getStatus() == Asset.AssetStatus.MAINTENANCE) {
+					asset.setStatus(Asset.AssetStatus.AVAILABLE);
+					assetRepository.save(asset);
+				}
+			} else if (newStatus == ServiceRequest.ServiceStatus.IN_PROGRESS) {
+				// Set asset to maintenance if service is in progress
+				Asset asset = serviceRequest.getAsset();
+				asset.setStatus(Asset.AssetStatus.MAINTENANCE);
+				assetRepository.save(asset);
+			}
+
+			ServiceRequest updatedRequest = serviceRequestRepository.save(serviceRequest);
+
+			logger.info("Service request status updated successfully: {}", requestId);
+			return convertToResponseDto(updatedRequest);
+
+		} catch (IllegalArgumentException e) {
+			throw new BusinessException("Invalid status: " + status);
+		}
+	}
+
+	@Override
+	public void deleteServiceRequest(Long requestId) {
+		logger.info("Deleting service request: {}", requestId);
+
+		if (!serviceRequestRepository.existsById(requestId)) {
+			throw new ResourceNotFoundException("ServiceRequest", "id", requestId);
+		}
+
+		serviceRequestRepository.deleteById(requestId);
+		logger.info("Service request deleted successfully: {}", requestId);
+	}
+
+	private ServiceRequestResponseDto convertToResponseDto(ServiceRequest serviceRequest) {
+		ServiceRequestResponseDto dto = new ServiceRequestResponseDto();
+		dto.setRequestId(serviceRequest.getRequestId());
+		dto.setEmployeeId(serviceRequest.getEmployee().getEmployeeId());
+		dto.setEmployeeName(serviceRequest.getEmployee().getEmployeeName());
+		dto.setEmployeeEmail(serviceRequest.getEmployee().getEmail());
+		dto.setAssetId(serviceRequest.getAsset().getAssetId());
+		dto.setAssetNo(serviceRequest.getAssetNo());
+		dto.setAssetName(serviceRequest.getAsset().getAssetName());
+		dto.setDescription(serviceRequest.getDescription());
+		dto.setIssueType(serviceRequest.getIssueType().toString());
+		dto.setStatus(serviceRequest.getStatus().toString());
+		dto.setAdminComments(serviceRequest.getAdminComments());
+		dto.setCreatedAt(serviceRequest.getCreatedAt());
+		dto.setUpdatedAt(serviceRequest.getUpdatedAt());
+		return dto;
+	}
 }

@@ -1,6 +1,6 @@
-package com.hexaware.assetManagement.restcontroller;
+package com.hexaware.AssetManagement.restcontroller;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
 
@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.client.RestTemplate;
 
-import com.hexaware.assetManagement.dto.AssetDto;
-import com.hexaware.assetManagement.entities.Asset;
+import com.hexaware.AssetManagement.dto.AssetDto;
+import com.hexaware.AssetManagement.entities.Asset;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -29,8 +29,8 @@ class AssetRestControllerTest {
     @Test
     void testAddAsset() {
         AssetDto dto = new AssetDto();
-        dto.setAname("Laptop");
-        dto.setCategory("Electronics");
+        dto.setAssetName("Laptop");
+        dto.setCategoryName("Electronics");
         dto.setStatus("Available");
 
         Asset asset = restTemplate.postForObject(baseURL + "/add", dto, Asset.class);

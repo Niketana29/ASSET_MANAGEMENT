@@ -1,4 +1,4 @@
-package com.hexaware.assetManagement.restcontroller;
+package com.hexaware.AssetManagement.restcontroller;
 
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -17,7 +17,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import com.hexaware.assetManagement.dto.AssetAllocationDto;
+import com.hexaware.AssetManagement.dto.AssetAllocationDto;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

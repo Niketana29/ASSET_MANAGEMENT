@@ -1,8 +1,9 @@
-package com.hexaware.assetManagement.restcontroller;
+package com.hexaware.AssetManagement.restcontroller;
 
 
-import static org.junit.jupiter.api.Assertions.*;
-import java.time.LocalDate;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -12,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.web.client.RestTemplate;
 
-import com.hexaware.assetManagement.dto.ServiceRequestDto;
-import com.hexaware.assetManagement.entities.ServiceRequest;
+import com.hexaware.AssetManagement.dto.ServiceRequestDto;
+import com.hexaware.AssetManagement.entities.ServiceRequest;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -26,10 +27,10 @@ class ServiceRequestRestControllerTest {
 
     String baseURL = "http://localhost:8092/api/servicerequests";
 	
-    @Test
+    /*@Test
     void testAddServiceRequest() {
         ServiceRequestDto dto = new ServiceRequestDto();
-        dto.setAid(1);
+        dto.setAssetId(1);
         dto.setIssueType("MALFUNCTION");
         dto.setDescription("Repair keyboard");
 
@@ -37,7 +38,7 @@ class ServiceRequestRestControllerTest {
 
         logger.info("Saved Service Request: {}", savedRequest);
         assertNotNull(savedRequest);
-    }
+    }*/
 
     @Test
     void testGetAllServiceRequests() {

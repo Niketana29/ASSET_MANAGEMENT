@@ -1,71 +1,86 @@
-package com.hexaware.assetManagement.entities;
+package com.hexaware.AssetManagement.entities;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
-import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "Employee")
+@Table(name = "employees")
 public class Employee {
-	
-	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long employeeId;
 
-    private int eid;
-    private String ename;
-    private String email;
-    private String gender; // FEMALE, MALE
-    private String contactNumber;
-    private String address;
-    private String role; // EMPLOYEE, ADMIN
-    
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-    private List<AssetAllocation> allocations;
+	@Column(name = "employee_name", nullable = false)
+	private String employeeName;
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-    private List<ServiceRequest> serviceRequests;
+	@Column(unique = true, nullable = false)
+	private String email;
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-    private List<AuditRequest> auditRequests;
-    
+	@Column(name = "contact_number")
+	private String contactNumber;
+
+	@Column(nullable = false)
+	private String gender;
+
+	private String address;
+
+	@Column(name = "created_at")
+	private LocalDateTime createdAt;
+
+	@Column(name = "updated_at")
+	private LocalDateTime updatedAt;
+
+	@PrePersist
+	protected void onCreate() {
+		createdAt = LocalDateTime.now();
+		updatedAt = LocalDateTime.now();
+	}
+
+	@PreUpdate
+	protected void onUpdate() {
+		updatedAt = LocalDateTime.now();
+	}
+
 	public Employee() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Employee(int eid, String ename, String email, String gender, String contactNumber, String address,
-			String role) {
+	public Employee(Long employeeId, String employeeName, String email, String contactNumber, String gender,
+			String address, LocalDateTime createdAt, LocalDateTime updatedAt) {
 		super();
-		this.eid = eid;
-		this.ename = ename;
+		this.employeeId = employeeId;
+		this.employeeName = employeeName;
 		this.email = email;
-		this.gender = gender;
 		this.contactNumber = contactNumber;
+		this.gender = gender;
 		this.address = address;
-		this.role = role;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
 	}
 
-	public int getEid() {
-		return eid;
+	public Long getEmployeeId() {
+		return employeeId;
 	}
 
-	public void setEid(int eid) {
-		this.eid = eid;
+	public void setEmployeeId(Long employeeId) {
+		this.employeeId = employeeId;
 	}
 
-	public String getEname() {
-		return ename;
+	public String getEmployeeName() {
+		return employeeName;
 	}
 
-	public void setEname(String ename) {
-		this.ename = ename;
+	public void setEmployeeName(String employeeName) {
+		this.employeeName = employeeName;
 	}
 
 	public String getEmail() {
@@ -76,20 +91,20 @@ public class Employee {
 		this.email = email;
 	}
 
-	public String getGender() {
-		return gender;
-	}
-
-	public void setGender(String gender) {
-		this.gender = gender;
-	}
-
 	public String getContactNumber() {
 		return contactNumber;
 	}
 
 	public void setContactNumber(String contactNumber) {
 		this.contactNumber = contactNumber;
+	}
+
+	public String getGender() {
+		return gender;
+	}
+
+	public void setGender(String gender) {
+		this.gender = gender;
 	}
 
 	public String getAddress() {
@@ -100,18 +115,27 @@ public class Employee {
 		this.address = address;
 	}
 
-	public String getRole() {
-		return role;
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
 	}
 
-	public void setRole(String role) {
-		this.role = role;
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 
 	@Override
 	public String toString() {
-		return "Employee [eid=" + eid + ", ename=" + ename + ", email=" + email + ", gender=" + gender
-				+ ", contactNumber=" + contactNumber + ", address=" + address + ", role=" + role + "]";
+		return "Employee [employeeId=" + employeeId + ", employeeName=" + employeeName + ", email=" + email
+				+ ", contactNumber=" + contactNumber + ", gender=" + gender + ", address=" + address + ", createdAt="
+				+ createdAt + ", updatedAt=" + updatedAt + "]";
 	}
 
 }

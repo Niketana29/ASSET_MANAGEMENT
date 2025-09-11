@@ -1,4 +1,4 @@
-package com.hexaware.assetManagement.config;
+package com.hexaware.AssetManagement.config;
 
 import java.util.Optional;
 
@@ -6,25 +6,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
-import com.hexaware.assetManagement.entities.UserInfo;
-import com.hexaware.assetManagement.repository.UserInfoRepository;
+import com.hexaware.AssetManagement.entities.UserInfo;
+import com.hexaware.AssetManagement.repository.UserInfoRepository;
 
-
-@Service
+@Component
 public class UserInfoUserDetailsService implements UserDetailsService {
-	
-    @Autowired
-    private UserInfoRepository repository;
-    
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<UserInfo> userInfo = repository.findByUsername(username);
-        
-        return userInfo.map(UserInfoUserDetails::new) 
-                .orElseThrow(() -> new UsernameNotFoundException("user not found " + username));
 
-    }
+	@Autowired
+	private UserInfoRepository userInfoRepository;
 
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		Optional<UserInfo> userInfo = userInfoRepository.findByUsername(username);
+
+		return userInfo.map(UserInfoUserDetails::new)
+				.orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+	}
 }

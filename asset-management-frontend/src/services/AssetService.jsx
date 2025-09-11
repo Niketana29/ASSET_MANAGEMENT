@@ -1,55 +1,76 @@
-import api from "./api";
+import api from './api';
 
 class AssetService {
   async getAllAssets() {
-    const res = await api.get("/api/assets/getall");
-    return res.data;
+    try {
+      const response = await api.get('/assets');
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to fetch assets' };
+    }
   }
 
-  async getAssetById(aid) {
-    const res = await api.get(`/api/assets/getbyid/${aid}`);
-    return res.data;
+  async getAvailableAssets() {
+    try {
+      const response = await api.get('/assets/browse');
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to fetch available assets' };
+    }
   }
 
-  // AssetService.jsx
-  async addAsset(asset) {
-    const res = await api.post("/api/assets/insert", {
-      assetNo: asset.assetNo,
-      aname: asset.aname,
-      categoryId: Number(asset.categoryId),
-      model: asset.model,
-      manufacturingDate: asset.manufacturingDate,
-      expiryDate: asset.expiryDate,
-      assetValue: Number(asset.assetValue),
-      status: asset.status
-    });
-    return res.data;
+  async getAssetById(id) {
+    try {
+      const response = await api.get(`/assets/${id}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to fetch asset details' };
+    }
   }
 
-  async updateAsset(asset) {
-    const res = await api.put("/api/assets/update", {
-      aid: asset.aid,
-      assetNo: asset.assetNo,
-      aname: asset.aname,
-      categoryId: Number(asset.categoryId),
-      model: asset.model,
-      manufacturingDate: asset.manufacturingDate,
-      expiryDate: asset.expiryDate,
-      assetValue: Number(asset.assetValue),
-      status: asset.status
-    });
-    return res.data;
+  async searchAssets(name) {
+    try {
+      const response = await api.get(`/assets/search?name=${encodeURIComponent(name)}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to search assets' };
+    }
   }
 
-  async deleteAsset(aid) {
-    const res = await api.delete(`/api/assets/deletebyid/${aid}`);
-    return res.data;
+  async createAsset(assetData) {
+    try {
+      const response = await api.post('/assets', assetData);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to create asset' };
+    }
   }
 
+  async updateAsset(id, assetData) {
+    try {
+      const response = await api.put(`/assets/${id}`, assetData);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to update asset' };
+    }
+  }
 
-  async getAssetsByName(name) {
-    const res = await api.get(`/api/assets/getbyname/${name}`);
-    return res.data;
+  async deleteAsset(id) {
+    try {
+      const response = await api.delete(`/assets/${id}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to delete asset' };
+    }
+  }
+
+  async getAssetsByCategory(categoryId) {
+    try {
+      const response = await api.get(`/assets/category/${categoryId}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to fetch assets by category' };
+    }
   }
 }
 

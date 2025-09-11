@@ -1,78 +1,120 @@
-package com.hexaware.assetManagement.service;
-
+package com.hexaware.AssetManagement.service;
 
 import java.util.List;
-import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.hexaware.assetManagement.entities.Employee;
-import com.hexaware.assetManagement.exception.BusinessException;
-import com.hexaware.assetManagement.exception.ResourceNotFoundException;
-import com.hexaware.assetManagement.repository.EmployeeRepository;
+import com.hexaware.AssetManagement.dto.EmployeeDto;
+import com.hexaware.AssetManagement.entities.Employee;
+import com.hexaware.AssetManagement.exception.BusinessException;
+import com.hexaware.AssetManagement.exception.ResourceNotFoundException;
+import com.hexaware.AssetManagement.repository.EmployeeRepository;
 
-import lombok.extern.slf4j.Slf4j;
-
-@Slf4j
 @Service
+@Transactional
 public class EmployeeServiceImpl implements IEmployeeService {
 
-	
+	private static final Logger logger = LoggerFactory.getLogger(EmployeeServiceImpl.class);
+
 	@Autowired
-	EmployeeRepository employeeRepo;
-	
+	private EmployeeRepository employeeRepository;
+
 	@Override
-	public Employee addEmployee(Employee employee) {
-		// TODO Auto-generated method stub
-        log.info("Service - addEmployee() called with: {}", employee);
-        
-        if (employee.getEname() == null || employee.getEname().trim().isEmpty()) {
-            throw new BusinessException("Employee name cannot be empty");
-        }
-        if (employee.getContactNumber() == null || !Pattern.matches("\\d{10}", employee.getContactNumber())) {
-            throw new BusinessException("Contact number must be 10 digits");
-        }
-		return employeeRepo.save(employee);
+	public EmployeeDto createEmployee(EmployeeDto employeeDto) {
+		logger.info("Creating employee: {}", employeeDto.getEmployeeName());
+
+		if (employeeRepository.existsByEmail(employeeDto.getEmail())) {
+			throw new BusinessException("Employee with email already exists: " + employeeDto.getEmail());
+		}
+
+		Employee employee = convertToEntity(employeeDto);
+		Employee savedEmployee = employeeRepository.save(employee);
+
+		logger.info("Employee created successfully with ID: {}", savedEmployee.getEmployeeId());
+		return convertToDto(savedEmployee);
 	}
 
 	@Override
-	public Employee updateEmployee(Employee employee) {
-		// TODO Auto-generated method stub
-        log.info("Service - updateEmployee() called with: {}", employee);
-        if (!employeeRepo.existsById(employee.getEid())) {
-            throw new ResourceNotFoundException(HttpStatus.NOT_FOUND, "Cannot update — Employee not found with ID: " + employee.getEid());
-        }
-        
-		return employeeRepo.save(employee);
+	public EmployeeDto getEmployeeById(Long employeeId) {
+		Employee employee = employeeRepository.findById(employeeId)
+				.orElseThrow(() -> new ResourceNotFoundException("Employee", "id", employeeId));
+		return convertToDto(employee);
 	}
 
 	@Override
-	public Employee getEmployeeById(int eid) {
-		// TODO Auto-generated method stub
-        log.debug("Service - getEmployeeById() called with ID: {}", eid);
-		return employeeRepo.findById(eid).orElseThrow(() -> new ResourceNotFoundException(HttpStatus.NOT_FOUND, "Employee not found with ID: " + eid));
+	public EmployeeDto getEmployeeByEmail(String email) {
+		Employee employee = employeeRepository.findByEmail(email)
+				.orElseThrow(() -> new ResourceNotFoundException("Employee", "email", email));
+		return convertToDto(employee);
 	}
 
 	@Override
-	public String deleteEmployee(int eid) {
-		// TODO Auto-generated method stub
-        log.warn("Service - deleteEmployee() called with ID: {}", eid);
-        
-        if (!employeeRepo.existsById(eid)) {
-            throw new ResourceNotFoundException(HttpStatus.NOT_FOUND, "Cannot delete — Employee not found with ID: " + eid);
-        }
-		employeeRepo.deleteById(eid);
-		
-		return "Employee Record deleted successfully";
+	public List<EmployeeDto> getAllEmployees() {
+		return employeeRepository.findAll().stream().map(this::convertToDto).collect(Collectors.toList());
 	}
 
 	@Override
-	public List<Employee> getAllEmployees() {
-		// TODO Auto-generated method stub
-        log.debug("Service - getAllEmployees() called");
-		return employeeRepo.findAll();
+	public EmployeeDto updateEmployee(Long employeeId, EmployeeDto employeeDto) {
+		logger.info("Updating employee with ID: {}", employeeId);
+
+		Employee existingEmployee = employeeRepository.findById(employeeId)
+				.orElseThrow(() -> new ResourceNotFoundException("Employee", "id", employeeId));
+
+		// Check if email is being changed and if new email already exists
+		if (!existingEmployee.getEmail().equals(employeeDto.getEmail())
+				&& employeeRepository.existsByEmail(employeeDto.getEmail())) {
+			throw new BusinessException("Employee with email already exists: " + employeeDto.getEmail());
+		}
+
+		existingEmployee.setEmployeeName(employeeDto.getEmployeeName());
+		existingEmployee.setEmail(employeeDto.getEmail());
+		existingEmployee.setContactNumber(employeeDto.getContactNumber());
+		existingEmployee.setGender(employeeDto.getGender());
+		existingEmployee.setAddress(employeeDto.getAddress());
+
+		Employee updatedEmployee = employeeRepository.save(existingEmployee);
+
+		logger.info("Employee updated successfully: {}", employeeId);
+		return convertToDto(updatedEmployee);
 	}
 
+	@Override
+	public void deleteEmployee(Long employeeId) {
+		logger.info("Deleting employee with ID: {}", employeeId);
+
+		if (!employeeRepository.existsById(employeeId)) {
+			throw new ResourceNotFoundException("Employee", "id", employeeId);
+		}
+
+		employeeRepository.deleteById(employeeId);
+		logger.info("Employee deleted successfully: {}", employeeId);
+	}
+
+	private EmployeeDto convertToDto(Employee employee) {
+		EmployeeDto dto = new EmployeeDto();
+		dto.setEmployeeId(employee.getEmployeeId());
+		dto.setEmployeeName(employee.getEmployeeName());
+		dto.setEmail(employee.getEmail());
+		dto.setContactNumber(employee.getContactNumber());
+		dto.setGender(employee.getGender());
+		dto.setAddress(employee.getAddress());
+		dto.setCreatedAt(employee.getCreatedAt());
+		dto.setUpdatedAt(employee.getUpdatedAt());
+		return dto;
+	}
+
+	private Employee convertToEntity(EmployeeDto dto) {
+		Employee employee = new Employee();
+		employee.setEmployeeName(dto.getEmployeeName());
+		employee.setEmail(dto.getEmail());
+		employee.setContactNumber(dto.getContactNumber());
+		employee.setGender(dto.getGender());
+		employee.setAddress(dto.getAddress());
+		return employee;
+	}
 }

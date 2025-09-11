@@ -1,9 +1,11 @@
-package com.hexaware.assetManagement.controller;
+package com.hexaware.AssetManagement.controller;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,80 +15,59 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hexaware.assetManagement.dto.EmployeeDto;
-import com.hexaware.assetManagement.entities.Employee;
-import com.hexaware.assetManagement.exception.BusinessException;
-import com.hexaware.assetManagement.service.IEmployeeService;
+import com.hexaware.AssetManagement.dto.EmployeeDto;
+import com.hexaware.AssetManagement.service.IEmployeeService;
 
 import jakarta.validation.Valid;
-import lombok.extern.slf4j.Slf4j;
 
-
-@Slf4j
 @RestController
 @RequestMapping("/api/employees")
+@CrossOrigin(origins = "*")
 public class EmployeeController {
-	
+
 	@Autowired
-	IEmployeeService employeeService;
-	
-	 @PostMapping("/insert")
-	 @PreAuthorize("hasAuthority('ADMIN')")
-	 public Employee addEmployee(@Valid @RequestBody EmployeeDto employeeDto) {
-			if(employeeDto.getEid() != null && employeeDto.getEid() >0) {
-				throw new BusinessException("eId should not be given for insert operation");
-			}
-	        log.info("POST /insert - Adding employee: {}", employeeDto);
-	        return employeeService.addEmployee(mapDtoToEntity(employeeDto));
-	 }
-	
-	 @PutMapping("/update")
-	 @PreAuthorize("hasAuthority('ADMIN')")
-	 public Employee updateEmployee(@Valid @RequestBody EmployeeDto employeeDto) {
-	        if(employeeDto.getEid() == null || employeeDto.getEid() <= 0) {
-	        	throw new BusinessException("Invalid eId");
-	        }
-	        log.info("PUT /update - Updating employee: {}", employeeDto);
-	        return employeeService.updateEmployee(mapDtoToEntity(employeeDto));
+	private IEmployeeService employeeService;
+
+	@GetMapping
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<List<EmployeeDto>> getAllEmployees() {
+		List<EmployeeDto> employees = employeeService.getAllEmployees();
+		return ResponseEntity.ok(employees);
 	}
-	
-	@GetMapping("/getbyid/{eid}")
-    @PreAuthorize("hasAnyAuthority('ADMIN' , 'USER')")
-    public Employee getEmployeeById(@PathVariable int eid) {
-        log.info("GET /getbyid/{} - Fetching employee by ID", eid);
-        return employeeService.getEmployeeById(eid);
-    }
-	
-	@DeleteMapping("deletebyid/{eid}")
-    @PreAuthorize("hasAuthority('ADMIN')")
-    public String deleteEmployee(@PathVariable int eid) {
-        log.warn("DELETE /deletebyid/{} - Deleting employee by ID", eid);
-        employeeService.deleteEmployee(eid);
-        return "Employee with ID " + eid + " deleted successfully.";
-    }
-	
-    @GetMapping("/getall")
-    @PreAuthorize("hasAnyAuthority('ADMIN' , 'USER')")
-    public List<Employee> getAllEmployees() {
-        log.info("GET /getall - Fetching all employees");
-        return employeeService.getAllEmployees();
-    }
-    
-    private Employee mapDtoToEntity(EmployeeDto dto) {
-        Employee e = new Employee();
-        if(dto.getEid() != null && dto.getEid() > 0) {
-            e.setEid(dto.getEid());
-        }
 
-        e.setEname(dto.getEname());
-        e.setEmail(dto.getEmail());
-        e.setGender(dto.getGender());
-        e.setContactNumber(dto.getContactNumber());
-        e.setAddress(dto.getAddress());
-        e.setRole(dto.getRole());
-        return e;
-    }
-	
-	
+	@GetMapping("/{id}")
+	@PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and @employeeService.getEmployeeById(#id).email == authentication.name)")
+	public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable Long id) {
+		EmployeeDto employee = employeeService.getEmployeeById(id);
+		return ResponseEntity.ok(employee);
+	}
 
+	@GetMapping("/email/{email}")
+	@PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and #email == authentication.name)")
+	public ResponseEntity<EmployeeDto> getEmployeeByEmail(@PathVariable String email) {
+		EmployeeDto employee = employeeService.getEmployeeByEmail(email);
+		return ResponseEntity.ok(employee);
+	}
+
+	@PostMapping
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<EmployeeDto> createEmployee(@Valid @RequestBody EmployeeDto employeeDto) {
+		EmployeeDto createdEmployee = employeeService.createEmployee(employeeDto);
+		return ResponseEntity.ok(createdEmployee);
+	}
+
+	@PutMapping("/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable Long id,
+			@Valid @RequestBody EmployeeDto employeeDto) {
+		EmployeeDto updatedEmployee = employeeService.updateEmployee(id, employeeDto);
+		return ResponseEntity.ok(updatedEmployee);
+	}
+
+	@DeleteMapping("/{id}")
+	@PreAuthorize("hasRole('ADMIN')")
+	public ResponseEntity<Void> deleteEmployee(@PathVariable Long id) {
+		employeeService.deleteEmployee(id);
+		return ResponseEntity.ok().build();
+	}
 }

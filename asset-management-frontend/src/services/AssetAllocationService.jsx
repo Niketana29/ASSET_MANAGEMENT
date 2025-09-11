@@ -1,62 +1,81 @@
-import api from "./api";
+import api from './api';
 
 class AssetAllocationService {
+  async requestAsset(requestData) {
+    try {
+      const response = await api.post('/allocations/request', requestData);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to request asset' };
+    }
+  }
+
+  async getMyAllocations(employeeId) {
+    try {
+      const response = await api.get(`/allocations/my/${employeeId}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to fetch my allocations' };
+    }
+  }
+
   async getAllAllocations() {
-    const res = await api.get("/api/allocations/getall");
-    return res.data;
+    try {
+      const response = await api.get('/allocations');
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to fetch all allocations' };
+    }
   }
 
-  async getAllocationById(allocId) {
-    const res = await api.get(`/api/allocations/getbyid/${allocId}`);
-    return res.data;
+  async getPendingAllocations() {
+    try {
+      const response = await api.get('/allocations/pending');
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to fetch pending allocations' };
+    }
   }
 
-  async allocateAsset(data) {
-    const res = await api.post("/api/allocations/insert", {
-      eid: data.eid,
-      aid: data.aid,
-      allocationDate: data.allocationDate.toISOString().split("T")[0],
-      returnDate: data.returnDate.toISOString().split("T")[0],
-      status: data.status || "ACTIVE",
-    });
-    return res.data;
+  async approveAllocation(allocationId, comments) {
+    try {
+      const response = await api.put(`/allocations/${allocationId}/approve`, {
+        adminComments: comments
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to approve allocation' };
+    }
   }
 
-
-  async updateAllocation(allocation) {
-    const res = await api.put("/api/allocations/update", {
-      allocId: allocation.allocId,
-      eid: allocation.eid,
-      aid: allocation.aid,
-      allocationDate: allocation.allocationDate,
-      returnDate: allocation.returnDate,
-      status: allocation.status
-    });
-    return res.data;
+  async rejectAllocation(allocationId, comments) {
+    try {
+      const response = await api.put(`/allocations/${allocationId}/reject`, {
+        adminComments: comments
+      });
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to reject allocation' };
+    }
   }
 
-  async deleteAllocation(allocId) {
-    const res = await api.delete(`/api/allocations/deletebyid/${allocId}`);
-    return res.data;
+  async returnAsset(allocationId) {
+    try {
+      const response = await api.put(`/allocations/${allocationId}/return`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to return asset' };
+    }
   }
 
-  async approveAllocation(allocId) {
-    const res = await api.put(`/api/allocations/approve/${allocId}`);
-    return res.data;
+  async getAllocationById(allocationId) {
+    try {
+      const response = await api.get(`/allocations/${allocationId}`);
+      return response.data;
+    } catch (error) {
+      throw error.response?.data || { message: 'Failed to fetch allocation details' };
+    }
   }
-
-  async rejectAllocation(allocId) {
-    const res = await api.put(`/api/allocations/reject/${allocId}`);
-    return res.data;
-  }
-
-  async getAllocationsByEmployee(eid) {
-    const res = await api.get(`/api/allocations/getbyemployee/${eid}`);
-    return res.data;
-  }
-
-
-
 }
 
 export default new AssetAllocationService();

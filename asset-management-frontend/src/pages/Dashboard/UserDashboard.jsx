@@ -1,12 +1,34 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import "./Dashboard.css";
 import { useAuth } from "../../context/AuthContext";
+import allocationService from "../../services/allocationService";
+import serviceRequestService from "../../services/serviceRequestService";
+
 
 export default function UserDashboard() {
   const { user } = useAuth();
+  const [myStats, setMyStats] = useState({
+    allocations: [],
+    requests: []
+  });
+
+  useEffect(() => {
+    if (!user) return;
+
+    // Fetch allocations for logged-in employee
+   allocationService.getMyAllocations(user.id).then((res) =>
+      setMyStats((prev) => ({ ...prev, allocations: res.data }))
+    );
+
+    // Fetch service requests for logged-in employee
+    serviceRequestService.getMyRequests(user.id).then((res) =>
+      setMyStats((prev) => ({ ...prev, requests: res.data }))
+    );
+  }, [user]);
 
   if (!user) {
-    return <p className="text-center mt-5">No user info found. Please Log in.</p>;
+    return <p className="text-center mt-5">No user info found. Please log in.</p>;
   }
 
   return (
@@ -18,65 +40,44 @@ export default function UserDashboard() {
       </p>
 
       <div className="dashboard-section">
+        <h4>My Quick Stats</h4>
+        <ul>
+          <li>Allocations: {myStats.allocations.length}</li>
+          <li>Service Requests: {myStats.requests.length}</li>
+        </ul>
+      </div>
+
+      <div className="dashboard-section">
         <h4>Employee Actions</h4>
         <div className="row mt-3">
           <div className="col-md-3 mb-3">
             <div className="dashboard-card">
               <h5>Browse Assets</h5>
-              <Link
-                to="/dashboard/user/assets/browse"
-                className="btn btn-primary mt-2 w-100"
-              >
-                Go
-              </Link>
+              <Link to="/dashboard/user/assets/browse" className="btn btn-primary mt-2 w-100">Go</Link>
             </div>
           </div>
-
           <div className="col-md-3 mb-3">
             <div className="dashboard-card">
               <h5>My Allocations</h5>
-              <Link
-                to="/dashboard/user/allocations"
-                className="btn btn-primary mt-2 w-100"
-              >
-                Go
-              </Link>
+              <Link to="/dashboard/user/allocations" className="btn btn-primary mt-2 w-100">Go</Link>
             </div>
           </div>
-
           <div className="col-md-3 mb-3">
             <div className="dashboard-card">
               <h5>Request New Asset</h5>
-              <Link
-                to="/dashboard/user/requests/new"
-                className="btn btn-primary mt-2 w-100"
-              >
-                Go
-              </Link>
+              <Link to="/dashboard/user/requests/new" className="btn btn-primary mt-2 w-100">Go</Link>
             </div>
           </div>
-
           <div className="col-md-3 mb-3">
             <div className="dashboard-card">
               <h5>Raise Service Request</h5>
-              <Link
-                to="/dashboard/user/requests/service"
-                className="btn btn-outline-secondary mt-2 w-100"
-              >
-                Go
-              </Link>
+              <Link to="/dashboard/user/requests/service" className="btn btn-outline-secondary mt-2 w-100">Go</Link>
             </div>
           </div>
-
           <div className="col-md-3 mb-3">
             <div className="dashboard-card">
               <h5>Request History</h5>
-              <Link
-                to="/dashboard/user/requests/history"
-                className="btn btn-outline-dark mt-2 w-100"
-              >
-                View
-              </Link>
+              <Link to="/dashboard/user/requests/history" className="btn btn-outline-dark mt-2 w-100">View</Link>
             </div>
           </div>
         </div>

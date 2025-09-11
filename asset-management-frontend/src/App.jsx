@@ -1,7 +1,9 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import Navbar from "./components/Navbar";
 import { Footer } from "./components/Footer";
+
+// Public Pages
 import Home from "./pages/Home";
 import Register from "./pages/Register";
 import AdminLogin from "./pages/Login/AdminLogin";
@@ -26,7 +28,7 @@ import RaiseRequest from "./pages/Employee/RaiseRequest";
 import ServiceRequest from "./pages/Employee/ServiceRequest";
 import RequestHistory from "./pages/Employee/RequestHistory";
 
-// Shared
+// Shared Components
 import PrivateRoute from "./components/PrivateRoute";
 import RoleRoute from "./components/RoleRoute";
 import NotAuthorized from "./pages/Error/NotAuthorized";
@@ -168,7 +170,7 @@ export default function App() {
               }
             />
 
-            {/* Error Routes */}
+            {/* Error Pages */}
             <Route path="/not-authorized" element={<NotAuthorized />} />
             <Route path="/server-error" element={<ServerError />} />
             <Route path="*" element={<NotFound />} />

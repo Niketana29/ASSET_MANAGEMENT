@@ -1,51 +1,70 @@
-package com.hexaware.assetManagement.entities;
+package com.hexaware.AssetManagement.entities;
+
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 
-/**
- * UserInfo: stores credentials & roles for authentication (JWT).
- * Roles stored as comma-separated values, e.g. "ADMIN,USER"
- */
 @Entity
 @Table(name = "user_info")
 public class UserInfo {
-	
 	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    private String username;
+	@Column(unique = true, nullable = false)
+	private String username;
 
-    private String email;
+	@Column(nullable = false)
+	private String password;
 
-    private String password;
+	@Column(nullable = false)
+	private String roles; // ROLE_ADMIN, ROLE_USER
 
-    private String roles; //USER , ADMIN
+	@Column(name = "created_at")
+	private LocalDateTime createdAt;
+
+	@Column(name = "updated_at")
+	private LocalDateTime updatedAt;
+
+	@PrePersist
+	protected void onCreate() {
+		createdAt = LocalDateTime.now();
+		updatedAt = LocalDateTime.now();
+	}
+
+	@PreUpdate
+	protected void onUpdate() {
+		updatedAt = LocalDateTime.now();
+	}
 
 	public UserInfo() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public UserInfo(Integer id, String username, String email, String password, String roles) {
+	public UserInfo(Long id, String username, String password, String roles, LocalDateTime createdAt,
+			LocalDateTime updatedAt) {
 		super();
 		this.id = id;
 		this.username = username;
-		this.email = email;
 		this.password = password;
 		this.roles = roles;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
 	}
 
-	public Integer getId() {
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -55,14 +74,6 @@ public class UserInfo {
 
 	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
 	}
 
 	public String getPassword() {
@@ -81,18 +92,26 @@ public class UserInfo {
 		this.roles = roles;
 	}
 
+	public LocalDateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(LocalDateTime createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public LocalDateTime getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(LocalDateTime updatedAt) {
+		this.updatedAt = updatedAt;
+	}
+
 	@Override
 	public String toString() {
-		return "UserInfo [id=" + id + ", username=" + username + ", email=" + email + ", password=" + password
-				+ ", roles=" + roles + "]";
+		return "UserInfo [id=" + id + ", username=" + username + ", password=" + password + ", roles=" + roles
+				+ ", createdAt=" + createdAt + ", updatedAt=" + updatedAt + "]";
 	}
-	
-	
-
-
-    
-    
-	
-	
 
 }

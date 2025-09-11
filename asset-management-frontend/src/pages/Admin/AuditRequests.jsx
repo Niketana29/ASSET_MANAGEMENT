@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import AuditRequestService from "../../services/AuditRequestService";
-import AssetAllocationService from "../../services/AssetAllocationService";
 import "./AuditRequests.css";
+import auditService from "../../services/auditService";
+import allocationService from "../../services/allocationService";
 
 export default function AuditRequests() {
   const [requests, setRequests] = useState([]);
   const [filteredRequests, setFilteredRequests] = useState([]);
   const [search, setSearch] = useState("");
-  const [sortConfig, setSortConfig] = useState({ key: "arid", direction: "asc" });
+  const [sortConfig, setSortConfig] = useState({ key: "auditId", direction: "asc" });
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -15,7 +15,7 @@ export default function AuditRequests() {
   }, []);
 
   const loadRequests = () => {
-    AuditRequestService.getAllAuditRequests()
+    auditService.getAllAuditRequests()
       .then((data) => {
         const arrayData = Array.isArray(data) ? data : [];
         setRequests(arrayData);
@@ -24,38 +24,19 @@ export default function AuditRequests() {
       .catch(() => setError("Failed to fetch audit requests"));
   };
 
+  // Approve → update status to IN_PROGRESS + allocate asset
   const handleApprove = (req) => {
-    const updatedRequest = {
-      arid: req.arid,
-      eid: req.employee?.eid,
-      aid: req.asset?.aid,
-      status: "VERIFIED",
-    };
-
-    AuditRequestService.updateAuditRequest(updatedRequest)
-      .then(() => {
-        const newAllocation = {
-          eid: req.employee?.eid,
-          aid: req.asset?.aid,
-          allocationDate: new Date(),
-          returnDate: new Date(new Date().setMonth(new Date().getMonth() + 6)),
-          status: "ACTIVE",
-        };
-        return AssetAllocationService.allocateAsset(newAllocation);
-      })
+    auditService.updateAuditStatus(req.auditId, "IN_PROGRESS", "Audit started", "")
+      .then(() =>
+        allocationService.allocateAsset(req.assetId, req.requestedBy, "Audit approved")
+      )
       .then(() => loadRequests())
       .catch(() => setError("Failed to approve and allocate asset"));
   };
 
+  // Reject → update status to CANCELLED
   const handleReject = (req) => {
-    const updatedRequest = {
-      arid: req.arid,
-      eid: req.employee?.eid,
-      aid: req.asset?.aid,
-      status: "REJECTED",
-    };
-
-    AuditRequestService.updateAuditRequest(updatedRequest)
+   auditService.updateAuditStatus(req.auditId, "CANCELLED", "Audit rejected", "")
       .then(() => loadRequests())
       .catch(() => setError("Failed to reject audit request"));
   };
@@ -66,8 +47,8 @@ export default function AuditRequests() {
     setSearch(query);
     const filtered = requests.filter(
       (r) =>
-        r.employee?.ename.toLowerCase().includes(query) ||
-        r.asset?.aname.toLowerCase().includes(query)
+        r.requestedByName?.toLowerCase().includes(query) ||
+        r.assetName?.toLowerCase().includes(query)
     );
     setFilteredRequests(filtered);
   };
@@ -81,11 +62,8 @@ export default function AuditRequests() {
     setSortConfig({ key, direction });
 
     const sorted = [...filteredRequests].sort((a, b) => {
-      let valA = key === "employee" ? a.employee?.ename : key === "asset" ? a.asset?.aname : a[key];
-      let valB = key === "employee" ? b.employee?.ename : key === "asset" ? b.asset?.aname : b[key];
-
-      if (!valA) valA = "";
-      if (!valB) valB = "";
+      let valA = a[key] ?? "";
+      let valB = b[key] ?? "";
 
       if (typeof valA === "string") valA = valA.toLowerCase();
       if (typeof valB === "string") valB = valB.toLowerCase();
@@ -120,43 +98,40 @@ export default function AuditRequests() {
         <table className="audit-table table table-hover table-striped align-middle">
           <thead className="table-dark">
             <tr>
-              <th onClick={() => handleSort("arid")} className="sortable">ID</th>
-              <th onClick={() => handleSort("employee")} className="sortable">Employee</th>
-              <th onClick={() => handleSort("asset")} className="sortable">Asset</th>
+              <th onClick={() => handleSort("auditId")} className="sortable">ID</th>
+              <th onClick={() => handleSort("requestedByName")} className="sortable">Requested By</th>
+              <th onClick={() => handleSort("assetName")} className="sortable">Asset</th>
               <th onClick={() => handleSort("status")} className="sortable">Status</th>
               <th className="text-center">Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredRequests.map((r) => (
-              <tr key={r.arid}>
-                <td>{r.arid}</td>
-                <td>{r.employee?.ename}</td>
-                <td>{r.asset?.aname}</td>
+              <tr key={r.auditId}>
+                <td>{r.auditId}</td>
+                <td>{r.requestedByName}</td>
+                <td>{r.assetName}</td>
                 <td>
-                  {r.status === "PENDING" && (
+                  {r.status === "SCHEDULED" && (
                     <span className="status-badge status-pending">{r.status}</span>
                   )}
-                  {r.status === "VERIFIED" && (
+                  {r.status === "IN_PROGRESS" && (
                     <span className="status-badge status-verified">{r.status}</span>
                   )}
-                  {r.status === "REJECTED" && (
+                  {r.status === "CANCELLED" && (
                     <span className="status-badge status-rejected">{r.status}</span>
+                  )}
+                  {r.status === "COMPLETED" && (
+                    <span className="status-badge status-none">{r.status}</span>
                   )}
                 </td>
                 <td className="text-center">
-                  {r.status === "PENDING" ? (
+                  {r.status === "SCHEDULED" ? (
                     <div className="audit-actions d-flex flex-wrap justify-content-center gap-2">
-                      <button
-                        className="btn-verify"
-                        onClick={() => handleApprove(r)}
-                      >
+                      <button className="btn-verify" onClick={() => handleApprove(r)}>
                         Approve & Allocate
                       </button>
-                      <button
-                        className="btn-reject"
-                        onClick={() => handleReject(r)}
-                      >
+                      <button className="btn-reject" onClick={() => handleReject(r)}>
                         Reject
                       </button>
                     </div>

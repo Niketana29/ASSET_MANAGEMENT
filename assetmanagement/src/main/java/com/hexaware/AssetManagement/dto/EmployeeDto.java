@@ -1,39 +1,41 @@
-package com.hexaware.assetManagement.dto;
+package com.hexaware.AssetManagement.dto;
+
+import java.time.LocalDateTime;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+@Data
+@AllArgsConstructor
 @NoArgsConstructor
-@Data 
 public class EmployeeDto {
-	
-    private Integer eid;
+	private Long employeeId;
 
-    @NotNull
-    @Size(min = 2, max = 30)
-    private String ename;
+	@NotBlank(message = "Employee name is required")
+	@Size(min = 2, max = 100, message = "Employee name must be between 2 and 100 characters")
+	@Pattern(regexp = "^[a-zA-Z\\s.'-]+$", message = "Employee name can only contain letters, spaces, dots, apostrophes, and hyphens")
+	private String employeeName;
 
-    @Email(message = "Invalid email format")
-    private String email;
+	@Email(message = "Email should be valid")
+	@NotBlank(message = "Email is required")
+	@Size(max = 100, message = "Email must not exceed 100 characters")
+	private String email;
 
-    @Pattern(regexp = "MALE|FEMALE", message = "Gender must be either MALE or FEMALE")
-    private String gender;
+	@Pattern(regexp = "^[+]?[0-9\\s()-]{10,15}$", message = "Contact number should be valid (10-15 digits)")
+	private String contactNumber;
 
-    @Pattern(regexp = "[0-9]{10}", message = "Contact number must be a 10-digit number")
-    private String contactNumber;
+	@NotBlank(message = "Gender is required")
+	@Pattern(regexp = "^(Male|Female|Other)$", message = "Gender must be Male, Female, or Other")
+	private String gender;
 
-    @NotEmpty
-    private String address;
+	@Size(max = 500, message = "Address must not exceed 500 characters")
+	private String address;
 
-    @Pattern(regexp = "EMPLOYEE|ADMIN", message = "Role must be EMPLOYEE or ADMIN")
-    private String role;
-	
-	
-
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
 }

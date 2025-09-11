@@ -1,59 +1,43 @@
-package com.hexaware.assetManagement.controller;
+package com.hexaware.AssetManagement.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.hexaware.assetManagement.dto.AuthRequest;
-import com.hexaware.assetManagement.entities.UserInfo;
-import com.hexaware.assetManagement.service.JwtService;
-import com.hexaware.assetManagement.service.UserService;
+import com.hexaware.AssetManagement.dto.AuthRequest;
+import com.hexaware.AssetManagement.dto.AuthResponse;
+import com.hexaware.AssetManagement.dto.RegisterRequest;
+import com.hexaware.AssetManagement.service.UserService;
+
+import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/api")
+@CrossOrigin(origins = "*")
 public class UserController {
-	
-	@Autowired
-	UserService service;
+
+	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
 	@Autowired
-	JwtService jwtService;
+	private UserService userService;
 
-	@Autowired
-	AuthenticationManager authenticationManager;
-	
-    Logger logger = LoggerFactory.getLogger(UserController.class);
-    
-    @PostMapping("/registration/new")
-    public String addNewUser(@RequestBody UserInfo userInfo) {
-        return service.addUser(userInfo);
-    }
+	@PostMapping("/register")
+	public ResponseEntity<AuthResponse> registerUser(@Valid @RequestBody RegisterRequest registerRequest) {
+		logger.info("Registration request received for user: {}", registerRequest.getUsername());
+		AuthResponse response = userService.registerUser(registerRequest);
+		return ResponseEntity.ok(response);
+	}
 
-    @PostMapping("/login/authenticate")
-    public String authenticateAndGetToken(@RequestBody AuthRequest authRequest) {
-
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
-
-        String token;
-
-        if (authentication.isAuthenticated()) {
-            token = jwtService.generateToken(authRequest.getUsername());
-            logger.info("Token : " + token);
-        } else {
-            logger.info("Invalid login attempt");
-            throw new UsernameNotFoundException("Username or Password is Invalid");
-        }
-
-        return token;
-    }
-
+	@PostMapping("/auth/login")
+	public ResponseEntity<AuthResponse> authenticateAndGetToken(@Valid @RequestBody AuthRequest authRequest) {
+		logger.info("Login request received for user: {}", authRequest.getUsername());
+		AuthResponse response = userService.authenticateAndGetToken(authRequest);
+		return ResponseEntity.ok(response);
+	}
 }

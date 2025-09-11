@@ -1,26 +1,45 @@
-package com.hexaware.assetManagement.dto;
+package com.hexaware.AssetManagement.dto;
 
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
+
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AuditRequestDto {
-	
+	private Long auditId;
 
-    private Integer arid;
+	@NotNull(message = "Employee ID is required")
+	@Positive(message = "Employee ID must be positive")
+	private Long employeeId;
 
-    @Min(1)
-    private int eid;
+	private String employeeName;
+	private String employeeEmail;
 
-    @Min(1)
-    private int aid;
+	@NotNull(message = "Asset ID is required")
+	@Positive(message = "Asset ID must be positive")
+	private Long assetId;
 
-    @NotBlank(message = "Status is required")
-    @Pattern(regexp = "PENDING|VERIFIED|REJECTED", message = "Status must be PENDING, VERIFIED, or REJECTED")
-    private String status;
+	private String assetNo;
+	private String assetName;
+	private LocalDateTime auditDate;
 
+	@Pattern(regexp = "^(PENDING|VERIFIED|REJECTED)$", message = "Status must be PENDING, VERIFIED, or REJECTED")
+	private String status;
+
+	@Size(max = 500, message = "Employee comments must not exceed 500 characters")
+	private String employeeComments;
+
+	@Size(max = 500, message = "Admin comments must not exceed 500 characters")
+	private String adminComments;
+
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
 }

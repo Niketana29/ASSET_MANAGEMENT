@@ -1,17 +1,23 @@
-package com.hexaware.assetManagement.exception;
+package com.hexaware.AssetManagement.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.web.server.ResponseStatusException;
+public class BusinessException extends RuntimeException {
 
-public class BusinessException extends ResponseStatusException {
+	private String errorCode;
 
-	public BusinessException(String reason) {
-		super(HttpStatus.BAD_REQUEST, reason);
-		// TODO Auto-generated constructor stub
+	public BusinessException(String message) {
+		super(message);
 	}
-	
-	
-	
 
+	public BusinessException(String message, String errorCode) {
+		super(message);
+		this.errorCode = errorCode;
+	}
+
+	public BusinessException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
+	public String getErrorCode() {
+		return errorCode;
+	}
 }

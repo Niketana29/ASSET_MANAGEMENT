@@ -1,17 +1,25 @@
-package com.hexaware.assetManagement.service;
+package com.hexaware.AssetManagement.service;
 
 import java.util.List;
 
-import com.hexaware.assetManagement.entities.AuditRequest;
+import com.hexaware.AssetManagement.dto.AuditRequestDto;
 
 public interface IAuditRequestService {
-	
-    public AuditRequest createAuditRequest(AuditRequest arequest);
-    public AuditRequest updateAuditRequest(AuditRequest arequest);
-    
-    public AuditRequest getAuditRequestById(int arid);
-    public String deleteAuditRequestById(int arid);
-    
-    public List<AuditRequest> getAllAuditRequests();
+	public AuditRequestDto createAuditRequest(Long employeeId, Long assetId);
 
+	public List<AuditRequestDto> createAuditRequestsForAllEmployees();
+
+	public AuditRequestDto getAuditRequestById(Long auditId);
+
+	public List<AuditRequestDto> getEmployeeAuditRequests(Long employeeId);
+
+	public List<AuditRequestDto> getAllAuditRequests();
+
+	public List<AuditRequestDto> getPendingAuditRequests();
+
+	public AuditRequestDto verifyAuditRequest(Long auditId, String employeeComments);
+
+	public AuditRequestDto rejectAuditRequest(Long auditId, String employeeComments);
+
+	public void deleteAuditRequest(Long auditId);
 }

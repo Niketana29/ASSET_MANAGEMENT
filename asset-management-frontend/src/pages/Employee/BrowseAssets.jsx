@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import AssetService from "../../services/AssetService";
+import assetService from "../../services/assetService";
 import "./BrowseAssets.css";
 
 export default function BrowseAssets() {
@@ -13,11 +13,12 @@ export default function BrowseAssets() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    AssetService.getAllAssets()
+    assetService
+      .getAvailableAssets()
       .then((res) => {
         setAssets(res);
         setFilteredAssets(res);
-        const cats = [...new Set(res.map(a => a.category?.categoryName))].filter(Boolean);
+        const cats = [...new Set(res.map((a) => a.category?.categoryName))].filter(Boolean);
         setCategories(cats);
       })
       .catch(() => setError("Failed to fetch assets"));
@@ -27,8 +28,8 @@ export default function BrowseAssets() {
     const value = e.target.value;
     setSearch(value);
     const matched = assets
-      .filter(a => a.aname.toLowerCase().includes(value.toLowerCase()))
-      .map(a => a.aname);
+      .filter((a) => a.aname.toLowerCase().includes(value.toLowerCase()))
+      .map((a) => a.aname);
     setSuggestions(matched.slice(0, 5));
     filterAssets(value, selectedCategory);
   };
@@ -41,8 +42,10 @@ export default function BrowseAssets() {
 
   const filterAssets = (searchValue, category) => {
     let filtered = assets;
-    if (category) filtered = filtered.filter(a => a.category?.categoryName === category);
-    if (searchValue) filtered = filtered.filter(a => a.aname.toLowerCase().includes(searchValue.toLowerCase()));
+    if (category) filtered = filtered.filter((a) => a.category?.categoryName === category);
+    if (searchValue) filtered = filtered.filter((a) =>
+      a.aname.toLowerCase().includes(searchValue.toLowerCase())
+    );
     setFilteredAssets(filtered);
   };
 
@@ -58,9 +61,17 @@ export default function BrowseAssets() {
 
       <div className="row search-category-row mb-4 justify-content-center">
         <div className="col-md-4 mb-2">
-          <select className="form-select" value={selectedCategory} onChange={handleCategoryChange}>
+          <select
+            className="form-select"
+            value={selectedCategory}
+            onChange={handleCategoryChange}
+          >
             <option value="">All Categories</option>
-            {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -75,7 +86,11 @@ export default function BrowseAssets() {
           {suggestions.length > 0 && (
             <ul className="list-group suggestions-list">
               {suggestions.map((s, idx) => (
-                <li key={idx} className="list-group-item list-group-item-action" onClick={() => handleSuggestionClick(s)}>
+                <li
+                  key={idx}
+                  className="list-group-item list-group-item-action"
+                  onClick={() => handleSuggestionClick(s)}
+                >
                   {s}
                 </li>
               ))}
@@ -90,16 +105,23 @@ export default function BrowseAssets() {
         {filteredAssets.length === 0 ? (
           <p className="text-center w-100">No assets found.</p>
         ) : (
-          filteredAssets.map(a => (
+          filteredAssets.map((a) => (
             <div key={a.aid} className="col-md-4">
               <div className="card asset-card shadow-sm h-100">
                 <div className="card-body d-flex flex-column">
                   <h5 className="card-title">{a.aname}</h5>
                   <p className="card-text mb-3">
-                    Status: <span className={`status-badge status-${a.status.toLowerCase()}`}>{a.status}</span><br />
+                    Status:{" "}
+                    <span className={`status-badge status-${a.status.toLowerCase()}`}>
+                      {a.status}
+                    </span>
+                    <br />
                     Price: ₹{a.assetValue || "N/A"}
                   </p>
-                  <Link to={`/dashboard/user/assets/${a.aid}`} className="btn btn-primary mt-auto w-100">
+                  <Link
+                    to={`/dashboard/user/assets/${a.aid}`}
+                    className="btn btn-primary mt-auto w-100"
+                  >
                     View Details
                   </Link>
                 </div>
