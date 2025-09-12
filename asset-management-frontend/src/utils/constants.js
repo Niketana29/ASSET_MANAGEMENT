@@ -155,6 +155,98 @@ export const DATE_FORMATS = {
   API: 'YYYY-MM-DDTHH:mm:ss'
 };
 
+
+export function getPasswordStrength(password) {
+  const checks = {
+    length: password.length >= 8,
+    lowercase: /[a-z]/.test(password),
+    uppercase: /[A-Z]/.test(password),
+    number: /\d/.test(password),
+    special: /[@$!%*?&]/.test(password),
+  };
+
+  const score = Object.values(checks).reduce((acc, curr) => acc + (curr ? 1 : 0), 0);
+
+  return { score, checks };
+};
+
+// Email validation
+export function validateEmail(email) {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(email);
+}
+
+// Phone number validation (simple, 10-digit)
+export function validatePhone(phone) {
+  const re = /^\d{10}$/;
+  return re.test(phone);
+};
+
+// Password validation (at least 8 chars, uppercase, lowercase, number, special)
+export function validatePassword(password) {
+  return (
+    /[a-z]/.test(password) &&
+    /[A-Z]/.test(password) &&
+    /\d/.test(password) &&
+    /[@$!%*?&]/.test(password) &&
+    password.length >= 8
+  );
+};
+
+// Format a number as currency (USD by default)
+export function formatCurrency(amount, currency = 'USD') {
+  if (typeof amount !== 'number') return amount;
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency
+  }).format(amount);
+};
+
+export function formatDate(dateString, format = 'MMM DD, YYYY') {
+  const date = new Date(dateString);
+  const options = {};
+
+  if (format.includes('MMM')) options.month = 'short';
+  if (format.includes('DD')) options.day = '2-digit';
+  if (format.includes('YYYY')) options.year = 'numeric';
+  if (format.includes('HH')) options.hour = '2-digit';
+  if (format.includes('mm')) options.minute = '2-digit';
+
+  return date.toLocaleString('en-US', options);
+};
+
+// Returns a CSS class based on status
+export function getStatusBadgeClass(status) {
+  switch (status) {
+    case 'REQUESTED':
+    case 'PENDING':
+      return 'status-badge pending';
+    case 'APPROVED':
+    case 'COMPLETED':
+    case 'VERIFIED':
+      return 'status-badge success';
+    case 'REJECTED':
+      return 'status-badge rejected';
+    case 'RETURNED':
+      return 'status-badge returned';
+    case 'IN_PROGRESS':
+      return 'status-badge in-progress';
+    case 'AVAILABLE':
+      return 'status-badge available';
+    case 'ALLOCATED':
+      return 'status-badge allocated';
+    case 'MAINTENANCE':
+      return 'status-badge maintenance';
+    case 'RETIRED':
+      return 'status-badge retired';
+    default:
+      return 'status-badge unknown';
+  }
+};
+
+
+
+
 export const ASSET_CATEGORIES = {
   AUTO_APPROVED: [
     'Stationery',

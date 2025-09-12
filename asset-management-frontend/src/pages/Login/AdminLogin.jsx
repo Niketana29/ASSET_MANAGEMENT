@@ -1,110 +1,248 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import "./Login.css";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import loginBg from "../../assets/login-bg.jpg";
-import { useAuth } from "../../context/AuthContext";
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
+import { ROLES } from '../../utils/constants';
 
-export default function AdminLogin() {
+const AdminLogin = () => {
+  const { login, isAuthenticated, isLoading, error, clearError, user } = useAuth();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ email: "", password: "" });
-  const [errors, setErrors] = useState({});
-  const [apiErrors, setApiErrors] = useState("");
+  const location = useLocation();
+
+  const [formData, setFormData] = useState({
+    username: '',
+    password: ''
+  });
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { login } = useAuth();
+  const from = location.state?.from?.pathname || '/dashboard';
 
-  const togglePassword = () => setShowPassword((prev) => !prev);
+  useEffect(() => {
+    if (isAuthenticated && user?.role === ROLES.ADMIN) {
+      navigate(from, { replace: true });
+    } else if (isAuthenticated && user?.role === ROLES.USER) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [isAuthenticated, user, navigate, from]);
 
-  const handleChange = (e) => {
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(clearError, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error, clearError]);
+
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
 
-  const validate = () => {
-    let newErrors = {};
-    if (!formData.email.trim()) newErrors.email = "Email is required";
-    if (!formData.password) newErrors.password = "Password is required";
-    else if (formData.password.length < 8)
-      newErrors.password = "Password must be at least 8 characters";
-    return newErrors;
+    if (error) {
+      clearError();
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setApiErrors("");
-    const validationErrors = validate();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
+
+    if (!formData.username.trim() || !formData.password) {
       return;
     }
-    setErrors({});
+
+    setIsSubmitting(true);
+
     try {
-      await login(formData); // AuthContext.login
-      const user = JSON.parse(localStorage.getItem("user"));
-      if (user.role !== "ADMIN") {
-        setApiErrors("You are not authorized as Admin.");
-        return;
+      const result = await login(formData);
+
+      if (result.success) {
+        if (result.data.role === ROLES.ADMIN) {
+          navigate(from, { replace: true });
+        } else {
+          navigate('/dashboard', { replace: true });
+        }
       }
-      alert("Admin login successful!");
-      navigate("/dashboard/admin");
-    } catch (error) {
-      setApiErrors(error.message || "Invalid Email or Password");
+    } catch (err) {
+      console.error('Admin login error:', err);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
   return (
-    <div
-      className="login-container"
-      style={{
-        backgroundImage: `url(${loginBg})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        height: "100vh",
-      }}
-    >
-      <div className="login-card">
-        <h2>Admin Login</h2>
-        {apiErrors && <div className="alert alert-danger">{apiErrors}</div>}
-        <form onSubmit={handleSubmit}>
-          <div className="mb-3">
-            <label className="form-label">Email</label>
-            <input
-              className="form-control"
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Enter Email"
-              required
-            />
-            {errors.email && <small className="text-danger">{errors.email}</small>}
+    <div className="login-container admin-login">
+      <div className="login-wrapper">
+        {/* Main Login Card */}
+        <div className="login-card admin-card">
+          {/* Header */}
+          <div className="login-header">
+            <Link to="/" className="logo-link">
+              <div className="w-12 h-12 bg-gradient-to-r from-red-600 to-pink-600 rounded-lg flex items-center justify-center shadow-lg">
+                <span className="text-white font-bold text-xl">AM</span>
+              </div>
+            </Link>
+            <h1 className="login-title">Administrator Login</h1>
+            <p className="login-subtitle">
+              Access the administrative dashboard
+            </p>
           </div>
-          <div className="mb-3">
-            <label className="form-label">Password</label>
-            <div className="password-wrapper">
+
+          {/* Security Notice */}
+          <div className="security-notice">
+            <div className="flex items-start">
+              <span className="text-yellow-500 text-lg mr-2">⚠️</span>
+              <div className="text-sm">
+                <strong>Restricted Access</strong>
+                <p className="text-gray-600 mt-1">
+                  This area is restricted to authorized administrators only.
+                  All access attempts are logged and monitored.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="error-message">
+              <div className="flex items-center">
+                <span className="error-icon">❌</span>
+                <span>{error}</span>
+              </div>
+            </div>
+          )}
+
+          {/* Login Form */}
+          <form onSubmit={handleSubmit} className="login-form">
+            <div className="form-group">
+              <label htmlFor="username" className="form-label">
+                Administrator Username
+              </label>
               <input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="Enter Password"
+                type="text"
+                id="username"
+                name="username"
+                value={formData.username}
+                onChange={handleInputChange}
+                className="form-input"
+                placeholder="Enter administrator username"
+                autoComplete="username"
                 required
               />
-              <span className="toggle-password" onClick={togglePassword}>
-                {showPassword ? <FaEyeSlash /> : <FaEye />}
-              </span>
             </div>
-            {errors.password && <small className="text-danger">{errors.password}</small>}
+
+            <div className="form-group">
+              <label htmlFor="password" className="form-label">
+                Password
+              </label>
+              <div className="password-input-group">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  className="form-input"
+                  placeholder="Enter administrator password"
+                  autoComplete="current-password"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={togglePasswordVisibility}
+                  className="password-toggle"
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                >
+                  {showPassword ? '👁️' : '🔒'}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting || isLoading || !formData.username.trim() || !formData.password}
+              className="submit-button admin-button"
+            >
+              {isSubmitting || isLoading ? (
+                <>
+                  <div className="loading-spinner"></div>
+                  Authenticating...
+                </>
+              ) : (
+                <>
+                  <span>🛡️ Admin Login</span>
+                  <span className="button-arrow">→</span>
+                </>
+              )}
+            </button>
+          </form>
+
+          {/* Divider */}
+          <div className="divider">
+            <span>or</span>
           </div>
-          <button className="btn btn-primary w-100" type="submit">
-            Login
-          </button>
-          <p>
-            Don't have an account? <Link to="/register">Register</Link>
-          </p>
-        </form>
+
+          {/* User Login Link */}
+          <Link to="/login" className="user-login-link">
+            <span className="mr-2">👥</span>
+            Login as Employee
+          </Link>
+
+          {/* Footer */}
+          <div className="login-footer">
+            <p className="text-sm text-gray-500">
+              Need help? Contact system administrator
+            </p>
+          </div>
+        </div>
+
+        {/* Side Panel */}
+        <div className="login-side-panel admin-side-panel">
+          <div className="side-panel-content">
+            <h2>Administrator Portal</h2>
+            <p>Manage your organization's assets, users, and system configuration.</p>
+
+            <div className="features-list">
+              <div className="feature-item">
+                <span className="feature-icon">👥</span>
+                <span>Manage employees and users</span>
+              </div>
+              <div className="feature-item">
+                <span className="feature-icon">📦</span>
+                <span>Control asset inventory</span>
+              </div>
+              <div className="feature-item">
+                <span className="feature-icon">✅</span>
+                <span>Approve/reject requests</span>
+              </div>
+              <div className="feature-item">
+                <span className="feature-icon">📊</span>
+                <span>Generate detailed reports</span>
+              </div>
+              <div className="feature-item">
+                <span className="feature-icon">🔧</span>
+                <span>System configuration</span>
+              </div>
+            </div>
+
+            <div className="admin-warning">
+              <h3>Security Reminder</h3>
+              <ul className="text-sm space-y-1">
+                <li>• Never share administrator credentials</li>
+                <li>• Always log out when finished</li>
+                <li>• Report suspicious activity immediately</li>
+                <li>• Use secure networks only</li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
-}
+};
+
+export default AdminLogin;

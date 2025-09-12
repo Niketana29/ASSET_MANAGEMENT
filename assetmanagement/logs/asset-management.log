@@ -1,22 +1,22 @@
-2025-09-11 11:34:29 [main] INFO  c.h.A.AssetManagementApplication - Starting AssetManagementApplication using Java 21.0.6 with PID 25652 (C:\Users\GPSSAMY\eclipse-workspace\assetmanagement\target\classes started by GPSSAMY in C:\Users\GPSSAMY\eclipse-workspace\assetmanagement)
-2025-09-11 11:34:29 [main] INFO  c.h.A.AssetManagementApplication - No active profile set, falling back to 1 default profile: "default"
-2025-09-11 11:34:30 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
-2025-09-11 11:34:30 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 74 ms. Found 7 JPA repository interfaces.
-2025-09-11 11:34:31 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8092 (http)
-2025-09-11 11:34:31 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
-2025-09-11 11:34:31 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.43]
-2025-09-11 11:34:31 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
-2025-09-11 11:34:31 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1901 ms
-2025-09-11 11:34:31 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
-2025-09-11 11:34:31 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.22.Final
-2025-09-11 11:34:31 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
-2025-09-11 11:34:32 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
-2025-09-11 11:34:32 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
-2025-09-11 11:34:32 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@5814b4fb
-2025-09-11 11:34:32 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
-2025-09-11 11:34:32 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
-2025-09-11 11:34:32 [main] WARN  org.hibernate.orm.deprecation - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
-2025-09-11 11:34:33 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+2025-09-12 12:14:25 [main] INFO  c.h.A.AssetManagementApplication - Starting AssetManagementApplication using Java 21.0.6 with PID 22772 (C:\Users\GPSSAMY\eclipse-workspace\assetmanagement\target\classes started by GPSSAMY in C:\Users\GPSSAMY\eclipse-workspace\assetmanagement)
+2025-09-12 12:14:25 [main] INFO  c.h.A.AssetManagementApplication - No active profile set, falling back to 1 default profile: "default"
+2025-09-12 12:14:26 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-09-12 12:14:26 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 65 ms. Found 7 JPA repository interfaces.
+2025-09-12 12:14:27 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8092 (http)
+2025-09-12 12:14:27 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-09-12 12:14:27 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.43]
+2025-09-12 12:14:27 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-09-12 12:14:27 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2225 ms
+2025-09-12 12:14:27 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-09-12 12:14:27 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.22.Final
+2025-09-12 12:14:27 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-09-12 12:14:28 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-09-12 12:14:28 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-09-12 12:14:28 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@4ba13fed
+2025-09-12 12:14:28 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-09-12 12:14:28 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-09-12 12:14:28 [main] WARN  org.hibernate.orm.deprecation - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-09-12 12:14:28 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
 	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
 	Database driver: undefined/unknown
 	Database version: 8.0
@@ -24,27 +24,186 @@
 	Isolation level: undefined/unknown
 	Minimum pool size: undefined/unknown
 	Maximum pool size: undefined/unknown
-2025-09-11 11:34:34 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
-2025-09-11 11:34:37 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
-2025-09-11 11:34:38 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
-2025-09-11 11:34:39 [main] INFO  o.s.s.c.a.a.c.InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer - Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
-2025-09-11 11:34:39 [main] WARN  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
-2025-09-11 11:34:39 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
-2025-09-11 11:34:41 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8092 (http) with context path '/'
-2025-09-11 11:34:41 [main] INFO  c.h.A.AssetManagementApplication - Started AssetManagementApplication in 14.542 seconds (process running for 16.49)
-2025-09-11 11:36:26 [http-nio-8092-exec-2] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
-2025-09-11 11:36:26 [http-nio-8092-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
-2025-09-11 11:36:26 [http-nio-8092-exec-2] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
-2025-09-11 11:36:26 [http-nio-8092-exec-2] ERROR c.h.A.e.GlobalExceptionHandler - Validation error: Validation failed for argument [0] in public org.springframework.http.ResponseEntity<com.hexaware.AssetManagement.dto.AuthResponse> com.hexaware.AssetManagement.controller.UserController.registerUser(com.hexaware.AssetManagement.dto.RegisterRequest): [Field error in object 'registerRequest' on field 'employeeName': rejected value [User1]; codes [Pattern.registerRequest.employeeName,Pattern.employeeName,Pattern.java.lang.String,Pattern]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [registerRequest.employeeName,employeeName]; arguments []; default message [employeeName],[Ljakarta.validation.constraints.Pattern$Flag;@32ae2dc6,^[a-zA-Z\s.'-]+$]; default message [Employee name can only contain letters, spaces, dots, apostrophes, and hyphens]] 
-2025-09-11 11:36:37 [http-nio-8092-exec-4] INFO  c.h.A.controller.UserController - Registration request received for user: User1
-2025-09-11 11:36:37 [http-nio-8092-exec-4] INFO  c.h.A.service.UserService - Registering new user: User1
-2025-09-11 11:36:37 [http-nio-8092-exec-4] INFO  c.h.A.service.UserService - User registered successfully: User1
-2025-09-11 11:37:25 [http-nio-8092-exec-5] INFO  c.h.A.controller.UserController - Registration request received for user: User2
-2025-09-11 11:37:25 [http-nio-8092-exec-5] INFO  c.h.A.service.UserService - Registering new user: User2
-2025-09-11 11:37:25 [http-nio-8092-exec-5] INFO  c.h.A.service.UserService - User registered successfully: User2
-2025-09-11 11:38:19 [RMI TCP Connection(7)-127.0.0.1] INFO  o.s.b.a.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin - Application shutdown requested.
-2025-09-11 11:38:19 [RMI TCP Connection(7)-127.0.0.1] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
-2025-09-11 11:38:20 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
-2025-09-11 11:38:20 [RMI TCP Connection(7)-127.0.0.1] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
-2025-09-11 11:38:20 [RMI TCP Connection(7)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
-2025-09-11 11:38:20 [RMI TCP Connection(7)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-09-12 12:14:29 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-09-12 12:14:29 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-09-12 12:14:30 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-09-12 12:14:31 [main] INFO  o.s.s.c.a.a.c.InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer - Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2025-09-12 12:14:31 [main] WARN  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2025-09-12 12:14:31 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-09-12 12:14:32 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8092 (http) with context path '/'
+2025-09-12 12:14:32 [main] INFO  c.h.A.AssetManagementApplication - Started AssetManagementApplication in 7.467 seconds (process running for 8.229)
+2025-09-12 12:18:17 [RMI TCP Connection(7)-127.0.0.1] INFO  o.s.b.a.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin - Application shutdown requested.
+2025-09-12 12:18:17 [RMI TCP Connection(7)-127.0.0.1] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-09-12 12:18:17 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-09-12 12:18:17 [RMI TCP Connection(7)-127.0.0.1] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-09-12 12:18:17 [RMI TCP Connection(7)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-09-12 12:18:17 [RMI TCP Connection(7)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-09-12 18:08:01 [main] INFO  c.h.A.AssetManagementApplication - Starting AssetManagementApplication using Java 21.0.6 with PID 3944 (C:\Users\GPSSAMY\eclipse-workspace\assetmanagement\target\classes started by GPSSAMY in C:\Users\GPSSAMY\eclipse-workspace\assetmanagement)
+2025-09-12 18:08:01 [main] INFO  c.h.A.AssetManagementApplication - No active profile set, falling back to 1 default profile: "default"
+2025-09-12 18:08:02 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-09-12 18:08:02 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 72 ms. Found 7 JPA repository interfaces.
+2025-09-12 18:08:06 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8092 (http)
+2025-09-12 18:08:06 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-09-12 18:08:06 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.43]
+2025-09-12 18:08:06 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-09-12 18:08:06 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 4639 ms
+2025-09-12 18:08:06 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-09-12 18:08:06 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.22.Final
+2025-09-12 18:08:06 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-09-12 18:08:06 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-09-12 18:08:06 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-09-12 18:08:07 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@41d877bb
+2025-09-12 18:08:07 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-09-12 18:08:07 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-09-12 18:08:07 [main] WARN  org.hibernate.orm.deprecation - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-09-12 18:08:07 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-09-12 18:08:08 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-09-12 18:08:08 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-09-12 18:08:08 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-09-12 18:08:09 [main] INFO  o.s.s.c.a.a.c.InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer - Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2025-09-12 18:08:09 [main] WARN  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2025-09-12 18:08:09 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-09-12 18:08:11 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8092 (http) with context path '/'
+2025-09-12 18:08:11 [main] INFO  c.h.A.AssetManagementApplication - Started AssetManagementApplication in 10.781 seconds (process running for 11.579)
+2025-09-12 18:08:17 [RMI TCP Connection(2)-127.0.0.1] INFO  o.s.b.a.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin - Application shutdown requested.
+2025-09-12 18:08:17 [RMI TCP Connection(2)-127.0.0.1] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-09-12 18:08:17 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-09-12 18:08:17 [RMI TCP Connection(2)-127.0.0.1] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-09-12 18:08:17 [RMI TCP Connection(2)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-09-12 18:08:17 [RMI TCP Connection(2)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-09-12 19:52:02 [main] INFO  c.h.A.AssetManagementApplication - Starting AssetManagementApplication using Java 21.0.6 with PID 22756 (C:\Users\GPSSAMY\eclipse-workspace\assetmanagement\target\classes started by GPSSAMY in C:\Users\GPSSAMY\eclipse-workspace\assetmanagement)
+2025-09-12 19:52:02 [main] INFO  c.h.A.AssetManagementApplication - No active profile set, falling back to 1 default profile: "default"
+2025-09-12 19:52:04 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-09-12 19:52:04 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 73 ms. Found 7 JPA repository interfaces.
+2025-09-12 19:52:04 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8092 (http)
+2025-09-12 19:52:04 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-09-12 19:52:04 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.43]
+2025-09-12 19:52:04 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-09-12 19:52:04 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 2084 ms
+2025-09-12 19:52:05 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-09-12 19:52:05 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.22.Final
+2025-09-12 19:52:05 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-09-12 19:52:05 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-09-12 19:52:05 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-09-12 19:52:09 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@53d87b2d
+2025-09-12 19:52:09 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-09-12 19:52:09 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-09-12 19:52:09 [main] WARN  org.hibernate.orm.deprecation - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-09-12 19:52:09 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-09-12 19:52:10 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-09-12 19:52:10 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-09-12 19:52:11 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-09-12 19:52:12 [main] INFO  o.s.s.c.a.a.c.InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer - Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2025-09-12 19:52:12 [main] WARN  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2025-09-12 19:52:12 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-09-12 19:52:13 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8092 (http) with context path '/'
+2025-09-12 19:52:13 [main] INFO  c.h.A.AssetManagementApplication - Started AssetManagementApplication in 11.277 seconds (process running for 11.974)
+2025-09-12 20:18:46 [http-nio-8092-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-09-12 20:18:46 [http-nio-8092-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-09-12 20:18:47 [http-nio-8092-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 143 ms
+2025-09-12 20:18:47 [http-nio-8092-exec-1] INFO  c.h.A.controller.UserController - Login request received for user: User1
+2025-09-12 20:18:47 [http-nio-8092-exec-1] INFO  c.h.A.service.UserService - Authenticating user: User1
+2025-09-12 20:18:48 [http-nio-8092-exec-1] INFO  c.h.A.service.UserService - User authenticated successfully: User1
+2025-09-12 20:20:47 [RMI TCP Connection(33)-127.0.0.1] INFO  o.s.b.a.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin - Application shutdown requested.
+2025-09-12 20:20:47 [RMI TCP Connection(33)-127.0.0.1] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-09-12 20:20:47 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-09-12 20:20:47 [RMI TCP Connection(33)-127.0.0.1] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-09-12 20:20:47 [RMI TCP Connection(33)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-09-12 20:20:47 [RMI TCP Connection(33)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-09-12 21:03:23 [main] INFO  c.h.A.AssetManagementApplication - Starting AssetManagementApplication using Java 21.0.6 with PID 28412 (C:\Users\GPSSAMY\eclipse-workspace\assetmanagement\target\classes started by GPSSAMY in C:\Users\GPSSAMY\eclipse-workspace\assetmanagement)
+2025-09-12 21:03:23 [main] INFO  c.h.A.AssetManagementApplication - No active profile set, falling back to 1 default profile: "default"
+2025-09-12 21:03:24 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-09-12 21:03:24 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 76 ms. Found 7 JPA repository interfaces.
+2025-09-12 21:03:25 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8092 (http)
+2025-09-12 21:03:25 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-09-12 21:03:25 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.43]
+2025-09-12 21:03:25 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-09-12 21:03:25 [main] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1782 ms
+2025-09-12 21:03:25 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-09-12 21:03:25 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.22.Final
+2025-09-12 21:03:25 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-09-12 21:03:26 [main] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-09-12 21:03:26 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-09-12 21:03:26 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@2e8986b6
+2025-09-12 21:03:26 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-09-12 21:03:26 [main] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQL8Dialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-09-12 21:03:26 [main] WARN  org.hibernate.orm.deprecation - HHH90000026: MySQL8Dialect has been deprecated; use org.hibernate.dialect.MySQLDialect instead
+2025-09-12 21:03:26 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-1)']
+	Database driver: undefined/unknown
+	Database version: 8.0
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2025-09-12 21:03:27 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-09-12 21:03:27 [main] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-09-12 21:03:28 [main] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-09-12 21:03:29 [main] INFO  o.s.s.c.a.a.c.InitializeAuthenticationProviderBeanManagerConfigurer$InitializeAuthenticationProviderManagerConfigurer - Global AuthenticationManager configured with AuthenticationProvider bean with name authenticationProvider
+2025-09-12 21:03:29 [main] WARN  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with an AuthenticationProvider bean. UserDetailsService beans will not be used by Spring Security for automatically configuring username/password login. Consider removing the AuthenticationProvider bean. Alternatively, consider using the UserDetailsService in a manually instantiated DaoAuthenticationProvider. If the current configuration is intentional, to turn off this warning, increase the logging level of 'org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer' to ERROR
+2025-09-12 21:03:31 [main] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-09-12 21:03:35 [main] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8092 (http) with context path '/'
+2025-09-12 21:03:35 [main] INFO  c.h.A.AssetManagementApplication - Started AssetManagementApplication in 12.556 seconds (process running for 13.644)
+2025-09-12 21:21:24 [http-nio-8092-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-09-12 21:21:24 [http-nio-8092-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-09-12 21:21:24 [http-nio-8092-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 181 ms
+2025-09-12 21:21:25 [http-nio-8092-exec-2] INFO  c.h.A.controller.UserController - Login request received for user: User3
+2025-09-12 21:21:25 [http-nio-8092-exec-2] INFO  c.h.A.service.UserService - Authenticating user: User3
+2025-09-12 21:21:25 [http-nio-8092-exec-2] ERROR c.h.A.service.UserService - Authentication failed for user User3: Bad credentials
+2025-09-12 21:21:25 [http-nio-8092-exec-2] ERROR c.h.A.e.GlobalExceptionHandler - Business exception: Authentication failed: Bad credentials
+2025-09-12 21:21:41 [http-nio-8092-exec-3] INFO  c.h.A.controller.UserController - Login request received for user: User3
+2025-09-12 21:21:41 [http-nio-8092-exec-3] INFO  c.h.A.service.UserService - Authenticating user: User3
+2025-09-12 21:21:41 [http-nio-8092-exec-3] ERROR c.h.A.service.UserService - Authentication failed for user User3: Bad credentials
+2025-09-12 21:21:41 [http-nio-8092-exec-3] ERROR c.h.A.e.GlobalExceptionHandler - Business exception: Authentication failed: Bad credentials
+2025-09-12 21:29:40 [http-nio-8092-exec-4] INFO  c.h.A.controller.UserController - Login request received for user: admin2@hexaware.com
+2025-09-12 21:29:40 [http-nio-8092-exec-4] INFO  c.h.A.service.UserService - Authenticating user: admin2@hexaware.com
+2025-09-12 21:29:41 [http-nio-8092-exec-4] ERROR c.h.A.service.UserService - Authentication failed for user admin2@hexaware.com: Bad credentials
+2025-09-12 21:29:41 [http-nio-8092-exec-4] ERROR c.h.A.e.GlobalExceptionHandler - Business exception: Authentication failed: Bad credentials
+2025-09-12 21:30:08 [http-nio-8092-exec-5] INFO  c.h.A.controller.UserController - Login request received for user: Admin2
+2025-09-12 21:30:08 [http-nio-8092-exec-5] INFO  c.h.A.service.UserService - Authenticating user: Admin2
+2025-09-12 21:30:08 [http-nio-8092-exec-5] ERROR c.h.A.service.UserService - Authentication failed for user Admin2: Bad credentials
+2025-09-12 21:30:08 [http-nio-8092-exec-5] ERROR c.h.A.e.GlobalExceptionHandler - Business exception: Authentication failed: Bad credentials
+2025-09-12 21:33:48 [http-nio-8092-exec-6] INFO  c.h.A.controller.UserController - Login request received for user: Admin User
+2025-09-12 21:33:48 [http-nio-8092-exec-6] INFO  c.h.A.service.UserService - Authenticating user: Admin User
+2025-09-12 21:33:48 [http-nio-8092-exec-6] ERROR c.h.A.service.UserService - Authentication failed for user Admin User: Bad credentials
+2025-09-12 21:33:48 [http-nio-8092-exec-6] ERROR c.h.A.e.GlobalExceptionHandler - Business exception: Authentication failed: Bad credentials
+2025-09-12 21:35:06 [http-nio-8092-exec-7] INFO  c.h.A.controller.UserController - Login request received for user: User1
+2025-09-12 21:35:06 [http-nio-8092-exec-7] INFO  c.h.A.service.UserService - Authenticating user: User1
+2025-09-12 21:35:07 [http-nio-8092-exec-7] INFO  c.h.A.service.UserService - User authenticated successfully: User1
+2025-09-12 21:40:07 [http-nio-8092-exec-4] INFO  c.h.A.controller.UserController - Login request received for user: User1
+2025-09-12 21:40:07 [http-nio-8092-exec-4] INFO  c.h.A.service.UserService - Authenticating user: User1
+2025-09-12 21:40:07 [http-nio-8092-exec-4] INFO  c.h.A.service.UserService - User authenticated successfully: User1
+2025-09-12 21:42:43 [http-nio-8092-exec-4] INFO  c.h.A.controller.UserController - Login request received for user: User1
+2025-09-12 21:42:43 [http-nio-8092-exec-4] INFO  c.h.A.service.UserService - Authenticating user: User1
+2025-09-12 21:42:43 [http-nio-8092-exec-4] INFO  c.h.A.service.UserService - User authenticated successfully: User1
+2025-09-12 21:47:59 [http-nio-8092-exec-6] INFO  c.h.A.controller.UserController - Login request received for user: admin
+2025-09-12 21:47:59 [http-nio-8092-exec-6] INFO  c.h.A.service.UserService - Authenticating user: admin
+2025-09-12 21:47:59 [http-nio-8092-exec-6] WARN  o.s.s.c.bcrypt.BCryptPasswordEncoder - Encoded password does not look like BCrypt
+2025-09-12 21:47:59 [http-nio-8092-exec-6] ERROR c.h.A.service.UserService - Authentication failed for user admin: Bad credentials
+2025-09-12 21:47:59 [http-nio-8092-exec-6] ERROR c.h.A.e.GlobalExceptionHandler - Business exception: Authentication failed: Bad credentials
+2025-09-12 21:48:23 [http-nio-8092-exec-7] INFO  c.h.A.controller.UserController - Login request received for user: User1
+2025-09-12 21:48:23 [http-nio-8092-exec-7] INFO  c.h.A.service.UserService - Authenticating user: User1
+2025-09-12 21:48:23 [http-nio-8092-exec-7] INFO  c.h.A.service.UserService - User authenticated successfully: User1
+2025-09-12 21:56:02 [http-nio-8092-exec-10] INFO  c.h.A.controller.UserController - Login request received for user: User1
+2025-09-12 21:56:02 [http-nio-8092-exec-10] INFO  c.h.A.service.UserService - Authenticating user: User1
+2025-09-12 21:56:02 [http-nio-8092-exec-10] INFO  c.h.A.service.UserService - User authenticated successfully: User1
+2025-09-12 22:49:35 [RMI TCP Connection(108)-127.0.0.1] INFO  o.s.b.a.SpringApplicationAdminMXBeanRegistrar$SpringApplicationAdmin - Application shutdown requested.
+2025-09-12 22:49:35 [RMI TCP Connection(108)-127.0.0.1] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Commencing graceful shutdown. Waiting for active requests to complete
+2025-09-12 22:49:35 [tomcat-shutdown] INFO  o.s.b.w.e.tomcat.GracefulShutdown - Graceful shutdown complete
+2025-09-12 22:49:35 [RMI TCP Connection(108)-127.0.0.1] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-09-12 22:49:35 [RMI TCP Connection(108)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-09-12 22:49:36 [RMI TCP Connection(108)-127.0.0.1] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
