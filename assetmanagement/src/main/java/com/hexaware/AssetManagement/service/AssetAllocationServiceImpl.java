@@ -49,7 +49,6 @@ public class AssetAllocationServiceImpl implements IAssetAllocationService {
 		Employee employee = employeeRepository.findById(requestDto.getEmployeeId())
 				.orElseThrow(() -> new ResourceNotFoundException("Employee", "id", requestDto.getEmployeeId()));
 
-		// Find available asset by name
 		List<Asset> availableAssets = assetRepository
 				.findByStatusAndAssetNameContainingIgnoreCase(Asset.AssetStatus.AVAILABLE, requestDto.getAssetName());
 
@@ -57,38 +56,33 @@ public class AssetAllocationServiceImpl implements IAssetAllocationService {
 			throw new BusinessException("No available assets found with name: " + requestDto.getAssetName());
 		}
 
-		// Get the first available asset
 		Asset asset = availableAssets.get(0);
 
-		// Check if asset is already allocated to someone
 		List<AssetAllocation> activeAllocations = allocationRepository
 				.findActiveAllocationsByAssetId(asset.getAssetId());
 		if (!activeAllocations.isEmpty()) {
 			throw new BusinessException("Asset is already allocated to another employee");
 		}
 
-		// Create allocation
 		AssetAllocation allocation = new AssetAllocation();
 		allocation.setEmployee(employee);
 		allocation.setAsset(asset);
 		allocation.setRequestReason(requestDto.getRequestReason());
 
-		// Check if category supports auto-approval
 		Category category = asset.getCategory();
 		if (category.getIsAutoApproved()) {
-			// Auto-approve simple assets
+
 			allocation.setStatus(AssetAllocation.AllocationStatus.APPROVED);
 			allocation.setAllocatedDate(LocalDateTime.now());
 			allocation.setAdminComments("Auto-approved for simple asset category");
 
-			// Update asset status
 			asset.setStatus(Asset.AssetStatus.ALLOCATED);
 			assetRepository.save(asset);
 
 			logger.info("Asset request auto-approved for employee: {}, asset: {}", employee.getEmployeeId(),
 					asset.getAssetName());
 		} else {
-			// Complex assets need admin approval
+
 			allocation.setStatus(AssetAllocation.AllocationStatus.REQUESTED);
 
 			logger.info("Asset request submitted for admin approval - employee: {}, asset: {}",
@@ -128,12 +122,10 @@ public class AssetAllocationServiceImpl implements IAssetAllocationService {
 			throw new BusinessException("Only requested allocations can be approved");
 		}
 
-		// Update allocation status
 		allocation.setStatus(AssetAllocation.AllocationStatus.APPROVED);
 		allocation.setAllocatedDate(LocalDateTime.now());
 		allocation.setAdminComments(adminComments);
 
-		// Update asset status
 		Asset asset = allocation.getAsset();
 		asset.setStatus(Asset.AssetStatus.ALLOCATED);
 		assetRepository.save(asset);
@@ -155,7 +147,6 @@ public class AssetAllocationServiceImpl implements IAssetAllocationService {
 			throw new BusinessException("Only requested allocations can be rejected");
 		}
 
-		// Update allocation status
 		allocation.setStatus(AssetAllocation.AllocationStatus.REJECTED);
 		allocation.setAdminComments(adminComments);
 
@@ -176,11 +167,9 @@ public class AssetAllocationServiceImpl implements IAssetAllocationService {
 			throw new BusinessException("Only approved allocations can be returned");
 		}
 
-		// Update allocation status
 		allocation.setStatus(AssetAllocation.AllocationStatus.RETURNED);
 		allocation.setReturnDate(LocalDateTime.now());
 
-		// Update asset status
 		Asset asset = allocation.getAsset();
 		asset.setStatus(Asset.AssetStatus.AVAILABLE);
 		assetRepository.save(asset);

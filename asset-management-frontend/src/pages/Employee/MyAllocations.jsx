@@ -47,7 +47,6 @@ const MyAllocations = () => {
       filtered = filtered.filter(allocation => allocation.status === statusFilter);
     }
 
-    // Sort by creation date (newest first)
     filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
     setFilteredAllocations(filtered);

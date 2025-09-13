@@ -34,7 +34,6 @@ const ServiceRequest = () => {
       }
 
       const allocations = await AssetAllocationService.getMyAllocations(employeeId);
-      // Filter only approved allocations that haven't been returned
       const activeAssets = allocations.filter(
         allocation => allocation.status === 'APPROVED' && !allocation.returnDate
       );
@@ -79,7 +78,6 @@ const ServiceRequest = () => {
       [name]: value
     }));
 
-    // Clear validation error for this field
     if (validationErrors[name]) {
       setValidationErrors(prev => ({
         ...prev,
@@ -129,15 +127,13 @@ const ServiceRequest = () => {
       
       setSuccessMessage(`Service request submitted successfully for ${asset.assetName}! Your request is now pending admin review.`);
 
-      // Reset form
       setSelectedAsset('');
       setFormData({
         description: '',
         issueType: ''
       });
       setValidationErrors({});
-      
-      // Clear success message after 5 seconds
+
       setTimeout(() => setSuccessMessage(''), 5000);
 
     } catch (err) {

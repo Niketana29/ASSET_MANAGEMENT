@@ -3,13 +3,11 @@
     font-weight: 500;
   }
   
-  /* Form & Inputs */
 input,
 select {
   height: 42px;
 }
 
-/* Table */
 .table-responsive {
   overflow-x: auto;
 }
@@ -18,12 +16,10 @@ select {
   background-color: #f1f1f1;
 }
 
-/* Badges */
 .badge {
   font-size: 0.85rem;
 }
 
-/* Buttons on small screens */
 @media (max-width: 575px) {
   .btn {
     width: 100%;
@@ -31,12 +27,10 @@ select {
   }
 }
 
-/* Make table use full container width */
 .table {
     width: 100%;
   }
-  
-  /* Ensure table actions buttons wrap neatly on small screens */
+
   .text-nowrap {
     white-space: nowrap;
   }

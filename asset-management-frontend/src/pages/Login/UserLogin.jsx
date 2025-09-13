@@ -73,9 +73,7 @@ const UserLogin = () => {
   return (
     <div className="login-container">
       <div className="login-wrapper">
-        {/* Main Login Card */}
         <div className="login-card">
-          {/* Header */}
           <div className="login-header">
             <Link to="/" className="logo-link">
               <div className="w-12 h-12 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg flex items-center justify-center shadow-lg">
@@ -87,8 +85,6 @@ const UserLogin = () => {
               Access your asset management dashboard
             </p>
           </div>
-
-          {/* Error Message */}
           {error && (
             <div className="error-message">
               <div className="flex items-center">
@@ -98,7 +94,6 @@ const UserLogin = () => {
             </div>
           )}
 
-          {/* Login Form */}
           <form onSubmit={handleSubmit} className="login-form">
             <div className="form-group">
               <label htmlFor="username" className="form-label">
@@ -178,18 +173,15 @@ const UserLogin = () => {
             </button>
           </form>
 
-          {/* Divider */}
           <div className="divider">
             <span>or</span>
           </div>
 
-          {/* Admin Login Link */}
           <Link to="/admin-login" className="admin-login-link">
             <span className="mr-2">👤</span>
             Login as Administrator
           </Link>
 
-          {/* Footer */}
           <div className="login-footer">
             <p>
               Don't have an account?{' '}
@@ -200,7 +192,6 @@ const UserLogin = () => {
           </div>
         </div>
 
-        {/* Side Panel */}
         <div className="login-side-panel">
           <div className="side-panel-content">
             <h2>Welcome Back!</h2>

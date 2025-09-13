@@ -65,7 +65,6 @@ public class EmployeeServiceImpl implements IEmployeeService {
 		Employee existingEmployee = employeeRepository.findById(employeeId)
 				.orElseThrow(() -> new ResourceNotFoundException("Employee", "id", employeeId));
 
-		// Check if email is being changed and if new email already exists
 		if (!existingEmployee.getEmail().equals(employeeDto.getEmail())
 				&& employeeRepository.existsByEmail(employeeDto.getEmail())) {
 			throw new BusinessException("Employee with email already exists: " + employeeDto.getEmail());

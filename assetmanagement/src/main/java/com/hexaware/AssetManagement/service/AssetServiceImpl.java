@@ -91,7 +91,6 @@ public class AssetServiceImpl implements IAssetService {
 		Asset existingAsset = assetRepository.findById(assetId)
 				.orElseThrow(() -> new ResourceNotFoundException("Asset", "id", assetId));
 
-		// Check if asset number is being changed and if new number already exists
 		if (!existingAsset.getAssetNo().equals(assetDto.getAssetNo())
 				&& assetRepository.existsByAssetNo(assetDto.getAssetNo())) {
 			throw new BusinessException("Asset with number already exists: " + assetDto.getAssetNo());

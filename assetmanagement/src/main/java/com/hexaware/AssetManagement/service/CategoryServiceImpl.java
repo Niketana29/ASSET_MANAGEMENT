@@ -65,7 +65,6 @@ public class CategoryServiceImpl implements ICategoryService {
 		Category existingCategory = categoryRepository.findById(categoryId)
 				.orElseThrow(() -> new ResourceNotFoundException("Category", "id", categoryId));
 
-		// Check if name is being changed and if new name already exists
 		if (!existingCategory.getCategoryName().equals(categoryDto.getCategoryName())
 				&& categoryRepository.existsByCategoryName(categoryDto.getCategoryName())) {
 			throw new BusinessException("Category already exists: " + categoryDto.getCategoryName());

@@ -42,19 +42,15 @@ public class UserService {
 
 	public AuthResponse registerUser(RegisterRequest registerRequest) {
 		logger.info("Registering new user: {}", registerRequest.getUsername());
-
-		// Check if username already exists
 		if (userInfoRepository.existsByUsername(registerRequest.getUsername())) {
 			throw new BusinessException("Username already exists: " + registerRequest.getUsername());
 		}
 
-		// Check if email already exists
 		if (employeeRepository.existsByEmail(registerRequest.getEmail())) {
 			throw new BusinessException("Email already exists: " + registerRequest.getEmail());
 		}
 
 		try {
-			// Create employee record
 			Employee employee = new Employee();
 			employee.setEmployeeName(registerRequest.getEmployeeName());
 			employee.setEmail(registerRequest.getEmail());
@@ -63,16 +59,14 @@ public class UserService {
 			employee.setAddress(registerRequest.getAddress());
 			Employee savedEmployee = employeeRepository.save(employee);
 
-			// Create user info record
 			UserInfo userInfo = new UserInfo();
 			userInfo.setUsername(registerRequest.getUsername());
 			userInfo.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-			userInfo.setRoles("ROLE_USER"); // Default role for new users
+			userInfo.setRoles("ROLE_USER"); 
 			userInfoRepository.save(userInfo);
 
 			logger.info("User registered successfully: {}", registerRequest.getUsername());
 
-			// Generate JWT token
 			String token = jwtService.generateToken(registerRequest.getUsername());
 
 			return new AuthResponse(token, registerRequest.getUsername(), "ROLE_USER", savedEmployee.getEmployeeId());
@@ -87,16 +81,13 @@ public class UserService {
 		logger.info("Authenticating user: {}", authRequest.getUsername());
 
 		try {
-			// Authenticate user
 			Authentication authentication = authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword()));
 
 			if (authentication.isAuthenticated()) {
-				// Get user info
 				UserInfo userInfo = userInfoRepository.findByUsername(authRequest.getUsername())
 						.orElseThrow(() -> new BusinessException("User not found"));
 
-				// Get employee info for users (not for admins)
 				Long employeeId = null;
 				if ("ROLE_USER".equals(userInfo.getRoles())) {
 					Employee employee = employeeRepository.findByEmail(authRequest.getUsername()).orElse(null);
@@ -105,7 +96,6 @@ public class UserService {
 					}
 				}
 
-				// Generate token
 				String token = jwtService.generateToken(authRequest.getUsername());
 
 				logger.info("User authenticated successfully: {}", authRequest.getUsername());

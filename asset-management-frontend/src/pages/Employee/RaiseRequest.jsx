@@ -20,8 +20,7 @@ const RaiseRequest = () => {
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [validationErrors, setValidationErrors] = useState({});
-  
-  // Preview state
+
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   useEffect(() => {
@@ -29,7 +28,6 @@ const RaiseRequest = () => {
   }, []);
 
   useEffect(() => {
-    // Find and set selected category when categoryId changes
     if (formData.categoryId) {
       const category = categories.find(cat => cat.categoryId.toString() === formData.categoryId);
       setSelectedCategory(category);
@@ -82,7 +80,6 @@ const RaiseRequest = () => {
       [name]: value
     }));
 
-    // Clear validation error for this field
     if (validationErrors[name]) {
       setValidationErrors(prev => ({
         ...prev,
@@ -123,15 +120,13 @@ const RaiseRequest = () => {
         setSuccessMessage(`✅ Your request for "${formData.assetName}" has been submitted successfully and is pending admin approval.`);
       }
 
-      // Reset form
       setFormData({
         assetName: '',
         categoryId: '',
         requestReason: ''
       });
       setSelectedCategory(null);
-      
-      // Clear success message after 7 seconds
+
       setTimeout(() => setSuccessMessage(''), 7000);
 
     } catch (err) {

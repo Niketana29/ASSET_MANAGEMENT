@@ -14,8 +14,7 @@ const AssetDetails = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  
-  // Request modal state
+
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [requestReason, setRequestReason] = useState('');
   const [isRequesting, setIsRequesting] = useState(false);
@@ -62,7 +61,6 @@ const AssetDetails = () => {
 
       setShowRequestModal(false);
       
-      // Clear success message after 5 seconds
       setTimeout(() => setSuccessMessage(''), 5000);
 
     } catch (err) {
@@ -131,7 +129,6 @@ const AssetDetails = () => {
 
   return (
     <div className="asset-details-container">
-      {/* Header */}
       <div className="page-header">
         <div className="header-navigation">
           <button onClick={() => navigate(-1)} className="back-button">
@@ -145,7 +142,6 @@ const AssetDetails = () => {
         </div>
       </div>
 
-      {/* Messages */}
       {error && (
         <div className="error-message">
           <span className="error-icon">❌</span>
@@ -160,7 +156,6 @@ const AssetDetails = () => {
         </div>
       )}
 
-      {/* Asset Details Card */}
       <div className="asset-details-card">
         <div className="asset-header">
           <div className="asset-title-section">
@@ -189,7 +184,6 @@ const AssetDetails = () => {
           </div>
         </div>
 
-        {/* Asset Information Grid */}
         <div className="asset-info-grid">
           <div className="info-section">
             <h3 className="section-title">Basic Information</h3>
@@ -255,7 +249,6 @@ const AssetDetails = () => {
           )}
         </div>
 
-        {/* Description Section */}
         {asset.description && (
           <div className="description-section">
             <h3 className="section-title">Description</h3>
@@ -263,7 +256,6 @@ const AssetDetails = () => {
           </div>
         )}
 
-        {/* Request Section */}
         {asset.status === 'AVAILABLE' && (
           <div className="request-section">
             <div className="request-info">
@@ -307,7 +299,6 @@ const AssetDetails = () => {
         )}
       </div>
 
-      {/* Related Actions */}
       <div className="related-actions">
         <h3 className="section-title">Related Actions</h3>
         <div className="action-cards">
@@ -337,7 +328,6 @@ const AssetDetails = () => {
         </div>
       </div>
 
-      {/* Request Modal */}
       {showRequestModal && (
         <div className="modal-overlay">
           <div className="modal-container">

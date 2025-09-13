@@ -11,8 +11,6 @@ const AuditRequests = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-
-  // Pending allocations for approval
   const [pendingAllocations, setPendingAllocations] = useState([]);
   const [showApprovalModal, setShowApprovalModal] = useState(false);
   const [selectedAllocation, setSelectedAllocation] = useState(null);

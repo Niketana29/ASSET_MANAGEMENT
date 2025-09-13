@@ -22,7 +22,6 @@ const PasswordStrengthBar = ({ password, showDetails = false }) => {
 
   return (
     <div className="mt-2">
-      {/* Progress Bar */}
       <div className="flex space-x-1">
         {[1, 2, 3, 4, 5].map((level) => (
           <div
@@ -35,7 +34,6 @@ const PasswordStrengthBar = ({ password, showDetails = false }) => {
         ))}
       </div>
 
-      {/* Strength Text */}
       <div className="flex justify-between items-center mt-1">
         <span className={`text-sm font-medium ${strengthInfo.color}`}>
           Password strength: {strengthInfo.text}
@@ -45,7 +43,6 @@ const PasswordStrengthBar = ({ password, showDetails = false }) => {
         </span>
       </div>
 
-      {/* Detailed Requirements */}
       {showDetails && (
         <div className="mt-3 space-y-2">
           <p className="text-xs text-gray-600 font-medium">Requirements:</p>

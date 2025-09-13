@@ -1,4 +1,3 @@
-/* Page container */
 .service-requests-container {
     padding: 2rem;
     background: #f9fafb;
@@ -6,24 +5,21 @@
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   }
   
-  /* Heading */
   .service-requests-container h2 {
     text-align: center;
     font-size: 2rem;
     font-weight: 600;
     margin-bottom: 1.5rem;
-    color: #1f2937; /* gray-800 */
+    color: #1f2937; 
   }
-  
-  /* Search box */
+
   .service-requests-container input[type="text"] {
     height: 42px;
     padding: 0.35rem 0.75rem;
     border-radius: 8px;
-    border: 1px solid #d1d5db; /* gray-300 */
+    border: 1px solid #d1d5db; 
   }
-  
-  /* Table wrapper */
+
   .service-table-wrapper {
     background: #ffffff;
     border-radius: 12px;
@@ -32,8 +28,7 @@
     overflow-x: auto;
     transition: all 0.3s ease;
   }
-  
-  /* Table styling */
+
   .service-table {
     width: 100%;
     border-collapse: collapse;
@@ -56,16 +51,14 @@
     content: "⇅";
     font-size: 0.7rem;
     margin-left: 6px;
-    color: #9ca3af; /* gray-400 */
+    color: #9ca3af;
   }
-  
-  /* Row hover */
+
   .service-table tbody tr:hover {
     background-color: #f3f4f6;
     transition: background 0.2s ease;
   }
-  
-  /* Status badges */
+
   .status-badge {
     display: inline-block;
     padding: 0.35rem 0.75rem;
@@ -77,26 +70,25 @@
   }
   
   .status-pending {
-    background-color: #fef3c7; /* amber-100 */
-    color: #92400e; /* amber-800 */
+    background-color: #fef3c7;
+    color: #92400e; 
   }
   
   .status-approved {
-    background-color: #d1fae5; /* emerald-100 */
-    color: #065f46; /* emerald-800 */
+    background-color: #d1fae5; 
+    color: #065f46; 
   }
   
   .status-rejected {
-    background-color: #fee2e2; /* red-100 */
-    color: #991b1b; /* red-800 */
+    background-color: #fee2e2; 
+    color: #991b1b; 
   }
   
   .status-none {
-    background-color: #e5e7eb; /* gray-200 */
-    color: #374151; /* gray-700 */
+    background-color: #e5e7eb; 
+    color: #374151;
   }
   
-  /* Action buttons */
   .service-actions button {
     padding: 0.45rem 1rem;
     font-size: 0.85rem;
@@ -113,16 +105,15 @@
   }
   
   .btn-approve {
-    background-color: #10b981; /* emerald-500 */
+    background-color: #10b981; 
     color: #fff;
   }
   
   .btn-reject {
-    background-color: #ef4444; /* red-500 */
+    background-color: #ef4444; 
     color: #fff;
   }
   
-  /* Responsive adjustments */
   @media (max-width: 767px) {
     .service-table th,
     .service-table td {

@@ -6,24 +6,18 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import PrivateRoute from './components/PrivateRoute';
 import RoleRoute from './components/RoleRoute';
-
-// Pages
 import Home from './pages/Home';
 import Register from './pages/Register';
 import UserLogin from './pages/Login/UserLogin';
 import AdminLogin from './pages/Login/AdminLogin';
 import Logout from './pages/Login/Logout';
 import DashboardRouter from './pages/Dashboard/DashboardRouter';
-
-// Employee Pages
 import BrowseAssets from './pages/Employee/BrowseAssets';
 import AssetDetails from './pages/Employee/AssetDetails';
 import MyAllocations from './pages/Employee/MyAllocations';
 import RaiseRequest from './pages/Employee/RaiseRequest';
 import ServiceRequest from './pages/Employee/ServiceRequest';
 import RequestHistory from './pages/Employee/RequestHistory';
-
-// Admin Pages
 import ManageAssets from './pages/Admin/ManageAssets';
 import ManageCategories from './pages/Admin/ManageCategories';
 import ManageEmployees from './pages/Admin/ManageEmployees';
@@ -31,8 +25,6 @@ import AuditRequests from './pages/Admin/AuditRequests';
 import ServiceRequests from './pages/Admin/ServiceRequests';
 import DashboardHome from './pages/Admin/DashboardHome';
 import Reports from './pages/Admin/Reports';
-
-// Error Pages
 import NotFound from './pages/Error/NotFound';
 import NotAuthorized from './pages/Error/NotAuthorized';
 import ServerError from './pages/Error/ServerError';

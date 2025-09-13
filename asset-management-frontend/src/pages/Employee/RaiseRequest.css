@@ -1,8 +1,8 @@
 .raise-request-container {
   display: flex;
-  justify-content: center; /* center horizontally */
+  justify-content: center; 
   margin-top: 3rem;
-  padding: 0 1rem; /* horizontal padding for small screens */
+  padding: 0 1rem; 
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
@@ -25,7 +25,7 @@
 form {
   display: flex;
   flex-direction: column;
-  gap: 1.25rem; /* uniform spacing between fields */
+  gap: 1.25rem;
 }
 
 .form-group {

@@ -2,7 +2,6 @@ import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import AuthService from '../services/AuthService';
 import { ROLES } from '../utils/constants';
 
-// Initial state
 const initialState = {
   user: null,
   token: null,
@@ -11,7 +10,6 @@ const initialState = {
   error: null
 };
 
-// Action types
 const AUTH_ACTIONS = {
   LOGIN_START: 'LOGIN_START',
   LOGIN_SUCCESS: 'LOGIN_SUCCESS',
@@ -25,7 +23,6 @@ const AUTH_ACTIONS = {
   INITIALIZE_AUTH: 'INITIALIZE_AUTH'
 };
 
-// Reducer function
 const authReducer = (state, action) => {
   switch (action.type) {
     case AUTH_ACTIONS.LOGIN_START:
@@ -94,14 +91,11 @@ const authReducer = (state, action) => {
   }
 };
 
-// Create context
 const AuthContext = createContext();
 
-// AuthProvider component
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // Initialize authentication state on app load
   useEffect(() => {
     const initializeAuth = () => {
       try {
@@ -143,7 +137,6 @@ export const AuthProvider = ({ children }) => {
     initializeAuth();
   }, []);
 
-  // Login function
   const login = async (credentials) => {
     dispatch({ type: AUTH_ACTIONS.LOGIN_START });
 
@@ -177,7 +170,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Register function
   const register = async (userData) => {
     dispatch({ type: AUTH_ACTIONS.REGISTER_START });
 
@@ -211,18 +203,15 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Logout function
   const logout = () => {
     AuthService.logout();
     dispatch({ type: AUTH_ACTIONS.LOGOUT });
   };
 
-  // Clear error function
   const clearError = () => {
     dispatch({ type: AUTH_ACTIONS.CLEAR_ERROR });
   };
 
-  // Helper functions
   const isAdmin = () => {
     return state.user?.role === ROLES.ADMIN;
   };
@@ -247,18 +236,15 @@ export const AuthProvider = ({ children }) => {
     return state.user?.role;
   };
 
-  // Context value
   const contextValue = {
-    // State
+
     ...state,
-    
-    // Actions
+
     login,
     register,
     logout,
     clearError,
-    
-    // Helper functions
+
     isAdmin,
     isUser,
     hasRole,
@@ -274,7 +260,6 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// Custom hook to use the auth context
 export const useAuth = () => {
   const context = useContext(AuthContext);
   
@@ -285,7 +270,6 @@ export const useAuth = () => {
   return context;
 };
 
-// HOC for components that require authentication
 export const withAuth = (WrappedComponent) => {
   return (props) => {
     const { isAuthenticated, isLoading } = useAuth();
@@ -325,7 +309,6 @@ export const withAuth = (WrappedComponent) => {
   };
 };
 
-// HOC for components that require specific roles
 export const withRole = (allowedRoles) => (WrappedComponent) => {
   return (props) => {
     const { isAuthenticated, isLoading, user } = useAuth();

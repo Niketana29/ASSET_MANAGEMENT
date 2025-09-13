@@ -72,7 +72,6 @@ const RequestHistory = () => {
       combined = [...combined, ...mappedAllocations];
     }
 
-    // Add service requests
     if (activeTab === 'all' || activeTab === 'service') {
       const mappedServiceRequests = serviceRequests.map(req => ({
         ...req,
@@ -86,12 +85,10 @@ const RequestHistory = () => {
       combined = [...combined, ...mappedServiceRequests];
     }
 
-    // Apply status filter
     if (statusFilter) {
       combined = combined.filter(req => req.status === statusFilter);
     }
 
-    // Apply sorting
     combined.sort((a, b) => {
       switch (sortBy) {
         case 'newest':

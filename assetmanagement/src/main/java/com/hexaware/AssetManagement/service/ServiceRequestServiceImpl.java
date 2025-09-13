@@ -45,7 +45,6 @@ public class ServiceRequestServiceImpl implements IServiceRequestService {
 		Asset asset = assetRepository.findById(serviceRequestDto.getAssetId())
 				.orElseThrow(() -> new ResourceNotFoundException("Asset", "id", serviceRequestDto.getAssetId()));
 
-		// Verify asset number matches
 		if (!asset.getAssetNo().equals(serviceRequestDto.getAssetNo())) {
 			throw new BusinessException("Asset number does not match with asset ID");
 		}
@@ -101,7 +100,6 @@ public class ServiceRequestServiceImpl implements IServiceRequestService {
 			serviceRequest.setStatus(newStatus);
 			serviceRequest.setAdminComments(adminComments);
 
-			// If request is completed, update asset status if needed
 			if (newStatus == ServiceRequest.ServiceStatus.COMPLETED) {
 				Asset asset = serviceRequest.getAsset();
 				if (asset.getStatus() == Asset.AssetStatus.MAINTENANCE) {
@@ -109,7 +107,6 @@ public class ServiceRequestServiceImpl implements IServiceRequestService {
 					assetRepository.save(asset);
 				}
 			} else if (newStatus == ServiceRequest.ServiceStatus.IN_PROGRESS) {
-				// Set asset to maintenance if service is in progress
 				Asset asset = serviceRequest.getAsset();
 				asset.setStatus(Asset.AssetStatus.MAINTENANCE);
 				assetRepository.save(asset);

@@ -51,7 +51,6 @@ public class AuditRequestServiceImpl implements IAuditRequestService {
 		Asset asset = assetRepository.findById(assetId)
 				.orElseThrow(() -> new ResourceNotFoundException("Asset", "id", assetId));
 
-		// Check if audit request already exists for this employee and asset
 		List<AuditRequest> existingRequests = auditRequestRepository.findByEmployeeIdAndAssetId(employeeId, assetId);
 		if (!existingRequests.isEmpty()
 				&& existingRequests.stream().anyMatch(req -> req.getStatus() == AuditRequest.AuditStatus.PENDING)) {
@@ -80,7 +79,6 @@ public class AuditRequestServiceImpl implements IAuditRequestService {
 
 		for (AssetAllocation allocation : approvedAllocations) {
 			try {
-				// Check if audit request already exists
 				List<AuditRequest> existingRequests = auditRequestRepository.findByEmployeeIdAndAssetId(
 						allocation.getEmployee().getEmployeeId(), allocation.getAsset().getAssetId());
 

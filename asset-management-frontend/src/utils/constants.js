@@ -215,7 +215,6 @@ export function formatDate(dateString, format = 'MMM DD, YYYY') {
   return date.toLocaleString('en-US', options);
 };
 
-// Returns a CSS class based on status
 export function getStatusBadgeClass(status) {
   switch (status) {
     case 'REQUESTED':

@@ -5,16 +5,14 @@
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   }
   
-  /* Heading */
   .reports-container h2 {
     text-align: center;
     font-size: 2rem;
     font-weight: 600;
     margin-bottom: 2rem;
-    color: #1f2937; /* gray-800 */
+    color: #1f2937; 
   }
   
-  /* Summary Cards */
   .summary-card {
     background: #ffffff;
     border-radius: 12px;
@@ -40,15 +38,13 @@
     margin-top: 0.25rem;
     color: #111827;
   }
-  
-  /* Charts Grid */
+
   .reports-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 1.5rem;
   }
-  
-  /* Chart Card */
+
   .reports-chart {
     background: #ffffff;
     border-radius: 12px;
@@ -66,13 +62,11 @@
     margin-bottom: 1rem;
     color: #111827;
   }
-  
-  /* Tooltip & Legend */
+
   .recharts-tooltip-wrapper {
     font-size: 0.85rem !important;
   }
   
-  /* Responsive adjustments */
   @media (max-width: 767px) {
     .summary-card {
       padding: 1.5rem 1rem;

@@ -49,7 +49,6 @@ const DashboardHome = () => {
         AuditRequestService.getAllAuditRequests()
       ]);
 
-      // Calculate statistics
       const stats = {
         totalAssets: assets.length,
         availableAssets: assets.filter(a => a.status === 'AVAILABLE').length,
@@ -65,7 +64,6 @@ const DashboardHome = () => {
 
       setDashboardStats(stats);
 
-      // Prepare recent activity
       const activities = [
         ...allAllocations.slice(0, 3).map(allocation => ({
           id: allocation.allocationId,
@@ -89,7 +87,6 @@ const DashboardHome = () => {
 
       setRecentActivity(activities);
 
-      // Quick stats for charts
       setQuickStats([
         { label: 'Asset Utilization', value: Math.round((stats.allocatedAssets / stats.totalAssets) * 100) },
         { label: 'Request Approval Rate', value: Math.round((stats.completedAllocations / (stats.completedAllocations + stats.pendingRequests)) * 100) },

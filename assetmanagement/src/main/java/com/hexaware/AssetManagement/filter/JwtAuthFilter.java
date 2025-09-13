@@ -40,18 +40,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 		String username = null;
 
 		try {
-			// Check if Authorization header exists and starts with "Bearer "
 			if (authHeader != null && authHeader.startsWith("Bearer ")) {
 				token = authHeader.substring(7); // Remove "Bearer " prefix
 				username = jwtService.extractUsername(token);
 				logger.debug("JWT token found for user: {}", username);
 			}
 
-			// If username is extracted and no authentication exists in security context
 			if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 				UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
-				// Validate token
 				if (jwtService.validateToken(token, userDetails)) {
 					UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,
 							null, userDetails.getAuthorities());
@@ -65,11 +62,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 			}
 		} catch (Exception e) {
 			logger.error("Cannot set user authentication: {}", e.getMessage());
-			// Clear security context on error
 			SecurityContextHolder.clearContext();
 		}
 
-		// Continue with the filter chain
 		filterChain.doFilter(request, response);
 	}
 
@@ -77,7 +72,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 	protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
 		String path = request.getRequestURI();
 
-		// Skip JWT filtering for public endpoints
 		return path.startsWith("/api/auth/") || path.equals("/api/register") || path.startsWith("/swagger-ui/")
 				|| path.startsWith("/v3/api-docs") || path.equals("/swagger-ui.html") || path.startsWith("/actuator/")
 				|| path.equals("/favicon.ico");

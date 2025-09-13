@@ -121,7 +121,6 @@ const Register = () => {
       [name]: value
     }));
 
-    // Clear field error when user starts typing
     if (fieldErrors[name]) {
       setFieldErrors(prev => ({
         ...prev,
@@ -129,7 +128,6 @@ const Register = () => {
       }));
     }
 
-    // Clear general error
     if (error) {
       clearError();
     }
@@ -211,7 +209,6 @@ const Register = () => {
             </p>
           </div>
 
-          {/* Success Message */}
           {successMessage && (
             <div className="success-message">
               <div className="flex items-center">
@@ -221,7 +218,6 @@ const Register = () => {
             </div>
           )}
 
-          {/* Error Message */}
           {error && (
             <div className="error-message">
               <div className="flex items-center">
@@ -231,10 +227,9 @@ const Register = () => {
             </div>
           )}
 
-          {/* Registration Form */}
           <form onSubmit={handleSubmit} className="register-form">
             <div className="form-grid">
-              {/* Username */}
+
               <div className="form-group">
                 <label htmlFor="username" className="form-label">
                   Username *
@@ -255,7 +250,6 @@ const Register = () => {
                 )}
               </div>
 
-              {/* Employee Name */}
               <div className="form-group">
                 <label htmlFor="employeeName" className="form-label">
                   Full Name *
@@ -276,7 +270,6 @@ const Register = () => {
                 )}
               </div>
 
-              {/* Email */}
               <div className="form-group">
                 <label htmlFor="email" className="form-label">
                   Email Address *
@@ -297,7 +290,6 @@ const Register = () => {
                 )}
               </div>
 
-              {/* Contact Number */}
               <div className="form-group">
                 <label htmlFor="contactNumber" className="form-label">
                   Contact Number
@@ -318,7 +310,6 @@ const Register = () => {
                 )}
               </div>
 
-              {/* Gender */}
               <div className="form-group">
                 <label htmlFor="gender" className="form-label">
                   Gender *
@@ -343,7 +334,6 @@ const Register = () => {
                 )}
               </div>
 
-              {/* Address */}
               <div className="form-group form-group-full">
                 <label htmlFor="address" className="form-label">
                   Address
@@ -363,7 +353,6 @@ const Register = () => {
                 )}
               </div>
 
-              {/* Password */}
               <div className="form-group">
                 <label htmlFor="password" className="form-label">
                   Password *
@@ -395,7 +384,6 @@ const Register = () => {
                 <PasswordStrengthBar password={formData.password} showDetails={true} />
               </div>
 
-              {/* Confirm Password */}
               <div className="form-group">
                 <label htmlFor="confirmPassword" className="form-label">
                   Confirm Password *
@@ -427,7 +415,6 @@ const Register = () => {
               </div>
             </div>
 
-            {/* Terms and Conditions */}
             <div className="terms-section">
               <p className="terms-text">
                 By creating an account, you agree to our{' '}
@@ -437,7 +424,6 @@ const Register = () => {
               </p>
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={isSubmitting || isLoading}
@@ -457,7 +443,6 @@ const Register = () => {
             </button>
           </form>
 
-          {/* Footer */}
           <div className="register-footer">
             <p>
               Already have an account?{' '}
@@ -467,8 +452,6 @@ const Register = () => {
             </p>
           </div>
         </div>
-
-        {/* Side Panel */}
         <div className="register-side-panel">
           <div className="side-panel-content">
             <div className="feature-highlight">

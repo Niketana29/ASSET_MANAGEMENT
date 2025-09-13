@@ -18,10 +18,8 @@ import io.jsonwebtoken.security.Keys;
 @Component
 public class JwtService {
 
-	// Secret key for JWT signing (in production, use environment variable)
 	public static final String SECRET = "5367566B59703373367639792F423F4528482B4D6251655468576D5A71347437";
 
-	// Token validity in milliseconds (24 hours)
 	private static final long JWT_TOKEN_VALIDITY = 24 * 60 * 60 * 1000;
 
 	public String extractUsername(String token) {

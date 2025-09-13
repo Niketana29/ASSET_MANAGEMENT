@@ -15,13 +15,9 @@ const BrowseAssets = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  
-  // Filters
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('');
   const [sortBy, setSortBy] = useState('name');
-  
-  // Request modal
   const [showRequestModal, setShowRequestModal] = useState(false);
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [requestReason, setRequestReason] = useState('');
@@ -56,7 +52,6 @@ const BrowseAssets = () => {
   const filterAndSortAssets = () => {
     let filtered = assets.filter(asset => asset.status === 'AVAILABLE');
 
-    // Apply search filter
     if (searchTerm) {
       filtered = filtered.filter(asset =>
         asset.assetName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -65,12 +60,10 @@ const BrowseAssets = () => {
       );
     }
 
-    // Apply category filter
     if (categoryFilter) {
       filtered = filtered.filter(asset => asset.categoryId.toString() === categoryFilter);
     }
 
-    // Apply sorting
     filtered.sort((a, b) => {
       switch (sortBy) {
         case 'name':
@@ -122,9 +115,7 @@ const BrowseAssets = () => {
       }
 
       closeRequestModal();
-      loadData(); // Reload to update available assets
-      
-      // Clear success message after 5 seconds
+      loadData(); 
       setTimeout(() => setSuccessMessage(''), 5000);
 
     } catch (err) {
